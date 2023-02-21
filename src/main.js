@@ -25,6 +25,7 @@ import Divider from 'primevue/divider'
 import Password from "primevue/password"
 import OverlayPanel from "primevue/overlaypanel"
 import Menu from "primevue/menu"
+import ProgessBar from "primevue/progressbar";
 
 import Tooltip from 'primevue/tooltip'
 
@@ -49,6 +50,7 @@ app.component('Divider', Divider)
 app.component('Password', Password)
 app.component('OverlayPanel', OverlayPanel)
 app.component("Menu", Menu);
+app.component("ProgressBar", ProgessBar)
 
 app.directive('tooltip', Tooltip)
 

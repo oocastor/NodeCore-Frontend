@@ -1,9 +1,48 @@
 <template>
-    <div class="w-full h-4rem surface-card flex justify-content-between align-items-center px-3">
-        <div class="text-4xl font-grandHotel">nodeup</div>
-        <Avatar class="bg-primary" label="Ca" @click="toggleAvatarMenu"></Avatar>
+    <div class="flex flex-column h-full">
+        <div class="w-full h-4rem surface-card flex justify-content-between align-items-center px-3">
+            <div class="text-4xl font-grandHotel">nodeup</div>
+            <Avatar class="bg-primary" label="Ca" @click="toggleAvatarMenu"></Avatar>
+        </div>
+        <Menu ref="menu" :model="items" :popup="true"></Menu>
+        <div class="flex-auto flex w-full flex-column mx-auto" style="max-width: 900px;">
+            <div class=" relativ justify-content-between my-3 mx-4 gap-3 flex fadein animation-duration-200">
+                <div
+                    class="w-6 p-4 surface-card h-full border-round-md flex flex-column justify-content-center align-items-center">
+                    <div class="flex font align-items-baseline text-200 gap-2 mb-3">
+                        <p class="md:text-5xl text-2xl m-0 font-bold text-color">4000</p>
+                        <p class="text-xl m-0 hidden md:block">/</p>
+                        <p class="text-xl m-0 hidden md:block">8000</p>
+                        <p class="m-0">RAM</p>
+                    </div>
+                    <ProgressBar class="w-11 h-1rem border-round-md" value="50"></ProgressBar>
+                </div>
+                <div
+                    class="w-6 p-4 surface-card h-full border-round-md flex flex-column justify-content-center align-items-center">
+                    <div class="flex font align-items-baseline text-200 gap-2 mb-3">
+                        <p class="md:text-5xl text-2xl m-0 font-bold text-color">15</p>
+                        <p class="text-xl m-0 hidden md:block">/</p>
+                        <p class="text-xl m-0 hidden md:block">100</p>
+                        <p class="m-0">CPU</p>
+                    </div>
+                    <ProgressBar class="w-11 h-1rem border-round-md w-12" value="15"></ProgressBar>
+                </div>
+
+            </div>
+            <div
+                class="flex-auto relativ justify-content-between mb-3 mx-4 gap-3 flex flex-column md:flex-row fadein animation-duration-200">
+                <div class="w-full md:w-4 surface-card min-h-0 md:h-full border-round-md">
+                    <p class="md:hidden m-2">TEST</p>
+                </div>
+                <div class="w-full md:w-8 surface-card h-full border-round-md">
+
+                </div>
+            </div>
+            <div class="w-full h-3rem flex justify-content-center align-items-center gap-1">
+                <i class="pi pi-link text-300"></i> <a href="#" class="no-underline text-300">oocastor</a>
+            </div>
+        </div>
     </div>
-    <Menu ref="menu" :model="items" :popup="true"></Menu>
 </template>
 
 <script>
