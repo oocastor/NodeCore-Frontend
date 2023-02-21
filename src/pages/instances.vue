@@ -27,12 +27,13 @@
                     </div>
                     <ProgressBar class="w-11 h-1rem border-round-md w-12" value="15"></ProgressBar>
                 </div>
-
             </div>
             <div
                 class="flex-auto relativ justify-content-between mb-3 mx-4 gap-3 flex flex-column md:flex-row fadein animation-duration-200">
-                <div class="w-full md:w-4 surface-card min-h-0 md:h-full border-round-md">
-                    <p class="md:hidden m-2">TEST</p>
+                <div class="w-full md:w-4 surface-card min-h-0 md:h-full border-round-md relativ p-2">
+                    <template v-for="i in 5" :key="i">
+                        <div class="w-full h-5rem surface-100 border-round-sm mb-2"></div>
+                    </template>
                 </div>
                 <div class="w-full md:w-8 surface-card h-full border-round-md">
 
