@@ -5,7 +5,7 @@
             <p class="md:text-5xl text-2xl m-0 font-bold text-color">{{ current }}</p>
             <p class="text-xl m-0 hidden md:block">/</p>
             <p class="text-xl m-0 hidden md:block">{{ max }}</p>
-            <p class="m-0">{{ str }}</p>
+            <p class="m-0 font-bold font-mono" style="font-size: 1.3rem;">{{ str }}</p>
         </div>
         <ProgressBar class="w-11 h-1rem border-round-md" :value="current/max*100" :showValue="false"></ProgressBar>
     </div>
