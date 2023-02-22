@@ -25,7 +25,8 @@ import Divider from 'primevue/divider'
 import Password from "primevue/password"
 import OverlayPanel from "primevue/overlaypanel"
 import Menu from "primevue/menu"
-import ProgessBar from "primevue/progressbar";
+import ProgessBar from "primevue/progressbar"
+import Textarea from "primevue/textarea"
 
 import Tooltip from 'primevue/tooltip'
 
@@ -49,8 +50,9 @@ app.component('Checkbox', Checkbox)
 app.component('Divider', Divider)
 app.component('Password', Password)
 app.component('OverlayPanel', OverlayPanel)
-app.component("Menu", Menu);
+app.component("Menu", Menu)
 app.component("ProgressBar", ProgessBar)
+app.component("Textarea", Textarea)
 
 app.directive('tooltip', Tooltip)
 

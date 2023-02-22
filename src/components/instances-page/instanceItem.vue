@@ -1,6 +1,6 @@
 <template>
     <div
-        class="w-full h-5rem border-round-sm mb-2 p-3 bg-list-item cursor-pointer flex align-items-center gap-3 select-none">
+        class="w-full h-5rem border-round-sm mb-2 p-3 bg-instance-item cursor-pointer flex align-items-center gap-3 select-none">
         <Avatar icon="pi pi-server green-600"
             :style="{ backgroundColor: active ? 'var(--primary-color)' : '' }" />
         <p class="flex-auto text-sm">{{ name }}</p>
@@ -16,3 +16,19 @@ export default {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.bg-instance-item {
+    background-color: rgba(255, 255, 255, 0.05);
+    transition: all 100ms;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: scale(1.025);
+    }
+}
+
+.p-button-xs {
+    transform: scale(0.75) !important;
+}
+</style>
