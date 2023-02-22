@@ -6,8 +6,8 @@
         </div>
         <Menu ref="menu" :model="items" :popup="true"></Menu>
         <div class="flex-auto flex w-full flex-column mx-auto" style="max-width: 900px;">
-            <div class=" relativ justify-content-between my-3 mx-4 gap-3 flex fadein animation-duration-200">
-                <serverInfo v-for="i in 2" :key="i" current="500" max="1000" str="RAM"></serverInfo>
+            <div class="relativ justify-content-between my-3 mx-4 gap-3 flex fadein animation-duration-200">
+                <serverInfo v-for="i in 2" :key="i" current="500" max="1000" str="RAM" op="MB"></serverInfo>
             </div>
             <div
                 class="flex-auto relativ md:justify-content-between mb-3 mx-4 gap-3 flex flex-column md:flex-row fadein animation-duration-200">

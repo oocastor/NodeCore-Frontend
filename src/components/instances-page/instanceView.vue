@@ -17,11 +17,11 @@
             <Button label="Stop" icon="pi pi-stop" class="p-button-sm flex-auto bg-white-a15 text-white"></Button>
             <Button label="Update" icon="pi pi-download" class="p-button-sm flex-auto bg-white-a15 text-white"></Button>
         </span>
-        <p class="m-0 mt-2 text-sm">Stats</p>
+        <p class="m-0 mt-2 text-sm font-mono">Stats</p>
         <div class="flex gap-2">
             <countItem v-for="i in 2" :key="i" str="RAM" :num="512" color="var(--white)"></countItem>
         </div>
-        <p class="m-0 mt-2 text-sm">Logs</p>
+        <p class="m-0 mt-2 text-sm font-mono">Logs</p>
         <Textarea class="w-full h-10rem bg-white-a05 border-none" autoResize="false" readonly></Textarea>
     </div>
 </template>
