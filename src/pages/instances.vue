@@ -7,40 +7,15 @@
         <Menu ref="menu" :model="items" :popup="true"></Menu>
         <div class="flex-auto flex w-full flex-column mx-auto" style="max-width: 900px;">
             <div class=" relativ justify-content-between my-3 mx-4 gap-3 flex fadein animation-duration-200">
-                <div
-                    class="w-6 p-4 surface-card h-full border-round-md flex flex-column justify-content-center align-items-center">
-                    <div class="flex font align-items-baseline text-200 gap-2 mb-3">
-                        <p class="md:text-5xl text-2xl m-0 font-bold text-color">4000</p>
-                        <p class="text-xl m-0 hidden md:block">/</p>
-                        <p class="text-xl m-0 hidden md:block">8000</p>
-                        <p class="m-0">RAM</p>
-                    </div>
-                    <ProgressBar class="w-11 h-1rem border-round-md" value="50" :showValue="false"></ProgressBar>
-                </div>
-                <div
-                    class="w-6 p-4 surface-card h-full border-round-md flex flex-column justify-content-center align-items-center">
-                    <div class="flex font align-items-baseline text-200 gap-2 mb-3">
-                        <p class="md:text-5xl text-2xl m-0 font-bold text-color">15</p>
-                        <p class="text-xl m-0 hidden md:block">/</p>
-                        <p class="text-xl m-0 hidden md:block">100</p>
-                        <p class="m-0">CPU</p>
-                    </div>
-                    <ProgressBar class="w-11 h-1rem border-round-md w-12" value="15" :showValue="false"></ProgressBar>
-                </div>
+                <serverInfo v-for="i in 2" :key="i" current="500" max="1000" str="RAM"></serverInfo>
             </div>
             <div
                 class="flex-auto relativ justify-content-between mb-3 mx-4 gap-3 flex flex-column md:flex-row fadein animation-duration-200">
                 <div class="w-full md:w-4 surface-card md:h-full border-round-md relativ p-2">
-                    <template v-for="i in 5" :key="i">
-                        <div class="w-full h-5rem border-round-sm mb-2 p-3 bg-instance-item cursor-pointer flex align-items-center gap-3 select-none">
-                            <Avatar icon="pi pi-server green-600" :style="{backgroundColor: Math.random() > 0.5 ? 'var(--primary-color)' : ''}"/>
-                            <p class="flex-auto text-sm">Studienplan</p>
-                            <Button icon="pi pi-angle-right" class="p-button-xs p-button-rounded surface-200 text-white"></Button>
-                        </div>
-                    </template>
+                    <instanceItem v-for="i in 5" :key="i" name="Studienplan" :active="Math.random() > 0.5"></instanceItem>
                 </div>
-                <div class="w-full md:w-8 surface-card h-full border-round-md">
-
+                <div class="w-full md:w-8 surface-card h-min border-round-md flex gap-2 p-2">
+                    <instancesCount v-for="i in 3" :key="i" str="Running" :num="i" color="var(--green-400)"></instancesCount>
                 </div>
             </div>
             <div class="w-full h-3rem flex justify-content-center align-items-center gap-1">
@@ -51,8 +26,18 @@
 </template>
 
 <script>
+import serverInfo from "@/components/instances-page/serverInfo.vue";
+import instanceItem from "@/components/instances-page/instanceItem.vue";
+import instancesCount from "@/components/instances-page/instancesCount.vue";
+
 export default {
     name: "instances",
+
+    components: {
+        serverInfo,
+        instanceItem,
+        instancesCount
+    },
 
     data() {
         let items = [
@@ -81,7 +66,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.bg-instance-item {
+.bg-list-item {
     background-color: rgba(255, 255, 255, 0.05);
     transition: all 100ms;
 
