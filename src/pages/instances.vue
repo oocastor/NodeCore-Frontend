@@ -11,16 +11,35 @@
             </div>
             <div
                 class="flex-auto relativ md:justify-content-between mb-3 mx-4 gap-3 flex flex-column md:flex-row fadein animation-duration-200">
-                <div class="w-full md:w-4 md:h-full surface-card p-2 border-round-md relativ">
-                    <div class="w-full mt-2 mb-3 flex justify-content-between align-items-center">
-                        <p class="m-0 ml-1 font-mono" style="font-size: 1rem;">Instances</p>
-                        <Button icon="pi pi-plus" class="-m-1 -mt-2 bg-white-a15 text-color" style="transform: scale(0.7);"></Button>
-                    </div>
-                    <instanceItem v-for="i in 5" :key="i" name="Studienplan" :active="Math.random() > 0.5"></instanceItem>
+                <div class="w-full md:w-8 flex surface-card h-min border-round-md md:hidden gap-2 p-2">
+                    <countItem str="Running" :num="2" color="var(--green-400)"></countItem>
+                    <countItem str="Stopped" :num="8" color="var(--red-400)"></countItem>
+                    <countItem str="Total" :num="10" color="var(--surface-400)"></countItem>
+                    <!-- <instanceSettingsView></instanceSettingsView> -->
                 </div>
-                <div class="w-full md:w-8 surface-card h-min border-round-md flex gap-2 p-2">
+                <div class="w-full md:w-4 md:h-full flex flex-column gap-3">
+                    <div class="surface-card p-2 border-round-md relativ">
+                        <div class="w-full mt-2 mb-3 flex justify-content-between align-items-center">
+                            <p class="m-0 ml-1 font-mono" style="font-size: 1rem;">Instances</p>
+                            <Button icon="pi pi-plus" class="-m-1 -mt-2 bg-white-a15 text-color"
+                                style="transform: scale(0.7);"></Button>
+                        </div>
+                        <objListItem v-for="i in 5" :key="i" icon="pi-server" name="Studienplan" :active="Math.random() > 0.5">
+                        </objListItem>
+                    </div>
+                    <div class="surface-card p-2 border-round-md relativ">
+                        <div class="w-full mt-2 mb-3 flex justify-content-between align-items-center">
+                            <p class="m-0 ml-1 font-mono" style="font-size: 1rem;">Redirects</p>
+                            <Button icon="pi pi-plus" class="-m-1 -mt-2 bg-white-a15 text-color"
+                                style="transform: scale(0.7);"></Button>
+                        </div>
+                        <objListItem v-for="i in 2" :key="i" icon="pi-arrow-right-arrow-left text-xs" name="Code-Server" :active="Math.random() > 0.5">
+                        </objListItem>
+                    </div>
+                </div>
+                <div class="w-full md:w-8 hidden surface-card h-min border-round-md md:flex gap-2 p-2">
                     <!-- <countItem v-for="i in 3" :key="i" str="Running" :num="i" color="var(--green-400)"></countItem> -->
-                    <instanceView></instanceView>
+                    <instanceSettingsView></instanceSettingsView>
                 </div>
             </div>
             <div class="w-full h-3rem flex justify-content-center align-items-center gap-1">
@@ -33,18 +52,20 @@
 <script>
 /* eslint-disable */
 import serverInfo from "@/components/instances-page/serverInfo.vue";
-import instanceItem from "@/components/instances-page/instanceItem.vue";
+import objListItem from "@/components/instances-page/objListItem.vue";
 import countItem from "@/components/instances-page/countItem.vue";
 import instanceView from "@/components/instances-page/instanceView.vue";
+import instanceSettingsView from "@/components/instances-page/instanceSettingsView.vue";
 
 export default {
     name: "instances",
 
     components: {
         serverInfo,
-        instanceItem,
+        objListItem,
         countItem,
-        instanceView
+        instanceView,
+        instanceSettingsView
     },
 
     data() {

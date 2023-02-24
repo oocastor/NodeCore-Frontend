@@ -8,7 +8,7 @@
             <p class="text-xl m-0 hidden md:block">{{ max }}</p>
             <p class="m-0 text-sm">{{ op }}</p>
         </div>
-        <ProgressBar class="w-11 h-1rem border-round-md" :value="current/max*100" :showValue="false"></ProgressBar>
+        <ProgressBar class="w-full h-1rem border-round-md" :value="current/max*100" :showValue="false"></ProgressBar>
     </div>
 </template>
 
