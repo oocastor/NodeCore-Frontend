@@ -18,7 +18,9 @@
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
                         <InputText type="text" class="w-4" style="height: inherit;" :disabled="!network.isAccessable">
                         </InputText>
-                        <Dropdown v-model="network.domain.selected" :options="network.domain.available" class="w-8" style="height: inherit;" :disabled="!network.isAccessable" optionLabel="name">
+                        <p>.</p>
+                        <Dropdown v-model="network.domain.selected" :options="available" class="w-8"
+                            style="height: inherit;" :disabled="!network.isAccessable" optionLabel="name">
                         </Dropdown>
                     </div>
                 </div>
@@ -47,7 +49,7 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import InputSwitch from 'primevue/inputswitch';
 import Dropdown from 'primevue/dropdown';
-import {ref} from "vue";
+import { ref } from "vue";
 
 export default {
     components: {
@@ -58,20 +60,22 @@ export default {
         Dropdown
     },
     data() {
+        let available = [
+            { name: "oocastor.dev" },
+            { name: "schneider-jonas.dev" },
+            { name: "songdle.app" },
+        ]
         let network = ref({
             isAccessable: true,
             domain: {
-                selected: null,
-                available: [
-                    {name: "oocastor.dev"},
-                    {name: "schneider-jonas.dev"},
-                    {name: "songdle.app"},
-                ]
+                sub: "",
+                selected: available[0],
             }
         })
 
         return {
             network,
+            available
         }
     }
 }
@@ -92,6 +96,7 @@ export default {
     display: flex;
     align-items: center;
 }
+
 .p-inputtext[role=combobox] {
     padding: 0 0 0 5px !important;
 }
