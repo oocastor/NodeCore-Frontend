@@ -16,10 +16,10 @@
                 <div>
                     <p class="m-0 mb-2 text-sm">Subdomain</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
-                        <InputText type="text" class="w-4" style="height: inherit;" :disabled="!network.isAccessable">
+                        <InputText v-model="network.redirect.sub" type="text" class="w-4" style="height: inherit;" :disabled="!network.isAccessable">
                         </InputText>
                         <p>.</p>
-                        <Dropdown v-model="network.domain.selected" :options="available" class="w-8"
+                        <Dropdown v-model="network.redirect.domain" :options="available" class="w-8"
                             style="height: inherit;" :disabled="!network.isAccessable" optionLabel="name">
                         </Dropdown>
                     </div>
@@ -27,7 +27,7 @@
                 <div>
                     <p class="m-0 mb-2 text-sm">Port</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
-                        <InputText type="text" class="flex-auto" style="height: inherit;" :disabled="!network.isAccessable">
+                        <InputText v-model="network.redirect.port" type="text" class="flex-auto" style="height: inherit;" :disabled="!network.isAccessable">
                         </InputText>
                         <Button label="Random" class="p-button-sm bg-white-a15 hover:" style="height: inherit;"
                             :disabled="!network.isAccessable"></Button>
@@ -67,9 +67,10 @@ export default {
         ]
         let network = ref({
             isAccessable: true,
-            domain: {
-                sub: "",
-                selected: available[0],
+            redirect: {
+                sub: "test",
+                domain: available[0],
+                port: "1000"
             }
         })
 
