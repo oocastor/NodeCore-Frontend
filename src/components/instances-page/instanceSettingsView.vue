@@ -29,13 +29,13 @@
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
                         <InputText v-model="network.redirect.port" type="text" class="flex-auto" style="height: inherit;" :disabled="!network.isAccessable">
                         </InputText>
-                        <Button label="Random" class="p-button-sm bg-white-a15 hover:" style="height: inherit;"
-                            :disabled="!network.isAccessable"></Button>
+                        <Button label="Unused" class="p-button-sm bg-white-a15 hover:" style="height: inherit;"
+                            :disabled="!network.isAccessable" @click="getUnusedPort();"></Button>
                     </div>
                 </div>
             </div>
         </Fieldset>
-        <Fieldset legend=".env" :toggleable="true">
+        <Fieldset legend=".env" :toggleable="true" :collapsed="true">
             <p class="m-0 mb-4 text-sm">Set required environment variables for your <Tag value="node.js"
                     class="text-white bg-gray-900"></Tag> instance.</p>
             <Textarea class="w-full h-10rem bg-white-a05 border-none font-mono" autoResize="false"></Textarea>
@@ -77,6 +77,11 @@ export default {
         return {
             network,
             available
+        }
+    },
+    methods: {
+        getUnusedPort() {
+            this.network.redirect.port = Math.round(Math.random() * 9000) + 1000;
         }
     }
 }
