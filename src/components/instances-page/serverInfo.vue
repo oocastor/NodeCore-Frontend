@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex-auto p-4 surface-card h-full border-round-md flex flex-column select-none">
+        class="flex-1 p-4 surface-card h-full border-round-md flex flex-column select-none">
         <p class="m-0 mb-2 -mt-2 font-mono text-lg">{{ str }}</p>
         <div class="flex font align-items-baseline text-200 gap-2 mb-3">
             <p class="md:text-5xl text-2xl m-0 font-bold text-color">{{ current }}</p>

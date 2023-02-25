@@ -1,16 +1,20 @@
 <template>
     <div class="w-full flex flex-column p-2 gap-3">
         <div class="flex justify-content-between">
-            <p class="text-3xl m-0 font-bold">Settings</p>
+            <p class="text-3xl m-0 font-bold">New Instance</p>
             <div class="flex gap-3">
-                <i class="pi pi-times text-xl text-gray-400 cursor-pointer"></i>
+                <i class="pi pi-times text-xl text-gray-400 cursor-pointer" @click="cancelCreationProcess($event)"></i>
             </div>
         </div>
-        <p class="text-gray-400 font-mono m-0 text-base">Studienplan (Instance)</p>
-        <Fieldset legend="Informations">
+        <Fieldset legend="Project">
             <p class="m-0 mb-2 text-sm">Name</p>
             <InputText v-model="instance.name" type="text" class="w-full" style="height: 40px;">
             </InputText>
+            <p class="mt-3 mb-2 text-sm">Import</p>
+            <div class="flex gap-2">
+                <Button label="Github"></Button>
+                <Button label="Upload" disabled></Button>
+            </div>
         </Fieldset>
         <Fieldset :collapsed="!instance.network.isAccessable">
             <template #legend>
@@ -44,38 +48,34 @@
                 </div>
             </div>
         </Fieldset>
+        <Fieldset legend="Cmd" :toggleable="true" :collapsed="true">
+            <p class="m-0 mb-4 text-sm">Define required setup commands for your <Tag value="node.js"
+                    class="text-white bg-gray-900"></Tag> instance.</p>
+            <Textarea class="w-full h-10rem surface-50 border-none font-mono" autoResize="false" autocorrect="off" spellcheck="false"></Textarea>
+        </Fieldset>
         <Fieldset legend=".env" :toggleable="true" :collapsed="true">
             <p class="m-0 mb-4 text-sm">Set required environment variables for your <Tag value="node.js"
                     class="text-white bg-gray-900"></Tag> instance.</p>
             <Textarea class="w-full h-10rem surface-50 border-none font-mono" autoResize="false" autocorrect="off" spellcheck="false"></Textarea>
         </Fieldset>
-        <Fieldset :toggleable="true" :collapsed="true">
-            <template #legend>
-                <p class="m-0 text-red-500">Critical Area</p>
-            </template>
-            <div class="flex align-items-center">
-                <p class="m-0 text-sm flex-auto">Delete current instance</p>
-                <Button label="Delete" @click="deleteInstance($event)" icon="pi pi-trash"
-                    class="bg-red-500 text-white border-none"></Button>
-            </div>
-        </Fieldset>
+
         <div class="flex justify-content-end gap-2">
             <Button label="Save"></Button>
             <Button label="Cancel" class="surface-100 text-white hover:surface-50"
                 @click="cancelCreationProcess($event)"></Button>
+            <ConfirmPopup></ConfirmPopup>
         </div>
     </div>
-    <ConfirmPopup></ConfirmPopup>
 </template>
 
 <script>
+/* eslint-disable */
 import Fieldset from "primevue/fieldset";
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import InputSwitch from 'primevue/inputswitch';
 import Dropdown from 'primevue/dropdown';
 import ConfirmPopup from 'primevue/confirmpopup';
-
 import { ref } from "vue";
 
 export default {
@@ -85,7 +85,7 @@ export default {
         Button,
         InputSwitch,
         Dropdown,
-        ConfirmPopup
+        ConfirmPopup,
     },
     data() {
         let available = [
@@ -115,16 +115,6 @@ export default {
     methods: {
         getUnusedPort() {
             this.instance.network.redirect.port = Math.round(Math.random() * 9000) + 1000;
-        },
-        deleteInstance(event) {
-            this.$confirm.require({
-                target: event.currentTarget,
-                message: 'Are you sure you want to proceed?',
-                icon: 'pi pi-exclamation-triangle',
-                accept: () => {
-                    console.log("Delete instance!")
-                }
-            });
         },
         cancelCreationProcess(event) {
             this.$confirm.require({
