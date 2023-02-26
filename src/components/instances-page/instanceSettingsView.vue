@@ -3,7 +3,7 @@
         <div class="flex justify-content-between">
             <p class="text-3xl m-0 font-bold">Settings</p>
             <div class="flex gap-3">
-                <i class="pi pi-times text-xl text-gray-400 cursor-pointer"></i>
+                <i class="pi pi-times text-xl text-gray-400 cursor-pointer" @click="cancelCreationProcess($event)"></i>
             </div>
         </div>
         <p class="text-gray-400 font-mono m-0 text-base">Studienplan (Instance)</p>

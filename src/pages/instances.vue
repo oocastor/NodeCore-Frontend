@@ -24,7 +24,7 @@
                     <div class="surface-card p-2 border-round-md relativ">
                         <div class="w-full mt-2 mb-3 flex justify-content-between align-items-center">
                             <p class="m-0 ml-1 font-mono" style="font-size: 1rem;">Instances</p>
-                            <Button icon="pi pi-plus" class="-m-1 -mt-2 surface-100 text-color"
+                            <Button icon="pi pi-plus" class="-m-1 -mt-2 bg-white-a15 text-color"
                                 style="transform: scale(0.7);"></Button>
                         </div>
                         <objListItem v-for="i in 5" :key="i" icon="pi-server" name="Studienplan"
@@ -34,7 +34,7 @@
                     <div class="surface-card p-2 border-round-md relativ">
                         <div class="w-full mt-2 mb-3 flex justify-content-between align-items-center">
                             <p class="m-0 ml-1 font-mono" style="font-size: 1rem;">Redirects</p>
-                            <Button icon="pi pi-plus" class="-m-1 -mt-2 surface-100 text-color"
+                            <Button icon="pi pi-plus" class="-m-1 -mt-2 bg-white-a15 text-color"
                                 style="transform: scale(0.7);"></Button>
                         </div>
                         <objListItem v-for="i in 2" :key="i" icon="pi-arrow-right-arrow-left text-xs" name="Code-Server"
@@ -49,7 +49,7 @@
                         <countItem str="Stopped" :num="8" color="var(--red-400)"></countItem>
                         <countItem str="Total" :num="10" color="var(--surface-400)"></countItem>
                     </div> -->
-                    <instanceCreationView></instanceCreationView>
+                    <instanceView></instanceView>
                 </div>
             </div>
             <div class="w-full h-3rem flex justify-content-center align-items-center gap-1">
@@ -105,4 +105,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.bg-white-a15 {
+    background-color: rgba(255, 255, 255, 0.15);
+}
 </style>
