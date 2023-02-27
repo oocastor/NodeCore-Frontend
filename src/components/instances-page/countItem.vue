@@ -1,7 +1,7 @@
 <template>
-    <div class="flex-1 bg-count-item h-7rem border-round-md flex flex-column align-items-center justify-content-center select-none">
+    <div class="flex-1 surface-section h-7rem border-round-md flex flex-column align-items-center justify-content-center select-none">
         <p class="text-5xl m-0 font-bold" :style="{color}">{{ num }}</p>
-        <p class="text-md m-0 mt-2 text-200">{{ str }}</p>
+        <p class="text-md m-0 mt-2 text-white">{{ str }}</p>
     </div>
 </template>
 
@@ -16,7 +16,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.bg-count-item {
-    background-color: rgba(255, 255, 255, 0.05);
-}
 </style>

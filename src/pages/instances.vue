@@ -49,6 +49,8 @@
                         <countItem str="Stopped" :num="8" color="var(--red-400)"></countItem>
                         <countItem str="Total" :num="10" color="var(--surface-400)"></countItem>
                     </div> -->
+                    <!-- <redirectUpdateView :isCreation="true"></redirectUpdateView> -->
+                    <!-- <instanceUpdateView :isCreation="false"></instanceUpdateView> -->
                     <instanceView></instanceView>
                 </div>
             </div>
@@ -65,7 +67,8 @@ import serverInfo from "@/components/instances-page/serverInfo.vue";
 import objListItem from "@/components/instances-page/objListItem.vue";
 import countItem from "@/components/instances-page/countItem.vue";
 import instanceView from "@/components/instances-page/instanceView.vue";
-import instanceCreationView from "@/components/instances-page/instanceSettingsView.vue";
+import instanceUpdateView from "@/components/instances-page/instanceUpdateView.vue";
+import redirectUpdateView from "@/components/instances-page/redirectUpdateView.vue";
 
 export default {
     name: "instances",
@@ -75,7 +78,8 @@ export default {
         objListItem,
         countItem,
         instanceView,
-        instanceCreationView
+        redirectUpdateView,
+        instanceUpdateView
     },
 
     data() {
