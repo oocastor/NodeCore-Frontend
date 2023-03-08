@@ -1,19 +1,10 @@
 <template>
-  <Instances />
+  <router-view></router-view>
 </template>
 
 <script>
-import Instances from "@/pages/instances.vue";
-//import Login from "@/pages/login.vue";
 
 export default {
-  name: 'App',
-  components: {
-    //Login,
-    Instances
-  }
+  name: 'App'
 }
 </script>
-
-<style lang="scss">
-</style>
