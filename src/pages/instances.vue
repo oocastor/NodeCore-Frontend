@@ -15,9 +15,9 @@
                 <div class="w-full md:w-8 flex flex-column surface-card h-min border-round-md md:hidden gap-2 p-2">
                     <p class="my-2 ml-1 font-mono" style="font-size: 1rem;">Overview</p>
                     <div class="flex gap-2">
-                        <countItem str="Running" :num="2" color="var(--green-400)"></countItem>
-                        <countItem str="Stopped" :num="8" color="var(--red-400)"></countItem>
-                        <countItem str="Total" :num="10" color="var(--surface-400)"></countItem>
+                        <countItem str="Running" num="2" color="var(--green-400)"></countItem>
+                        <countItem str="Stopped" num="8" color="var(--red-400)"></countItem>
+                        <countItem str="Total" num="10" color="var(--surface-400)"></countItem>
                     </div>
                 </div>
                 <div class="w-full md:w-4 md:h-full flex flex-column gap-3">
@@ -49,9 +49,9 @@
                         <countItem str="Stopped" :num="8" color="var(--red-400)"></countItem>
                         <countItem str="Total" :num="10" color="var(--surface-400)"></countItem>
                     </div> -->
-                    <!-- <redirectUpdateView :isCreation="true"></redirectUpdateView> -->
+                    <redirectUpdateView :isCreation="true"></redirectUpdateView>
                     <!-- <instanceUpdateView :isCreation="false"></instanceUpdateView> -->
-                    <instanceView></instanceView>
+                    <!-- <instanceView></instanceView> -->
                 </div>
             </div>
             <div class="w-full h-3rem flex justify-content-center align-items-center gap-1">
@@ -63,6 +63,10 @@
 
 <script>
 /* eslint-disable */
+import Menu from "primevue/menu";
+import Avatar from "primevue/avatar";
+import Button from "primevue/button";
+
 import serverInfo from "@/components/instances-page/serverInfo.vue";
 import objListItem from "@/components/instances-page/objListItem.vue";
 import countItem from "@/components/instances-page/countItem.vue";
@@ -70,10 +74,15 @@ import instanceView from "@/components/instances-page/instanceView.vue";
 import instanceUpdateView from "@/components/instances-page/instanceUpdateView.vue";
 import redirectUpdateView from "@/components/instances-page/redirectUpdateView.vue";
 
+import {logout} from "@/bin/auth";
+
 export default {
     name: "instances",
 
     components: {
+        Button,
+        Menu,
+        Avatar,
         serverInfo,
         objListItem,
         countItem,
@@ -90,14 +99,15 @@ export default {
                 command: () => console.log("1")
             },
             {
-                icon: 'pi pi-times',
-                label: "Close",
-                command: () => console.log("2")
+                icon: 'pi pi-sign-out',
+                label: "Logout",
+                command: () => logout()
             },
         ];
 
         return {
-            items
+            items,
+            logout
         }
     },
     methods: {

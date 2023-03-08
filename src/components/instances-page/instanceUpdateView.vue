@@ -85,6 +85,8 @@ import Button from 'primevue/button';
 import InputSwitch from 'primevue/inputswitch';
 import Dropdown from 'primevue/dropdown';
 import ConfirmPopup from 'primevue/confirmpopup';
+import Textarea from "primevue/textarea";
+import Tag from "primevue/tag";
 import { ref } from "vue";
 
 export default {
@@ -95,6 +97,8 @@ export default {
         InputSwitch,
         Dropdown,
         ConfirmPopup,
+        Textarea,
+        Tag
     },
     props: {
         isCreation: Boolean

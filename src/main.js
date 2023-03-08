@@ -14,9 +14,6 @@ import {socket} from "@/bin/socket.js";
 import {checkForAuthToken} from "@/bin/auth.js";
 import {Event} from "@/bin/event";
 
-//TODO: import components in each vue separately
-import { loadComponents } from './bin/component.js';
-
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 import '/node_modules/primeflex/primeflex.css';
@@ -40,7 +37,6 @@ app.config.globalProperties.$STORAGE = {authed: false, socket};
 app.config.globalProperties.$EVENT = new Event();
 
 checkForAuthToken();
-loadComponents(app);
 
 app.mount('#app');
 

@@ -19,8 +19,8 @@
         </span>
         <p class="m-0 mt-2 text-sm font-mono">Stats</p>
         <div class="flex gap-2">
-            <countItem str="RAM" :num="128" color="var(--white)"></countItem>
-            <countItem str="CPU" :num="1" color="var(--white)"></countItem>
+            <countItem str="RAM" num="128" color="var(--white)"></countItem>
+            <countItem str="CPU" num="1" color="var(--white)"></countItem>
         </div>
         <p class="m-0 mt-2 text-sm font-mono">Logs</p>
         <Textarea class="w-full h-10rem bg-white-a05 border-none" autoResize="false" readonly></Textarea>
@@ -28,11 +28,16 @@
 </template>
 
 <script>
+import Button from "primevue/button";
+import Textarea from "primevue/textarea";
+
 import countItem from "@/components/instances-page/countItem.vue";
 
 export default {
     components: {
-        countItem
+        countItem,
+        Button,
+        Textarea
     }
 }
 </script>

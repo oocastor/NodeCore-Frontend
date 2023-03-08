@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import ProgressBar from 'primevue/progressbar';
+
 export default {
     name: "serverInfo",
 
@@ -21,6 +23,10 @@ export default {
         max: String,
         op: String,
         str: String
+    },
+
+    components: {
+        ProgressBar
     }
 }
 </script>

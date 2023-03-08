@@ -3,6 +3,7 @@ import VueCookies from 'vue-cookies';
 import router from "@/router/index";
 
 function loginWithPw(user) {
+    if(user.name == "" || user.pw == "") return;
     const storage = app.config.globalProperties.$STORAGE;
 
     storage.socket.emit("auth:pw", user, (token) => {
@@ -26,7 +27,16 @@ function checkForAuthToken() {
     });
 }
 
+function logout () {
+    const storage = app.config.globalProperties.$STORAGE;
+    storage.token = "";
+    storage.authed = false;
+    VueCookies.remove("token");
+    router.push("/login");
+}
+
 export {
     checkForAuthToken,
-    loginWithPw
+    loginWithPw,
+    logout
 }

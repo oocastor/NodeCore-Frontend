@@ -9,10 +9,17 @@
 </template>
 
 <script>
+import Button from 'primevue/button';
+import Avatar from 'primevue/avatar';
+
 export default {
     props: {
         name: String,
         active: Boolean,
+    },
+    components: {
+        Button,
+        Avatar
     }
 }
 </script>
