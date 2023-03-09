@@ -7,8 +7,8 @@
         <Menu ref="menu" :model="items" :popup="true"></Menu>
         <div class="flex-auto flex w-full flex-column mx-auto" style="max-width: 900px;">
             <div class="relativ justify-content-between my-3 mx-4 gap-3 flex fadein animation-duration-200">
-                <serverInfo current="500" max="1000" str="RAM" op="MB"></serverInfo>
-                <serverInfo current="18" max="100" str="CPU" op="%"></serverInfo>
+                <serverInfo :current="this.sys.mem.used" :max="this.sys.mem.total" str="RAM" op="GB"></serverInfo>
+                <serverInfo :current="this.sys.cpu" max="100" str="CPU" op="%"></serverInfo>
             </div>
             <div
                 class="flex-auto relativ md:justify-content-between mb-3 mx-4 gap-3 flex flex-column md:flex-row fadein animation-duration-200">
@@ -74,7 +74,7 @@ import instanceView from "@/components/instances-page/instanceView.vue";
 import instanceUpdateView from "@/components/instances-page/instanceUpdateView.vue";
 import redirectUpdateView from "@/components/instances-page/redirectUpdateView.vue";
 
-import {logout} from "@/bin/auth";
+import { logout } from "@/bin/auth";
 
 export default {
     name: "instances",
@@ -108,7 +108,14 @@ export default {
         return {
             items,
             logout,
-            int: null
+            int: null,
+            sys: {
+                cpu: "0.00",
+                mem: {
+                    total: "0.00",
+                    used: "0.00"
+                }
+            }
         }
     },
     methods: {
@@ -117,12 +124,7 @@ export default {
         }
     },
     created() {
-        this.int = setInterval(() => {
-            this.$STORAGE.socket.emit("get:sysInfo", (data) => {
-                let {cpu, ram} = data;
-                console.log(data);
-            });
-        }, 2000)
+        this.int = setInterval(() => this.$STORAGE.socket.emit("get:sysInfo", (data) => this.sys = data), this.$STORAGE.updateInterval)
     },
     unmounted() {
         clearInterval(this.int);
