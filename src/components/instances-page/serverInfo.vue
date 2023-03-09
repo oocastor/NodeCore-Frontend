@@ -27,6 +27,6 @@ export default {
 
     components: {
         ProgressBar
-    }
+    },
 }
 </script>

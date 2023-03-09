@@ -107,13 +107,25 @@ export default {
 
         return {
             items,
-            logout
+            logout,
+            int: null
         }
     },
     methods: {
         toggleAvatarMenu(e) {
             this.$refs.menu.toggle(e);
         }
+    },
+    created() {
+        this.int = setInterval(() => {
+            this.$STORAGE.socket.emit("get:sysInfo", (data) => {
+                let {cpu, ram} = data;
+                console.log(data);
+            });
+        }, 2000)
+    },
+    unmounted() {
+        clearInterval(this.int);
     }
 }
 </script>
