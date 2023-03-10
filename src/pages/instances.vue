@@ -121,10 +121,14 @@ export default {
     methods: {
         toggleAvatarMenu(e) {
             this.$refs.menu.toggle(e);
+        },
+        fetchSysInfo() {
+            this.$STORAGE.socket.emit("get:sysInfo", (data) => this.sys = data);
         }
     },
     created() {
-        this.int = setInterval(() => this.$STORAGE.socket.emit("get:sysInfo", (data) => this.sys = data), this.$STORAGE.updateInterval)
+        this.fetchSysInfo();
+        this.int = setInterval(() => this.fetchSysInfo(), this.$STORAGE.updateInterval)
     },
     unmounted() {
         clearInterval(this.int);
