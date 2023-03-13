@@ -2,7 +2,9 @@ import SocketIO from 'socket.io-client';
 import router from "@/router/index";
 import {app} from "@/main";
 
-const socket = SocketIO('http://localhost:3001');
+const socket = SocketIO('http://localhost:3001', {
+    withCredentials: true
+});
 
 socket.on("goto:login", (data) => {
     let event = app.config.globalProperties.$EVENT;

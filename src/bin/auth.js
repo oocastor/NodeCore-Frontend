@@ -20,10 +20,11 @@ function checkForAuthToken() {
     let token = VueCookies.get("token");
     if (!token) return;
 
-    storage.socket.emit("auth:token", token, (newToken) => {
+    storage.socket.emit("auth:token", {token}, (token) => {
+        storage.token = token;
         storage.authed = true;
         router.push("/");
-        VueCookies.set("token", newToken);
+        VueCookies.set("token", token);
     });
 }
 
