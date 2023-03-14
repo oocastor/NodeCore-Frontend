@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { createWebHashHistory, createRouter } from "vue-router";
+import { createWebHistory, createRouter } from "vue-router";
 import * as Vue from "vue";
 import {app} from "@/main.js";
 
@@ -29,7 +29,7 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes,
 });
 
