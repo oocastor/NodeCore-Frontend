@@ -105,28 +105,28 @@ export default {
                 } else {
                     this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
                     this.$EVENT.emit("changeView", 0);
-                    this.reset();
                 }
             });
         },
         getAvailableDomains() {
             this.$STORAGE.socket.emit("domain:list", (data) => {
                 this.available = data.payload;
-                if(!this.payload) this.redirect.network.domain = this.available[0];
+                if (!this.payload) this.redirect.network.domain = this.available[0];
             });
         },
         getUnusedPort() {
             this.$STORAGE.socket.emit("port:get", (data) => this.redirect.network.port = data.payload);
         },
         cancelCreationProcess(event) {
-            this.$confirm.require({
-                target: event.currentTarget,
-                message: 'Are you sure?',
-                icon: 'pi pi-exclamation-triangle',
-                accept: () => {
-                    this.$EVENT.emit("changeView", 0);
-                }
-            });
+            // this.$confirm.require({
+            //     target: event.currentTarget,
+            //     message: 'Are you sure?',
+            //     icon: 'pi pi-exclamation-triangle',
+            //     accept: () => {
+            //         this.$EVENT.emit("changeView", 0);
+            //     }
+            // });
+            this.$EVENT.emit("changeView", 0);
         },
         deleteInstance(event) {
             this.$confirm.require({
@@ -134,7 +134,15 @@ export default {
                 message: 'Are you sure you want to proceed?',
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => {
-                    //
+                    this.$STORAGE.socket.emit("redirect:delete", this.redirect, (data) => {
+                        let { error, msg } = data;
+                        if (error) {
+                            this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });
+                        } else {
+                            this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
+                            this.$EVENT.emit("changeView", 0);
+                        }
+                    });
                 }
             });
         },
@@ -142,13 +150,14 @@ export default {
             this.redirect = JSON.parse(JSON.stringify(this.blankRedirect));
         },
         setPayload(re) {
-            if(re) {
+            if (re) {
                 this.redirect = re;
             } else {
                 this.reset();
                 this.getUnusedPort();
                 this.redirect.network.domain = this.available[0];
             }
+            this.update = re != undefined;
         }
     },
     created() {
