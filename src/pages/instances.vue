@@ -13,7 +13,7 @@
             <div
                 class="flex-auto relativ md:justify-content-between mb-3 mx-4 gap-3 flex flex-column md:flex-row fadein animation-duration-200">
                 <div class="w-full md:w-8 flex flex-column surface-card h-min border-round-md md:hidden gap-2 p-2">
-                    <overview></overview>
+                    <overview :redirects="redirects"></overview>
                 </div>
                 <div class="w-full md:w-4 md:h-full flex flex-column gap-3">
                     <div class="surface-card p-2 border-round-md relativ">
@@ -30,18 +30,18 @@
                         <div class="w-full mt-2 mb-3 flex justify-content-between align-items-center">
                             <p class="m-0 ml-1 font-mono" style="font-size: 1rem;">Redirects</p>
                             <Button icon="pi pi-plus" class="-m-1 -mt-2 bg-white-a15 text-color"
-                                style="transform: scale(0.7);" @click="createRedirect();"></Button>
+                                style="transform: scale(0.7);" @click="openRedirectView();"></Button>
                         </div>
-                        <objListItem v-for="(re, i) in redirects" :key="i" icon="pi-arrow-right-arrow-left text-xs" :name="re.name"
-                            :active="re.active">
+                        <objListItem v-for="(re, i) in redirects" :key="i" icon="pi-arrow-right-arrow-left text-xs"
+                            :name="re.name" :active="re.active" @click="openRedirectView(re);">
                         </objListItem>
                         <p class="text-xs text-300 text-center" v-if="!redirects.length">no redirects found</p>
                     </div>
                 </div>
                 <div class="w-full md:w-8 hidden flex-column surface-card h-min border-round-md md:flex gap-2 p-2">
-                    <overview v-if="view == 0"></overview>
+                    <overview v-if="view == 0" :redirects="redirects"></overview>
                     <instanceView v-if="view == 1"></instanceView>
-                    <redirectUpdateView :isCreation="true" v-if="view == 2"></redirectUpdateView>
+                    <redirectUpdateView v-if="view == 2" ref="redirectUpdateView"></redirectUpdateView>
                     <instanceUpdateView :isCreation="false" v-if="view == 3"></instanceUpdateView>
                 </div>
             </div>
@@ -67,6 +67,8 @@ import instanceView from "@/components/instances-page/instanceView.vue";
 import instanceUpdateView from "@/components/instances-page/instanceUpdateView.vue";
 import redirectUpdateView from "@/components/instances-page/redirectUpdateView.vue";
 import overview from "@/components/instances-page/overview.vue";
+
+import * as Vue from "vue";
 
 import { logout } from "@/bin/auth";
 
@@ -129,11 +131,14 @@ export default {
         changeView(i) {
             this.view = i;
         },
-        createRedirect() {
-            this.view = 2;
+        openRedirectView(re) {
+            this.changeView(2);
+            Vue.nextTick(() => {
+                this.$refs.redirectUpdateView?.setPayload(re);
+            });
         },
         showToast(data) {
-            let {severity, title, msg} = data;
+            let { severity, title, msg } = data;
             this.$toast.add({ severity, summary: title, detail: msg, life: 3000 });
         }
     },

@@ -1,14 +1,14 @@
 <template>
     <div class="w-full flex flex-column p-2 gap-3">
         <div class="flex justify-content-between">
-            <p class="text-3xl m-0 font-bold">{{ isCreation ? "New Redirect" : "Update Redirect" }}</p>
+            <p class="text-3xl m-0 font-bold">{{ !update ? "New Redirect" : "Update Redirect" }}</p>
             <div class="flex gap-3">
                 <i class="pi pi-times text-xl text-gray-400 cursor-pointer" @click="cancelCreationProcess($event)"></i>
             </div>
         </div>
         <Fieldset legend="Info">
             <p class="m-0 mb-2 text-sm">Name</p>
-            <InputText v-model="redirect.name" type="text" class="w-full" style="height: 40px;">
+            <InputText v-model="redirect.name" type="text" class="w-full" style="height: 40px;" placeholder="Potato">
             </InputText>
         </Fieldset>
         <Fieldset legend="Network">
@@ -16,7 +16,8 @@
                 <div>
                     <p class="m-0 mb-2 text-sm">Subdomain</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
-                        <InputText v-model="redirect.network.sub" type="text" class="w-4" style="height: inherit;">
+                        <InputText v-model="redirect.network.sub" type="text" class="w-4" style="height: inherit;"
+                            placeholder="pot">
                         </InputText>
                         <p>.</p>
                         <Dropdown v-model="redirect.network.domain" :options="available" class="w-8"
@@ -35,7 +36,7 @@
                 </div>
             </div>
         </Fieldset>
-        <Fieldset :toggleable="true" :collapsed="true" v-if="!isCreation">
+        <Fieldset :toggleable="true" :collapsed="true" v-if="update">
             <template #legend>
                 <p class="m-0 text-red-500">Critical Area</p>
             </template>
@@ -73,7 +74,6 @@ export default {
         ConfirmPopup,
     },
     props: {
-        isCreation: Boolean
     },
     data() {
         let available = []
@@ -81,7 +81,7 @@ export default {
             name: "",
             network: {
                 sub: "",
-                domain: available[0],
+                domain: null,
                 port: ""
 
             }
@@ -92,7 +92,8 @@ export default {
         return {
             redirect,
             blankRedirect,
-            available
+            available,
+            update: false
         }
     },
     methods: {
@@ -100,16 +101,19 @@ export default {
             this.$STORAGE.socket.emit("redirect:create", this.redirect, (data) => {
                 let { error, msg } = data;
                 if (error) {
-                    this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg});
+                    this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });
                 } else {
-                    this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg});
+                    this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
                     this.$EVENT.emit("changeView", 0);
                     this.reset();
                 }
             });
         },
         getAvailableDomains() {
-            this.$STORAGE.socket.emit("domain:list", (data) => this.available = data.payload);
+            this.$STORAGE.socket.emit("domain:list", (data) => {
+                this.available = data.payload;
+                if(!this.payload) this.redirect.network.domain = this.available[0];
+            });
         },
         getUnusedPort() {
             this.$STORAGE.socket.emit("port:get", (data) => this.redirect.network.port = data.payload);
@@ -136,11 +140,19 @@ export default {
         },
         reset() {
             this.redirect = JSON.parse(JSON.stringify(this.blankRedirect));
+        },
+        setPayload(re) {
+            if(re) {
+                this.redirect = re;
+            } else {
+                this.reset();
+                this.getUnusedPort();
+                this.redirect.network.domain = this.available[0];
+            }
         }
     },
     created() {
         this.getAvailableDomains();
-        this.getUnusedPort();
     },
 }
 </script>
