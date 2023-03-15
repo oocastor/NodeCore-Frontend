@@ -16,23 +16,21 @@
                 <div>
                     <p class="m-0 mb-2 text-sm">Subdomain</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
-                        <InputText v-model="redirect.network.sub" type="text" class="w-4" style="height: inherit;"
-                        >
+                        <InputText v-model="redirect.network.sub" type="text" class="w-4" style="height: inherit;">
                         </InputText>
                         <p>.</p>
                         <Dropdown v-model="redirect.network.domain" :options="available" class="w-8"
-                            style="height: inherit;" optionLabel="name">
+                            style="height: inherit;" :loading="!available.length">
                         </Dropdown>
                     </div>
                 </div>
                 <div>
                     <p class="m-0 mb-2 text-sm">Port</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
-                        <InputText v-model="redirect.network.port" type="text" class="flex-auto"
-                            style="height: inherit;">
+                        <InputText v-model="redirect.network.port" type="text" class="flex-auto" style="height: inherit;">
                         </InputText>
                         <Button label="Unused" class="p-button-sm bg-white-a15 hover:" style="height: inherit;"
-                        @click="getUnusedPort();"></Button>
+                            @click="getUnusedPort();"></Button>
                     </div>
                 </div>
             </div>
@@ -42,13 +40,13 @@
                 <p class="m-0 text-red-500">Critical Area</p>
             </template>
             <div class="flex align-items-center">
-                <p class="m-0 text-sm flex-auto">Delete current instance</p>
+                <p class="m-0 text-sm flex-auto">Delete current redirect</p>
                 <Button label="Delete" @click="deleteInstance($event)" icon="pi pi-trash"
                     class="bg-red-500 text-white border-none"></Button>
             </div>
         </Fieldset>
         <div class="flex justify-content-end gap-2">
-            <Button label="Save"></Button>
+            <Button label="Save" @click="createRedirect();"></Button>
             <Button label="Cancel" class="surface-100 text-white hover:surface-50"
                 @click="cancelCreationProcess($event)"></Button>
             <ConfirmPopup></ConfirmPopup>
@@ -64,7 +62,6 @@ import Button from 'primevue/button';
 import InputSwitch from 'primevue/inputswitch';
 import Dropdown from 'primevue/dropdown';
 import ConfirmPopup from 'primevue/confirmpopup';
-import { ref } from "vue";
 
 export default {
     components: {
@@ -79,29 +76,43 @@ export default {
         isCreation: Boolean
     },
     data() {
-        let available = [
-            { name: "oocastor.dev" },
-            { name: "schneider-jonas.dev" },
-            { name: "songdle.app" },
-        ]
-        let redirect = ref({
-            name: "Test",
+        let available = []
+        let redirect = {
+            name: "",
             network: {
-                sub: "test",
+                sub: "",
                 domain: available[0],
-                port: "1000"
+                port: ""
 
             }
-        })
+        }
+        //blank redirect obj
+        let blankRedirect = JSON.parse(JSON.stringify(redirect));
 
         return {
             redirect,
+            blankRedirect,
             available
         }
     },
     methods: {
+        createRedirect() {
+            this.$STORAGE.socket.emit("redirect:create", this.redirect, (data) => {
+                let { error, msg } = data;
+                if (error) {
+                    this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg});
+                } else {
+                    this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg});
+                    this.$EVENT.emit("changeView", 0);
+                    this.reset();
+                }
+            });
+        },
+        getAvailableDomains() {
+            this.$STORAGE.socket.emit("domain:list", (data) => this.available = data.payload);
+        },
         getUnusedPort() {
-            this.redirect.network.port = Math.round(Math.random() * 9000) + 1000;
+            this.$STORAGE.socket.emit("port:get", (data) => this.redirect.network.port = data.payload);
         },
         cancelCreationProcess(event) {
             this.$confirm.require({
@@ -109,7 +120,7 @@ export default {
                 message: 'Are you sure?',
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => {
-                    console.log("Creation canceled!")
+                    this.$EVENT.emit("changeView", 0);
                 }
             });
         },
@@ -119,11 +130,18 @@ export default {
                 message: 'Are you sure you want to proceed?',
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => {
-                    console.log("Delete instance!")
+                    //
                 }
             });
+        },
+        reset() {
+            this.redirect = JSON.parse(JSON.stringify(this.blankRedirect));
         }
-    }
+    },
+    created() {
+        this.getAvailableDomains();
+        this.getUnusedPort();
+    },
 }
 </script>
 

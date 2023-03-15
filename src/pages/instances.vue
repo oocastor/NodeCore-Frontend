@@ -32,9 +32,10 @@
                             <Button icon="pi pi-plus" class="-m-1 -mt-2 bg-white-a15 text-color"
                                 style="transform: scale(0.7);" @click="createRedirect();"></Button>
                         </div>
-                        <objListItem v-for="i in 2" :key="i" icon="pi-arrow-right-arrow-left text-xs" name="Code-Server"
-                            :active="Math.random() > 0.5">
+                        <objListItem v-for="(re, i) in redirects" :key="i" icon="pi-arrow-right-arrow-left text-xs" :name="re.name"
+                            :active="re.active">
                         </objListItem>
+                        <p class="text-xs text-300 text-center" v-if="!redirects.length">no redirects found</p>
                     </div>
                 </div>
                 <div class="w-full md:w-8 hidden flex-column surface-card h-min border-round-md md:flex gap-2 p-2">
@@ -49,6 +50,7 @@
             </div>
         </div>
     </div>
+    <Toast />
 </template>
 
 <script>
@@ -56,6 +58,7 @@
 import Menu from "primevue/menu";
 import Avatar from "primevue/avatar";
 import Button from "primevue/button";
+import Toast from 'primevue/toast';
 
 import serverInfo from "@/components/instances-page/serverInfo.vue";
 import objListItem from "@/components/instances-page/objListItem.vue";
@@ -74,6 +77,7 @@ export default {
         Button,
         Menu,
         Avatar,
+        Toast,
         serverInfo,
         objListItem,
         countItem,
@@ -108,6 +112,7 @@ export default {
                     used: "0.00"
                 }
             },
+            redirects: [],
             view: 0
         }
     },
@@ -116,21 +121,36 @@ export default {
             this.$refs.menu.toggle(e);
         },
         fetchSysInfo() {
-            this.$STORAGE.socket.emit("get:sysInfo", (data) => this.sys = data);
+            this.$STORAGE.socket.emit("sysInfo:get", (data) => this.sys = data);
+        },
+        fetchRedirectEnitites() {
+            this.$STORAGE.socket.emit("redirect:list", (data) => this.redirects = data.payload);
         },
         changeView(i) {
             this.view = i;
         },
         createRedirect() {
             this.view = 2;
+        },
+        showToast(data) {
+            let {severity, title, msg} = data;
+            this.$toast.add({ severity, summary: title, detail: msg, life: 3000 });
         }
     },
     created() {
         this.fetchSysInfo();
-        this.int = setInterval(() => this.fetchSysInfo(), this.$STORAGE.updateInterval);
+        this.fetchRedirectEnitites();
+        this.int = setInterval(() => {
+            this.fetchSysInfo();
+            this.fetchRedirectEnitites();
+        }, this.$STORAGE.updateInterval);
+        this.$EVENT.on("changeView", this.changeView);
+        this.$EVENT.on("showToast", this.showToast);
     },
-    unmounted() {
+    destroyed() {
         clearInterval(this.int);
+        this.$EVENT.off("changeView", this.changeView);
+        this.$EVENT.off("showToast", this.showToast);
     }
 }
 </script>
