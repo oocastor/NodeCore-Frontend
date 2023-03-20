@@ -7,7 +7,11 @@
             </div>
         </div>
         <Fieldset legend="Info">
-            <p class="m-0 mb-2 text-sm">Name</p>
+            <div class="flex justify-content-between align-items-center -mt-3">
+                <p class="ma-0 text-sm">Enabled</p>
+                <InputSwitch v-model="redirect.active"></InputSwitch>
+            </div>
+            <p class="my-2 text-sm">Name</p>
             <InputText v-model="redirect.name" type="text" class="w-full" style="height: 40px;" placeholder="Potato">
             </InputText>
         </Fieldset>
@@ -47,7 +51,7 @@
             </div>
         </Fieldset>
         <div class="flex justify-content-end gap-2">
-            <Button label="Save" @click="createRedirect();"></Button>
+            <Button label="Save" @click="writeRedirect()"></Button>
             <Button label="Cancel" class="surface-100 text-white hover:surface-50"
                 @click="cancelCreationProcess($event)"></Button>
             <ConfirmPopup></ConfirmPopup>
@@ -84,7 +88,8 @@ export default {
                 domain: null,
                 port: ""
 
-            }
+            },
+            active: true,
         }
         //blank redirect obj
         let blankRedirect = JSON.parse(JSON.stringify(redirect));
@@ -97,8 +102,8 @@ export default {
         }
     },
     methods: {
-        createRedirect() {
-            this.$STORAGE.socket.emit("redirect:create", this.redirect, (data) => {
+        writeRedirect() {
+            this.$STORAGE.socket.emit("redirect:write", this.redirect, (data) => {
                 let { error, msg } = data;
                 if (error) {
                     this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });
@@ -111,7 +116,7 @@ export default {
         getAvailableDomains() {
             this.$STORAGE.socket.emit("domain:list", (data) => {
                 this.available = data.payload;
-                if (!this.payload) this.redirect.network.domain = this.available[0];
+                if (!this.update) this.redirect.network.domain = this.available[0];
             });
         },
         getUnusedPort() {
@@ -151,11 +156,12 @@ export default {
         },
         setPayload(re) {
             if (re) {
-                this.redirect = re;
+                this.redirect = JSON.parse(JSON.stringify(re)); //deep copy
             } else {
                 this.reset();
                 this.getUnusedPort();
                 this.redirect.network.domain = this.available[0];
+                delete this.redirect._id;
             }
             this.update = re != undefined;
         }

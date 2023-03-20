@@ -129,6 +129,10 @@ export default {
             this.$STORAGE.socket.emit("redirect:list", (data) => this.redirects = data.payload);
         },
         changeView(i) {
+            if (i == 0) {
+                this.fetchSysInfo();
+                this.fetchRedirectEnitites();
+            }
             this.view = i;
         },
         openRedirectView(re) {
