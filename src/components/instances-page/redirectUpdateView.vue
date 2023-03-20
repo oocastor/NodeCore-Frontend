@@ -32,8 +32,8 @@
                 <div>
                     <p class="m-0 mb-2 text-sm">Port</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
-                        <InputText v-model="redirect.network.port" type="text" class="flex-auto" style="height: inherit;">
-                        </InputText>
+                        <InputNumber v-model="redirect.network.port" :useGrouping="false" type="text" class="flex-auto" style="height: inherit;">
+                        </InputNumber>
                         <Button label="Unused" class="p-button-sm bg-white-a15 hover:" style="height: inherit;"
                             @click="getUnusedPort();"></Button>
                     </div>
@@ -63,6 +63,7 @@
 /* eslint-disable */
 import Fieldset from "primevue/fieldset";
 import InputText from 'primevue/inputtext';
+import InputNumber from "primevue/inputnumber";
 import Button from 'primevue/button';
 import InputSwitch from 'primevue/inputswitch';
 import Dropdown from 'primevue/dropdown';
@@ -74,6 +75,7 @@ export default {
         InputText,
         Button,
         InputSwitch,
+        InputNumber,
         Dropdown,
         ConfirmPopup,
     },
@@ -86,7 +88,7 @@ export default {
             network: {
                 sub: "",
                 domain: null,
-                port: ""
+                port: 0
 
             },
             active: true,

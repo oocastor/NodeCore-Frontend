@@ -5,7 +5,7 @@
             <Avatar class="surface-section cursor-pointer" icon="pi pi-user" @click="toggleAvatarMenu"></Avatar>
         </div>
         <Menu ref="menu" :model="items" :popup="true"></Menu>
-        <div class="flex-auto flex w-full flex-column mx-auto" style="max-width: 900px;">
+        <div class="flex-auto flex w-full flex-column mx-auto" style="max-width: 1200px;">
             <div class="relativ justify-content-between my-3 mx-4 gap-3 flex fadein animation-duration-200">
                 <serverInfo :current="this.sys.mem.used" :max="this.sys.mem.total" str="RAM" op="GB"></serverInfo>
                 <serverInfo :current="this.sys.cpu" max="100" str="CPU" op="%"></serverInfo>
