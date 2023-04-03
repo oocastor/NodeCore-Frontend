@@ -23,7 +23,7 @@
                                 style="transform: scale(0.7);" @click="openInstanceUpdateView();"></Button>
                         </div>
                         <objListItem v-for="i in instances" :key="i" icon="pi-server" :name="i.name"
-                            :active="i.active" @click="openInstanceUpdateView(i)">
+                            :active="i.active" @click="openInstanceView(i)">
                         </objListItem>
                         <p class="text-xs text-300 text-center" v-if="!instances.length">no instances found</p>
                     </div>
@@ -41,7 +41,7 @@
                 </div>
                 <div class="w-full md:w-8 hidden flex-column surface-card h-min border-round-md md:flex gap-2 p-2">
                     <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
-                    <instanceView v-if="view == 1"></instanceView>
+                    <instanceView v-if="view == 1" :selectedInstance="selectedInstance" :openInstanceUpdateView="openInstanceUpdateView"></instanceView>
                     <redirectUpdateView v-if="view == 2" ref="redirectUpdateView"></redirectUpdateView>
                     <instanceUpdateView ref="instanceUpdateView" v-if="view == 3"></instanceUpdateView>
                 </div>
@@ -117,6 +117,7 @@ export default {
             },
             redirects: [],
             instances: [],
+            selectedInstance: null,
             view: 0
         }
     },
@@ -146,6 +147,10 @@ export default {
             Vue.nextTick(() => {
                 this.$refs.redirectUpdateView?.setPayload(re);
             });
+        },
+        openInstanceView(i) {
+            this.changeView(1);
+            this.selectedInstance = i;
         },
         openInstanceUpdateView(i) {
             this.changeView(3);
