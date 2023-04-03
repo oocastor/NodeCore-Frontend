@@ -5,8 +5,8 @@
             <div class="flex flex-column flex-auto">
                 <p class="m-0 font-mono text-xs mb-2">Instances</p>
                 <div class="flex gap-2">
-                    <countItem str="Running" :num="0" color="var(--green-400)"></countItem>
-                    <countItem str="Stopped" :num="0" color="var(--red-400)"></countItem>
+                    <countItem str="Running" :num="instances.filter(f => f.active).length" color="var(--green-400)"></countItem>
+                    <countItem str="Stopped" :num="instances.filter(f => !f.active).length" color="var(--red-400)"></countItem>
                 </div>
             </div>
             <div class="flex flex-column flex-auto">

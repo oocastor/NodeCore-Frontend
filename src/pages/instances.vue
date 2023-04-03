@@ -13,7 +13,7 @@
             <div
                 class="flex-auto relativ md:justify-content-between mb-3 mx-4 gap-3 flex flex-column md:flex-row fadein animation-duration-200">
                 <div class="w-full md:w-8 flex flex-column surface-card h-min border-round-md md:hidden gap-2 p-2">
-                    <overview :redirects="redirects"></overview>
+                    <overview :redirects="redirects" :instances="instances"></overview>
                 </div>
                 <div class="w-full md:w-4 md:h-full flex flex-column gap-3">
                     <div class="surface-card p-2 border-round-md relativ">
@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div class="w-full md:w-8 hidden flex-column surface-card h-min border-round-md md:flex gap-2 p-2">
-                    <overview v-if="view == 0" :redirects="redirects"></overview>
+                    <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
                     <instanceView v-if="view == 1"></instanceView>
                     <redirectUpdateView v-if="view == 2" ref="redirectUpdateView"></redirectUpdateView>
                     <instanceUpdateView ref="instanceUpdateView" v-if="view == 3"></instanceUpdateView>
@@ -137,6 +137,7 @@ export default {
             if (i == 0) {
                 this.fetchSysInfo();
                 this.fetchRedirectEnitites();
+                this.fetchInstanceEnitites();
             }
             this.view = i;
         },

@@ -7,7 +7,11 @@
             </div>
         </div>
         <Fieldset legend="Project">
-            <p class="m-0 mb-2 text-sm">Name</p>
+            <div class="flex justify-content-between align-items-center -mt-3">
+                <p class="ma-0 text-sm">Enabled</p>
+                <InputSwitch v-model="instance.active"></InputSwitch>
+            </div>
+            <p class="my-2 text-sm">Name</p>
             <InputText v-model="instance.name" type="text" class="w-full" style="height: 40px;" placeholder="Tomato">
             </InputText>
             <p class="mt-3 mb-2 text-sm">Import</p>
@@ -40,8 +44,8 @@
                 <div>
                     <p class="m-0 mb-2 text-sm">Port</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
-                        <InputNumber v-model="instance.network.redirect.port" :useGrouping="false" type="text" class="flex-auto"
-                            style="height: inherit;" :disabled="!instance.network.isAccessable">
+                        <InputNumber v-model="instance.network.redirect.port" :useGrouping="false" type="text"
+                            class="flex-auto" style="height: inherit;" :disabled="!instance.network.isAccessable">
                         </InputNumber>
                         <Button label="Unused" class="p-button-sm bg-white-a15 hover:" style="height: inherit;"
                             :disabled="!instance.network.isAccessable" @click="getUnusedPort();"></Button>
@@ -53,13 +57,13 @@
             <p class="m-0 mb-4 text-sm">Define required setup commands for your <Tag value="node.js"
                     class="text-white bg-gray-900"></Tag> instance.</p>
             <Textarea class="w-full h-10rem surface-50 border-none font-mono" autoResize="false" autocorrect="off"
-                spellcheck="false"></Textarea>
+                spellcheck="false" @input="instance.cmd = $event.target.value.split(/\n/);"></Textarea>
         </Fieldset>
         <Fieldset legend=".env" :toggleable="true" :collapsed="true">
             <p class="m-0 mb-4 text-sm">Set required environment variables for your <Tag value="node.js"
                     class="text-white bg-gray-900"></Tag> instance.</p>
             <Textarea class="w-full h-10rem surface-50 border-none font-mono" autoResize="false" autocorrect="off"
-                spellcheck="false"></Textarea>
+                spellcheck="false" @input="instance.env = $event.target.value.split(/\n/);"></Textarea>
         </Fieldset>
         <Fieldset :toggleable="true" :collapsed="true" v-if="!isCreation">
             <template #legend>
@@ -110,6 +114,7 @@ export default {
     data() {
         let available = []
         let instance = {
+            active: true,
             name: "",
             network: {
                 isAccessable: false,
@@ -117,10 +122,10 @@ export default {
                     sub: "",
                     domain: null,
                     port: 0
-                },
-                cmd: [],
-                env: []
-            }
+                }
+            },
+            cmd: [],
+            env: []
         };
         //blank instance obj
         let blankInstance = JSON.parse(JSON.stringify(instance));
