@@ -22,9 +22,10 @@
                             <Button icon="pi pi-plus" class="-m-1 -mt-2 bg-white-a15 text-color"
                                 style="transform: scale(0.7);" @click="openInstanceUpdateView();"></Button>
                         </div>
-                        <objListItem v-for="i in instances" :key="i" icon="pi-server" name="Studienplan"
-                            :active="i.active">
+                        <objListItem v-for="i in instances" :key="i" icon="pi-server" :name="i.name"
+                            :active="i.active" @click="openInstanceUpdateView(i)">
                         </objListItem>
+                        <p class="text-xs text-300 text-center" v-if="!instances.length">no instances found</p>
                     </div>
                     <div class="surface-card p-2 border-round-md relativ">
                         <div class="w-full mt-2 mb-3 flex justify-content-between align-items-center">

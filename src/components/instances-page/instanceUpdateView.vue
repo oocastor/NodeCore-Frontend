@@ -72,7 +72,7 @@
             </div>
         </Fieldset>
         <div class="flex justify-content-end gap-2">
-            <Button label="Save"></Button>
+            <Button label="Save" @click="writeInstance();"></Button>
             <Button label="Cancel" class="surface-100 text-white hover:surface-50"
                 @click="cancelCreationProcess($event)"></Button>
             <ConfirmPopup></ConfirmPopup>
