@@ -20,10 +20,10 @@
                         <div class="w-full mt-2 mb-3 flex justify-content-between align-items-center">
                             <p class="m-0 ml-1 font-mono" style="font-size: 1rem;">Instances</p>
                             <Button icon="pi pi-plus" class="-m-1 -mt-2 bg-white-a15 text-color"
-                                style="transform: scale(0.7);"></Button>
+                                style="transform: scale(0.7);" @click="openInstanceUpdateView();"></Button>
                         </div>
-                        <objListItem v-for="i in 5" :key="i" icon="pi-server" name="Studienplan"
-                            :active="Math.random() > 0.5">
+                        <objListItem v-for="i in instances" :key="i" icon="pi-server" name="Studienplan"
+                            :active="i.active">
                         </objListItem>
                     </div>
                     <div class="surface-card p-2 border-round-md relativ">
@@ -42,7 +42,7 @@
                     <overview v-if="view == 0" :redirects="redirects"></overview>
                     <instanceView v-if="view == 1"></instanceView>
                     <redirectUpdateView v-if="view == 2" ref="redirectUpdateView"></redirectUpdateView>
-                    <instanceUpdateView :isCreation="false" v-if="view == 3"></instanceUpdateView>
+                    <instanceUpdateView ref="instanceUpdateView" v-if="view == 3"></instanceUpdateView>
                 </div>
             </div>
             <div class="w-full h-3rem flex justify-content-center align-items-center gap-1">
@@ -115,6 +115,7 @@ export default {
                 }
             },
             redirects: [],
+            instances: [],
             view: 0
         }
     },
@@ -127,6 +128,9 @@ export default {
         },
         fetchRedirectEnitites() {
             this.$STORAGE.socket.emit("redirect:list", (data) => this.redirects = data.payload);
+        },
+        fetchInstanceEnitites() {
+            this.$STORAGE.socket.emit("instance:list", (data) => this.instances = data.payload);
         },
         changeView(i) {
             if (i == 0) {
@@ -141,6 +145,12 @@ export default {
                 this.$refs.redirectUpdateView?.setPayload(re);
             });
         },
+        openInstanceUpdateView(i) {
+            this.changeView(3);
+            Vue.nextTick(() => {
+                this.$refs.instanceUpdateView?.setPayload(i);
+            });
+        },
         showToast(data) {
             let { severity, title, msg } = data;
             this.$toast.add({ severity, summary: title, detail: msg, life: 3000 });
@@ -149,9 +159,11 @@ export default {
     created() {
         this.fetchSysInfo();
         this.fetchRedirectEnitites();
+        this.fetchInstanceEnitites();
         this.int = setInterval(() => {
             this.fetchSysInfo();
             this.fetchRedirectEnitites();
+            this.fetchInstanceEnitites();
         }, this.$STORAGE.updateInterval);
         this.$EVENT.on("changeView", this.changeView);
         this.$EVENT.on("showToast", this.showToast);

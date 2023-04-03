@@ -1,14 +1,14 @@
 <template>
     <div class="w-full flex flex-column p-2 gap-3">
         <div class="flex justify-content-between">
-            <p class="text-3xl m-0 font-bold">{{ isCreation ? "New Instance" : "Update Instance" }}</p>
+            <p class="text-3xl m-0 font-bold">{{ !update ? "New Instance" : "Update Instance" }}</p>
             <div class="flex gap-3">
                 <i class="pi pi-times text-xl text-gray-400 cursor-pointer" @click="cancelCreationProcess($event)"></i>
             </div>
         </div>
         <Fieldset legend="Project">
             <p class="m-0 mb-2 text-sm">Name</p>
-            <InputText v-model="instance.name" type="text" class="w-full" style="height: 40px;">
+            <InputText v-model="instance.name" type="text" class="w-full" style="height: 40px;" placeholder="Tomato">
             </InputText>
             <p class="mt-3 mb-2 text-sm">Import</p>
             <div class="flex gap-2">
@@ -28,20 +28,21 @@
                     <p class="m-0 mb-2 text-sm">Subdomain</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
                         <InputText v-model="instance.network.redirect.sub" type="text" class="w-4" style="height: inherit;"
-                            :disabled="!instance.network.isAccessable">
+                            :disabled="!instance.network.isAccessable" placeholder="tom">
                         </InputText>
                         <p>.</p>
                         <Dropdown v-model="instance.network.redirect.domain" :options="available" class="w-8"
-                            style="height: inherit;" :disabled="!instance.network.isAccessable" optionLabel="name">
+                            style="height: inherit;" :disabled="!instance.network.isAccessable"
+                            :loading="!available.length">
                         </Dropdown>
                     </div>
                 </div>
                 <div>
                     <p class="m-0 mb-2 text-sm">Port</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
-                        <InputText v-model="instance.network.redirect.port" type="text" class="flex-auto" style="height: inherit;"
-                            :disabled="!instance.network.isAccessable">
-                        </InputText>
+                        <InputNumber v-model="instance.network.redirect.port" :useGrouping="false" type="text" class="flex-auto"
+                            style="height: inherit;" :disabled="!instance.network.isAccessable">
+                        </InputNumber>
                         <Button label="Unused" class="p-button-sm bg-white-a15 hover:" style="height: inherit;"
                             :disabled="!instance.network.isAccessable" @click="getUnusedPort();"></Button>
                     </div>
@@ -51,12 +52,14 @@
         <Fieldset legend="Cmd" :toggleable="true" :collapsed="true">
             <p class="m-0 mb-4 text-sm">Define required setup commands for your <Tag value="node.js"
                     class="text-white bg-gray-900"></Tag> instance.</p>
-            <Textarea class="w-full h-10rem surface-50 border-none font-mono" autoResize="false" autocorrect="off" spellcheck="false"></Textarea>
+            <Textarea class="w-full h-10rem surface-50 border-none font-mono" autoResize="false" autocorrect="off"
+                spellcheck="false"></Textarea>
         </Fieldset>
         <Fieldset legend=".env" :toggleable="true" :collapsed="true">
             <p class="m-0 mb-4 text-sm">Set required environment variables for your <Tag value="node.js"
                     class="text-white bg-gray-900"></Tag> instance.</p>
-            <Textarea class="w-full h-10rem surface-50 border-none font-mono" autoResize="false" autocorrect="off" spellcheck="false"></Textarea>
+            <Textarea class="w-full h-10rem surface-50 border-none font-mono" autoResize="false" autocorrect="off"
+                spellcheck="false"></Textarea>
         </Fieldset>
         <Fieldset :toggleable="true" :collapsed="true" v-if="!isCreation">
             <template #legend>
@@ -81,18 +84,19 @@
 /* eslint-disable */
 import Fieldset from "primevue/fieldset";
 import InputText from 'primevue/inputtext';
+import InputNumber from "primevue/inputnumber";
 import Button from 'primevue/button';
 import InputSwitch from 'primevue/inputswitch';
 import Dropdown from 'primevue/dropdown';
 import ConfirmPopup from 'primevue/confirmpopup';
 import Textarea from "primevue/textarea";
 import Tag from "primevue/tag";
-import { ref } from "vue";
 
 export default {
     components: {
         Fieldset,
         InputText,
+        InputNumber,
         Button,
         InputSwitch,
         Dropdown,
@@ -104,43 +108,61 @@ export default {
         isCreation: Boolean
     },
     data() {
-        let available = [
-            { name: "oocastor.dev" },
-            { name: "schneider-jonas.dev" },
-            { name: "songdle.app" },
-        ]
-        let instance = ref({
-            name: "Test",
+        let available = []
+        let instance = {
+            name: "",
             network: {
                 isAccessable: false,
                 redirect: {
-                    sub: "test",
-                    domain: available[0],
-                    port: "1000"
+                    sub: "",
+                    domain: null,
+                    port: 0
                 },
-            cmd: [],
-            env: []
+                cmd: [],
+                env: []
             }
-        })
+        };
+        //blank instance obj
+        let blankInstance = JSON.parse(JSON.stringify(instance));
 
         return {
             instance,
-            available
+            blankInstance,
+            available,
+            update: false,
         }
     },
     methods: {
-        getUnusedPort() {
-            this.instance.network.redirect.port = Math.round(Math.random() * 9000) + 1000;
-        },
-        cancelCreationProcess(event) {
-            this.$confirm.require({
-                target: event.currentTarget,
-                message: 'Are you sure?',
-                icon: 'pi pi-exclamation-triangle',
-                accept: () => {
-                    console.log("Creation canceled!")
+        writeInstance() {
+            this.$STORAGE.socket.emit("instance:write", this.instance, (data) => {
+                let { error, msg } = data;
+                if (error) {
+                    this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });
+                } else {
+                    this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
+                    this.$EVENT.emit("changeView", 0);
                 }
             });
+        },
+        getAvailableDomains() {
+            this.$STORAGE.socket.emit("domain:list", (data) => {
+                this.available = data.payload;
+                if (!this.update) this.instance.network.redirect.domain = this.available[0];
+            });
+        },
+        getUnusedPort() {
+            this.$STORAGE.socket.emit("port:get", (data) => this.instance.network.redirect.port = data.payload);
+        },
+        cancelCreationProcess(event) {
+            // this.$confirm.require({
+            //     target: event.currentTarget,
+            //     message: 'Are you sure?',
+            //     icon: 'pi pi-exclamation-triangle',
+            //     accept: () => {
+            //         this.$EVENT.emit("changeView", 0);
+            //     }
+            // });
+            this.$EVENT.emit("changeView", 0);
         },
         deleteInstance(event) {
             this.$confirm.require({
@@ -148,16 +170,40 @@ export default {
                 message: 'Are you sure you want to proceed?',
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => {
-                    console.log("Delete instance!")
+                    this.$STORAGE.socket.emit("instance:delete", this.instance, (data) => {
+                        let { error, msg } = data;
+                        if (error) {
+                            this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });
+                        } else {
+                            this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
+                            this.$EVENT.emit("changeView", 0);
+                        }
+                    });
                 }
             });
+        },
+        reset() {
+            this.instance = JSON.parse(JSON.stringify(this.blankInstance));
+        },
+        setPayload(i) {
+            if (i) {
+                this.instance = JSON.parse(JSON.stringify(i)); //deep copy
+            } else {
+                this.reset();
+                this.getUnusedPort();
+                this.instance.network.redirect.domain = this.available[0];
+                delete this.instance._id;
+            }
+            this.update = i != undefined;
         }
+    },
+    created() {
+        this.getAvailableDomains();
     }
 }
 </script>
 
 <style lang="scss" scoped>
-
 .p-fieldset>.p-fieldset-content {
     padding: 0 !important;
 }
