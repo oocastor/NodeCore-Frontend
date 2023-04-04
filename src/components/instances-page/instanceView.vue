@@ -1,16 +1,17 @@
 <template>
-    <div class="w-full flex flex-column p-2 gap-3">
+    <div class="w-full flex flex-column p-2 gap-3" v-if="selectedInstance">
         <div class="flex justify-content-between">
             <div class="flex align-items-center gap-3">
                 <p class="text-3xl m-0 font-bold">{{ selectedInstance.name }}</p>
                 <Chip label="running" icon="pi pi-check" class="text-xs bg-green-600" v-if="selectedInstance.status == 1"></Chip>
                 <Chip label="stopped" icon="pi pi-times" class="text-xs bg-red-600" v-if="selectedInstance.status == 0"></Chip>
-                <Chip label="updating" icon="pi pi-stopwatch" class="text-xs bg-orange-600" v-if="selectedInstance.status == 2"></Chip>
+                <Chip label="restarting" icon="pi pi-stopwatch" class="text-xs bg-orange-600" v-if="selectedInstance.status == 2"></Chip>
+                <Chip label="updating" icon="pi pi-stopwatch" class="text-xs bg-blue-600" v-if="selectedInstance.status == 3"></Chip>
             </div>
             <div class="flex gap-3">
                 <i class="pi pi-cog text-xl text-gray-400 cursor-pointer"
                     @click="openInstanceUpdateView(selectedInstance);"></i>
-                <i v-if="false" class="pi pi-times text-xl text-gray-400 cursor-pointer"></i>
+                <i class="pi pi-times text-xl text-gray-400 cursor-pointer" @click="this.$EVENT.emit('changeView', 0);"></i>
             </div>
         </div>
         <div class="flex gap-2 align-item-center" :style="{ 'opacity': selectedInstance.network.isAccessable ? 1 : 0 }">
@@ -20,10 +21,10 @@
                     selectedInstance.network.redirect.sub }}.{{ selectedInstance.network.redirect.domain }}</a>
         </div>
         <span class="p-buttonset w-full flex">
-            <Button :loading="true" label="Restart" icon="pi pi-refresh"
-                class="p-button-sm flex-auto bg-white-a15 text-white"></Button>
-            <Button label="Stop" icon="pi pi-stop" class="p-button-sm flex-auto bg-white-a15 text-white"></Button>
-            <Button label="Update" icon="pi pi-download" class="p-button-sm flex-auto bg-white-a15 text-white"></Button>
+            <Button :loading="selectedInstance.status == 2" :label="selectedInstance.status == 0 ? 'Start' : 'Restart' " icon="pi pi-refresh"
+                class="p-button-sm flex-auto bg-white-a15 text-white" @click="startAction(this.selectedInstance.status == 1 ? 2 : 1);"></Button>
+            <Button label="Stop" icon="pi pi-stop" class="p-button-sm flex-auto bg-white-a15 text-white" @click="startAction(0);"></Button>
+            <Button label="Update" icon="pi pi-download" class="p-button-sm flex-auto bg-white-a15 text-white" @click="startAction(3);"></Button>
         </span>
         <p class="m-0 mt-2 text-sm font-mono">Stats</p>
         <div class="flex gap-2">
@@ -43,6 +44,11 @@ import Chip from 'primevue/chip';
 import countItem from "@/components/instances-page/countItem.vue";
 
 export default {
+    data() {
+        return {
+            selectedInstance: null
+        }
+    },
     components: {
         countItem,
         Button,
@@ -50,8 +56,34 @@ export default {
         Chip
     },
     props: {
-        selectedInstance: Object,
+        selectedInstanceId: String,
         openInstanceUpdateView: Function
+    },
+    methods: {
+        startAction(i) {
+            this.$STORAGE.socket.emit("instance:action", {_id: this.selectedInstance._id, status: i}, (data) => {
+                let { error, msg } = data;
+                if (error) {
+                    this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });
+                } else {
+                    this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
+                }
+                this.getInstance();
+                this.$EVENT.emit("update");
+            });
+        },
+        getInstance() {
+            this.$STORAGE.socket.emit("instance:get", { _id: this.selectedInstanceId }, (data) => {
+                let { error, payload } = data;
+                if(!error) this.selectedInstance = payload;
+            })
+        }
+    },
+    created() {
+        this.getInstance();
+        setInterval(() => {
+            this.getInstance();
+        }, this.$STORAGE.updateInterval);
     }
 }
 </script>

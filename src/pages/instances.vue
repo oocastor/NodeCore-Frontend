@@ -22,8 +22,8 @@
                             <Button icon="pi pi-plus" class="-m-1 -mt-2 bg-white-a15 text-color"
                                 style="transform: scale(0.7);" @click="openInstanceUpdateView();"></Button>
                         </div>
-                        <objListItem v-for="i in instances" :key="i" icon="pi-server" :name="i.name"
-                            :active="i.status == 1" @click="openInstanceView(i)">
+                        <objListItem v-for="i in instances" :key="i" icon="pi-server" :name="i.name" :status="i.status"
+                            @click="openInstanceView(i._id)">
                         </objListItem>
                         <p class="text-xs text-300 text-center" v-if="!instances.length">no instances found</p>
                     </div>
@@ -34,14 +34,15 @@
                                 style="transform: scale(0.7);" @click="openRedirectView();"></Button>
                         </div>
                         <objListItem v-for="(re, i) in redirects" :key="i" icon="pi-arrow-right-arrow-left text-xs"
-                            :name="re.name" :active="re.status == 1" @click="openRedirectView(re);">
+                            :name="re.name" :status="re.status" @click="openRedirectView(re);">
                         </objListItem>
                         <p class="text-xs text-300 text-center" v-if="!redirects.length">no redirects found</p>
                     </div>
                 </div>
                 <div class="w-full md:w-8 hidden flex-column surface-card h-min border-round-md md:flex gap-2 p-2">
                     <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
-                    <instanceView v-if="view == 1" :selectedInstance="selectedInstance" :openInstanceUpdateView="openInstanceUpdateView"></instanceView>
+                    <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId" :instances="instances"
+                        :openInstanceUpdateView="openInstanceUpdateView"></instanceView>
                     <redirectUpdateView v-if="view == 2" ref="redirectUpdateView"></redirectUpdateView>
                     <instanceUpdateView ref="instanceUpdateView" v-if="view == 3"></instanceUpdateView>
                 </div>
@@ -117,7 +118,7 @@ export default {
             },
             redirects: [],
             instances: [],
-            selectedInstance: null,
+            selectedInstanceId: null,
             view: 0
         }
     },
@@ -136,9 +137,7 @@ export default {
         },
         changeView(i) {
             if (i == 0) {
-                this.fetchSysInfo();
-                this.fetchRedirectEnitites();
-                this.fetchInstanceEnitites();
+                this.update();
             }
             this.view = i;
         },
@@ -148,9 +147,9 @@ export default {
                 this.$refs.redirectUpdateView?.setPayload(re);
             });
         },
-        openInstanceView(i) {
+        openInstanceView(id) {
             this.changeView(1);
-            this.selectedInstance = i;
+            this.selectedInstanceId = id;
         },
         openInstanceUpdateView(i) {
             this.changeView(3);
@@ -161,24 +160,25 @@ export default {
         showToast(data) {
             let { severity, title, msg } = data;
             this.$toast.add({ severity, summary: title, detail: msg, life: 3000 });
-        }
-    },
-    created() {
-        this.fetchSysInfo();
-        this.fetchRedirectEnitites();
-        this.fetchInstanceEnitites();
-        this.int = setInterval(() => {
+        },
+        update() {
             this.fetchSysInfo();
             this.fetchRedirectEnitites();
             this.fetchInstanceEnitites();
-        }, this.$STORAGE.updateInterval);
+        }
+    },
+    created() {
+        this.update();
+        this.int = setInterval(this.update, this.$STORAGE.updateInterval);
         this.$EVENT.on("changeView", this.changeView);
         this.$EVENT.on("showToast", this.showToast);
+        this.$EVENT.on("update", this.update);
     },
     destroyed() {
         clearInterval(this.int);
         this.$EVENT.off("changeView", this.changeView);
         this.$EVENT.off("showToast", this.showToast);
+        this.$EVENT.off("update", this.update);
     }
 }
 </script>
