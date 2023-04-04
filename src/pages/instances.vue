@@ -23,7 +23,7 @@
                                 style="transform: scale(0.7);" @click="openInstanceUpdateView();"></Button>
                         </div>
                         <objListItem v-for="i in instances" :key="i" icon="pi-server" :name="i.name"
-                            :active="i.active" @click="openInstanceView(i)">
+                            :active="i.status == 1" @click="openInstanceView(i)">
                         </objListItem>
                         <p class="text-xs text-300 text-center" v-if="!instances.length">no instances found</p>
                     </div>
@@ -34,7 +34,7 @@
                                 style="transform: scale(0.7);" @click="openRedirectView();"></Button>
                         </div>
                         <objListItem v-for="(re, i) in redirects" :key="i" icon="pi-arrow-right-arrow-left text-xs"
-                            :name="re.name" :active="re.active" @click="openRedirectView(re);">
+                            :name="re.name" :active="re.status == 1" @click="openRedirectView(re);">
                         </objListItem>
                         <p class="text-xs text-300 text-center" v-if="!redirects.length">no redirects found</p>
                     </div>

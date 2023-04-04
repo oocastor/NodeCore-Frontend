@@ -9,7 +9,7 @@
         <Fieldset legend="Project">
             <div class="flex justify-content-between align-items-center -mt-3">
                 <p class="ma-0 text-sm">Enabled</p>
-                <InputSwitch v-model="instance.active"></InputSwitch>
+                <InputSwitch v-model="instance.status" :trueValue="1" :falseValue="0"></InputSwitch>
             </div>
             <p class="my-2 text-sm">Name</p>
             <InputText v-model="instance.name" type="text" class="w-full" style="height: 40px;" placeholder="Tomato">
@@ -114,7 +114,7 @@ export default {
     data() {
         let available = []
         let instance = {
-            active: true,
+            status: 0,
             name: "",
             network: {
                 isAccessable: false,

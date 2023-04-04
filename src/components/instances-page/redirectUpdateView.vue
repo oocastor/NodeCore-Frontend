@@ -9,7 +9,7 @@
         <Fieldset legend="Info">
             <div class="flex justify-content-between align-items-center -mt-3">
                 <p class="ma-0 text-sm">Enabled</p>
-                <InputSwitch v-model="redirect.active"></InputSwitch>
+                <InputSwitch v-model="redirect.status" :trueValue="1" :falseValue="0"></InputSwitch>
             </div>
             <p class="my-2 text-sm">Name</p>
             <InputText v-model="redirect.name" type="text" class="w-full" style="height: 40px;" placeholder="Potato">
@@ -91,7 +91,7 @@ export default {
                 port: 0
 
             },
-            active: true,
+            status: 0,
         }
         //blank redirect obj
         let blankRedirect = JSON.parse(JSON.stringify(redirect));
