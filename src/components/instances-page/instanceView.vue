@@ -3,8 +3,9 @@
         <div class="flex justify-content-between">
             <div class="flex align-items-center gap-3">
                 <p class="text-3xl m-0 font-bold">{{ selectedInstance.name }}</p>
-                <Chip label="running" icon="pi pi-check" class="text-xs bg-green-600" v-if="selectedInstance.active"></Chip>
-                <Chip label="stopped" icon="pi pi-times" class="text-xs bg-red-600" v-if="!selectedInstance.active"></Chip>
+                <Chip label="running" icon="pi pi-check" class="text-xs bg-green-600" v-if="selectedInstance.status == 1"></Chip>
+                <Chip label="stopped" icon="pi pi-times" class="text-xs bg-red-600" v-if="selectedInstance.status == 0"></Chip>
+                <Chip label="updating" icon="pi pi-stopwatch" class="text-xs bg-orange-600" v-if="selectedInstance.status == 2"></Chip>
             </div>
             <div class="flex gap-3">
                 <i class="pi pi-cog text-xl text-gray-400 cursor-pointer"
