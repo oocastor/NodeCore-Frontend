@@ -15,7 +15,7 @@
             </div>
             <div
                 class="flex-auto relativ mb-3 mx-4 gap-3 flex flex-row fadein animation-duration-100">
-                <div class="w-full md:w-4 md:h-full flex flex-column gap-3" v-if="(screen.width < 770 && view == 0) || screen.width >= 770">
+                <div class="w-full md:w-4 md:h-full flex flex-column gap-3 fadein animation-duration-100" v-if="(screen.width < 770 && view == 0) || screen.width >= 770">
                     <div class="surface-card p-2 border-round-md relativ">
                         <div class="w-full mt-2 mb-3 flex justify-content-between align-items-center">
                             <p class="m-0 ml-1 font-mono" style="font-size: 1rem;">Instances</p>
@@ -39,7 +39,7 @@
                         <p class="text-xs text-300 text-center" v-if="!redirects.length">no redirects found</p>
                     </div>
                 </div>
-                <div class="w-full md:w-8 flex-column surface-card h-min border-round-md flex gap-2 p-2 fadein animation-duration-100" v-if="screen.width > 770 || view != 0">
+                <div class="w-full md:w-8 flex-column surface-card h-min border-round-md flex gap-2 p-2 fadein animation-duration-100" v-if="screen.width >= 770 || view != 0">
                     <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
                     <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId" :instances="instances"
                         :openInstanceUpdateView="openInstanceUpdateView"></instanceView>
@@ -52,7 +52,7 @@
             </div>
         </div>
     </div>
-    <Toast />
+    <Toast :style="screen.width < 500 ? {width: '70%'}: {}"/>
 </template>
 
 <script>
