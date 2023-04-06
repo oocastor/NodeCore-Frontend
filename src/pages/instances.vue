@@ -6,16 +6,16 @@
         </div>
         <Menu ref="menu" :model="items" :popup="true"></Menu>
         <div class="flex-auto flex w-full flex-column mx-auto" style="max-width: 900px;">
-            <div class="relativ justify-content-between my-3 mx-4 gap-3 flex fadein animation-duration-200">
+            <div class="relativ justify-content-between my-3 mx-4 gap-3 flex fadein animation-duration-100">
                 <serverInfo :current="this.sys.mem.used" :max="this.sys.mem.total" str="RAM" op="GB"></serverInfo>
                 <serverInfo :current="this.sys.cpu" max="100" str="CPU" op="%"></serverInfo>
             </div>
+            <div class="surface-card border-round-md md:hidden p-2 mb-3 mx-4 fadein animation-duration-100">
+                <overview :redirects="redirects" :instances="instances"></overview>
+            </div>
             <div
-                class="flex-auto relativ md:justify-content-between mb-3 mx-4 gap-3 flex flex-column md:flex-row fadein animation-duration-200">
-                <div class="w-full md:w-8 flex flex-column surface-card h-min border-round-md md:hidden gap-2 p-2">
-                    <overview :redirects="redirects" :instances="instances"></overview>
-                </div>
-                <div class="w-full md:w-4 md:h-full flex flex-column gap-3">
+                class="flex-auto relativ mb-3 mx-4 gap-3 flex flex-row fadein animation-duration-100">
+                <div class="w-full md:w-4 md:h-full flex flex-column gap-3" v-if="(screen.width < 770 && view == 0) || screen.width >= 770">
                     <div class="surface-card p-2 border-round-md relativ">
                         <div class="w-full mt-2 mb-3 flex justify-content-between align-items-center">
                             <p class="m-0 ml-1 font-mono" style="font-size: 1rem;">Instances</p>
@@ -39,7 +39,7 @@
                         <p class="text-xs text-300 text-center" v-if="!redirects.length">no redirects found</p>
                     </div>
                 </div>
-                <div class="w-full md:w-8 hidden flex-column surface-card h-min border-round-md md:flex gap-2 p-2">
+                <div class="w-full md:w-8 flex-column surface-card h-min border-round-md flex gap-2 p-2 fadein animation-duration-100" v-if="screen.width > 770 || view != 0">
                     <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
                     <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId" :instances="instances"
                         :openInstanceUpdateView="openInstanceUpdateView"></instanceView>
@@ -119,7 +119,11 @@ export default {
             redirects: [],
             instances: [],
             selectedInstanceId: null,
-            view: 0
+            view: 0,
+            screen: {
+                width: 0,
+                height: 0
+            }
         }
     },
     methods: {
@@ -165,6 +169,12 @@ export default {
             this.fetchSysInfo();
             this.fetchRedirectEnitites();
             this.fetchInstanceEnitites();
+        },
+        getScreenSize() {
+            this.screen = {
+                width: window.innerWidth,
+                height: window.innerHeight
+            }
         }
     },
     created() {
@@ -173,12 +183,14 @@ export default {
         this.$EVENT.on("changeView", this.changeView);
         this.$EVENT.on("showToast", this.showToast);
         this.$EVENT.on("update", this.update);
+        window.addEventListener("resize", this.getScreenSize)
     },
     destroyed() {
         clearInterval(this.int);
         this.$EVENT.off("changeView", this.changeView);
         this.$EVENT.off("showToast", this.showToast);
         this.$EVENT.off("update", this.update);
+        window.removeEventListener("resize", this.getScreenSize)
     }
 }
 </script>
