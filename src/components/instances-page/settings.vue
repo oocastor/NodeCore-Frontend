@@ -3,7 +3,7 @@
         style="max-width: 600px; width: 100%;">
         <div class="flex flex-column gap-4">
             <Fieldset legend="Login">
-                <p class="-mt-1 mb-4 font-italic">Change your login for this app.</p>
+                <p class="-mt-1 mb-4 font-italic">Change your login data for this app.</p>
                 <p class="text-sm">Username</p>
                 <InputText class="w-full" v-model="account.user"></InputText>
                 <p class="text-sm">Password</p>
@@ -63,7 +63,7 @@ import Button from 'primevue/button';
 export default {
     data() {
         return {
-            settingsDialog: true,
+            settingsDialog: false,
             availableDomains: [],
             newDomainInput: "",
             github: {
@@ -125,7 +125,7 @@ export default {
             });
         },
         updateNodeupLogin() {
-            this.$STORAGE.socket.emit("login:set", this.github, (data) => {
+            this.$STORAGE.socket.emit("account:set", this.account, (data) => {
                 let { error, msg } = data;
                 if (error) {
                     this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });

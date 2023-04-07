@@ -48,7 +48,7 @@
                         <InputNumber v-model="instance.network.redirect.port" :useGrouping="false" type="text"
                             class="flex-auto" style="height: inherit;" :disabled="!instance.network.isAccessable">
                         </InputNumber>
-                        <Button label="Unused" class="p-button-sm bg-white-a15 hover:" style="height: inherit;"
+                        <Button label="Unused" class="p-button-sm" style="height: inherit;"
                             :disabled="!instance.network.isAccessable" @click="getUnusedPort();"></Button>
                     </div>
                 </div>
