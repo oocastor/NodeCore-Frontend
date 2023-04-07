@@ -1,10 +1,10 @@
 <template>
     <div v-if="selectedInstance">
-        <p class="m-0 text-200 mb-3">Instance ({{ selectedInstance.name }})</p>
+        <p class="m-0 text-200 mb-3 text-overflow">Instance ({{ selectedInstance.name }})</p>
         <div class="w-full flex flex-column gap-3 surface-card border-round p-3">
             <div class="flex justify-content-between">
-                <div class="flex align-items-center gap-3">
-                    <p class="text-3xl m-0 font-bold">{{ selectedInstance.name }}</p>
+                <div class="flex align-items-center gap-3 w-8">
+                    <p class="text-3xl m-0 font-bold text-overflow">{{ selectedInstance.name }}</p>
                     <Chip label="running" icon="pi pi-check" class="text-xs bg-green-600"
                         v-if="selectedInstance.status == 1"></Chip>
                     <Chip label="stopped" icon="pi pi-times" class="text-xs bg-red-600" v-if="selectedInstance.status == 0">
@@ -99,7 +99,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>.bg-white-a15 {
+<style lang="scss">
+.bg-white-a15 {
     background-color: rgba(255, 255, 255, 0.15);
 }
 

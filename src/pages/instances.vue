@@ -24,7 +24,7 @@
                 <div class="w-full md:w-4 md:h-full flex flex-column gap-3 fadein animation-duration-100"
                     v-if="(screen.width < 770 && view == 0) || screen.width >= 770">
                     <p class="m-0 text-200">Entities</p>
-                    
+
                     <div class="surface-card p-2 border-round-md relativ">
                         <div class="w-full mt-2 mb-3 flex justify-content-between align-items-center">
                             <p class="m-0 ml-1 font-mono" style="font-size: 1rem;">Instances</p>
@@ -219,8 +219,14 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .bg-white-a15 {
     background-color: rgba(255, 255, 255, 0.15);
+}
+
+.text-overflow {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>
