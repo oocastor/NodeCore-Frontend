@@ -35,7 +35,7 @@
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
                         <InputNumber v-model="redirect.network.port" :useGrouping="false" type="text" class="flex-auto" style="height: inherit;">
                         </InputNumber>
-                        <Button label="Unused" class="p-button-sm bg-white-a15 hover:" style="height: inherit;"
+                        <Button label="Unused" class="p-button-sm" style="height: inherit;"
                             @click="getUnusedPort();"></Button>
                     </div>
                 </div>
