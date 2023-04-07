@@ -50,7 +50,7 @@
                     </div>
                 </div>
 
-                <div class="w-full md:w-8 flex-column h-min border-round-md flex fadein animation-duration-100"
+                <div class="w-full md:w-8 flex-column h-min border-round-md flex fadein animation-duration-100 overflow-hidden"
                     v-if="screen.width >= 770 || view != 0">
                     <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
                     <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId"

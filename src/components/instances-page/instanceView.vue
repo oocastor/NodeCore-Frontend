@@ -101,9 +101,9 @@ export default {
 
 <style lang="scss">
 .bg-white-a15 {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 .bg-white-a05 {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.05) !important;
 }</style>
