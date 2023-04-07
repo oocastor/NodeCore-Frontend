@@ -1,21 +1,30 @@
 <template>
     <div class="flex flex-column h-full" style="min-width: 400px;">
+
         <div class="w-full surface-card flex justify-content-between align-items-center px-3" style="min-height: 60px;">
             <div class="text-4xl font-grandHotel">nodeup</div>
             <Avatar class="surface-section cursor-pointer" icon="pi pi-user" @click="toggleAvatarMenu"></Avatar>
         </div>
         <Menu ref="menu" :model="items" :popup="true"></Menu>
-        <div class="flex-auto flex w-full flex-column mx-auto" style="max-width: 900px;">
-            <div class="relativ justify-content-between my-3 mx-4 gap-3 flex fadein animation-duration-100">
+
+        <div class="flex-auto flex w-full flex-column mx-auto px-4 mt-3 gap-3" style="max-width: 900px;">
+
+            <p class="m-0 text-200">System</p>
+            <div class="relativ justify-content-between gap-3 flex fadein animation-duration-100">
                 <serverInfo :current="this.sys.mem.used" :max="this.sys.mem.total" str="RAM" op="GB"></serverInfo>
                 <serverInfo :current="this.sys.cpu" max="100" str="CPU" op="%"></serverInfo>
             </div>
-            <div class="surface-card border-round-md md:hidden p-2 mb-3 mx-4 fadein animation-duration-100">
+
+            <div class="md:hidden fadein animation-duration-100">
                 <overview :redirects="redirects" :instances="instances"></overview>
             </div>
-            <div class="flex-auto relativ mb-3 mx-4 gap-3 flex flex-row fadein animation-duration-100">
+
+            <div class="flex-auto relativ gap-3 flex flex-row fadein animation-duration-100">
+
                 <div class="w-full md:w-4 md:h-full flex flex-column gap-3 fadein animation-duration-100"
                     v-if="(screen.width < 770 && view == 0) || screen.width >= 770">
+                    <p class="m-0 text-200">Entities</p>
+                    
                     <div class="surface-card p-2 border-round-md relativ">
                         <div class="w-full mt-2 mb-3 flex justify-content-between align-items-center">
                             <p class="m-0 ml-1 font-mono" style="font-size: 1rem;">Instances</p>
@@ -27,6 +36,7 @@
                         </objListItem>
                         <p class="text-xs text-300 text-center" v-if="!instances.length">no instances found</p>
                     </div>
+
                     <div class="surface-card p-2 border-round-md relativ">
                         <div class="w-full mt-2 mb-3 flex justify-content-between align-items-center">
                             <p class="m-0 ml-1 font-mono" style="font-size: 1rem;">Redirects</p>
@@ -39,15 +49,18 @@
                         <p class="text-xs text-300 text-center" v-if="!redirects.length">no redirects found</p>
                     </div>
                 </div>
-                <div class="w-full md:w-8 flex-column surface-card h-min border-round-md flex gap-2 p-2 fadein animation-duration-100"
+
+                <div class="w-full md:w-8 flex-column h-min border-round-md flex fadein animation-duration-100"
                     v-if="screen.width >= 770 || view != 0">
                     <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
-                    <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId" :instances="instances"
+                    <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId"
                         :openInstanceUpdateView="openInstanceUpdateView"></instanceView>
                     <redirectUpdateView v-if="view == 2" ref="redirectUpdateView"></redirectUpdateView>
                     <instanceUpdateView ref="instanceUpdateView" v-if="view == 3"></instanceUpdateView>
                 </div>
+
             </div>
+
             <div class="w-full h-3rem flex justify-content-center align-items-center gap-1">
                 <i class="pi pi-link text-300"></i> <a href="#" class="no-underline text-300">oocastor</a>
             </div>

@@ -1,5 +1,6 @@
 <template>
-    <div class="w-full flex flex-column p-2 gap-3">
+    <p class="m-0 mb-3 text-200">{{ !update ? "Instance" : `Instance (${instance.name})` }}</p>
+    <div class="w-full flex flex-column gap-3 surface-card border-round p-3">
         <div class="flex justify-content-between">
             <p class="text-3xl m-0 font-bold">{{ !update ? "New Instance" : "Update Instance" }}</p>
             <div class="flex gap-3">
