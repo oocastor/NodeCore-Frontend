@@ -69,7 +69,7 @@ import Button from 'primevue/button';
 export default {
     data() {
         return {
-            settingsDialog: true,
+            settingsDialog: false,
             availableDomains: [],
             newDomainInput: "",
             github: {

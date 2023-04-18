@@ -16,10 +16,15 @@
             <InputText v-model="instance.name" type="text" class="w-full" style="height: 40px;" placeholder="Tomato">
             </InputText>
             <p class="mt-3 mb-2 text-sm">Import</p>
-            <div class="flex gap-2">
-                <Button label="Github"></Button>
-                <Button label="Upload" disabled></Button>
+            <div class="flex align-items-center gap-2">
+                <Button label="Github" @click="$refs.githubRepoSearch.toggle($event);"></Button>
+                <!-- <Button label="Upload" disabled></Button> -->
+                <p class="ml-auto text-400 m-0">{{ instance.git.name ? instance.git.name : "empty" }}</p>
             </div>
+            <OverlayPanel ref="githubRepoSearch">
+                <p class="mt-0">Select Repo</p>
+                <Listbox filter :options="userRepos" optionLabel="name" style="max-height: 300px; overflow-y: scroll;" v-model="instance.git"></Listbox>
+            </OverlayPanel>
         </Fieldset>
         <Fieldset :collapsed="!instance.network.isAccessable">
             <template #legend>
@@ -96,6 +101,8 @@ import Dropdown from 'primevue/dropdown';
 import ConfirmPopup from 'primevue/confirmpopup';
 import Textarea from "primevue/textarea";
 import Tag from "primevue/tag";
+import Listbox from "primevue/listbox";
+import OverlayPanel from "primevue/overlaypanel";
 
 export default {
     components: {
@@ -107,16 +114,20 @@ export default {
         Dropdown,
         ConfirmPopup,
         Textarea,
-        Tag
+        Tag,
+        Listbox,
+        OverlayPanel
     },
     props: {
         isCreation: Boolean
     },
     data() {
-        let available = []
+        let available = [];
+        let userRepos = [];
         let instance = {
             status: 0,
             name: "",
+            git: "",
             network: {
                 isAccessable: false,
                 redirect: {
@@ -136,10 +147,12 @@ export default {
             blankInstance,
             available,
             update: false,
+            userRepos
         }
     },
     methods: {
         writeInstance() {
+            console.log(this.instance);
             this.$STORAGE.socket.emit("instance:write", this.instance, (data) => {
                 let { error, msg } = data;
                 if (error) {
@@ -158,6 +171,9 @@ export default {
         },
         getUnusedPort() {
             this.$STORAGE.socket.emit("port:get", (data) => this.instance.network.redirect.port = data.payload);
+        },
+        getUserRepos() {
+            this.$STORAGE.socket.emit("github:repos", (data) => this.userRepos = data.payload);
         },
         cancelCreationProcess(event) {
             // this.$confirm.require({
@@ -205,6 +221,7 @@ export default {
     },
     created() {
         this.getAvailableDomains();
+        this.getUserRepos();
     }
 }
 </script>
