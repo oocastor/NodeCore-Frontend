@@ -99,11 +99,12 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .bg-white-a15 {
     background-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 .bg-white-a05 {
     background-color: rgba(255, 255, 255, 0.05) !important;
-}</style>
+}
+</style>

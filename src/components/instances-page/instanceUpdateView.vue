@@ -15,16 +15,19 @@
             <p class="my-2 text-sm">Name</p>
             <InputText v-model="instance.name" type="text" class="w-full" style="height: 40px;" placeholder="Tomato">
             </InputText>
-            <p class="mt-3 mb-2 text-sm">Import</p>
-            <div class="flex align-items-center gap-2">
-                <Button label="Github" @click="$refs.githubRepoSearch.toggle($event);"></Button>
-                <!-- <Button label="Upload" disabled></Button> -->
-                <p class="ml-auto text-400 m-0">{{ instance.git.name ? instance.git.name : "empty" }}</p>
+            <div v-if="!update">
+                <p class="mt-3 mb-2 text-sm">Import</p>
+                <div class="flex align-items-center gap-2">
+                    <Button label="Github" @click="$refs.githubRepoSearch.toggle($event);"></Button>
+                    <!-- <Button label="Upload" disabled></Button> -->
+                    <p class="ml-auto text-400 m-0">{{ instance.git.name ? instance.git.name : "empty" }}</p>
+                </div>
+                <OverlayPanel ref="githubRepoSearch" style="max-height: 400px; overflow: hidden;">
+                    <p class="mt-0">Select Repo</p>
+                    <Listbox filter :options="userRepos" optionLabel="name" style="height: 300px; overflow-y: scroll;"
+                        v-model="instance.git"></Listbox>
+                </OverlayPanel>
             </div>
-            <OverlayPanel ref="githubRepoSearch" style="max-height: 400px; overflow: hidden;">
-                <p class="mt-0">Select Repo</p>
-                <Listbox filter :options="userRepos" optionLabel="name" style="height: 300px; overflow-y: scroll;" v-model="instance.git"></Listbox>
-            </OverlayPanel>
         </Fieldset>
         <Fieldset :collapsed="!instance.network.isAccessable">
             <template #legend>
