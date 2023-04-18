@@ -49,6 +49,12 @@
                     </div>
                 </OverlayPanel>
             </Fieldset>
+            <Fieldset legend="Path">
+                <p class="-mt-1 mb-4 font-italic">Change the path, where the instances are stored.</p>
+                <p class="text-sm">Path</p>
+                <InputText class="w-full" v-model="path" spellcheck="false"></InputText>
+                <Button label="Save" icon="pi pi-save" class="w-full mt-4" @click="setPath();"></Button>
+            </Fieldset>
         </div>
     </Dialog>
 </template>
@@ -63,7 +69,7 @@ import Button from 'primevue/button';
 export default {
     data() {
         return {
-            settingsDialog: false,
+            settingsDialog: true,
             availableDomains: [],
             newDomainInput: "",
             github: {
@@ -73,7 +79,8 @@ export default {
             account: {
                 user: "",
                 pwd: ""
-            }
+            },
+            path: ""
         }
     },
     components: {
@@ -134,6 +141,19 @@ export default {
                 }
             });
         },
+        fetchPath() {
+            this.$STORAGE.socket.emit("path:get", (data) => this.path = data.payload);
+        },
+        setPath() {
+            this.$STORAGE.socket.emit("path:set", { path: this.path }, (data) => {
+                let { error, msg } = data;
+                if (error) {
+                    this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });
+                } else {
+                    this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
+                }
+            });
+        },
         toggleSettingsDialog(b = undefined) {
             if (b) this.settingsDialog = b
             else this.settingsDialog = !this.settingsDialog;
@@ -142,6 +162,7 @@ export default {
     created() {
         this.fetchAvailableDomains();
         this.fetchGithubAcc();
+        this.fetchPath();
     }
 }
 </script>
