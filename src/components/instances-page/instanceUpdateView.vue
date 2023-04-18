@@ -21,9 +21,9 @@
                 <!-- <Button label="Upload" disabled></Button> -->
                 <p class="ml-auto text-400 m-0">{{ instance.git.name ? instance.git.name : "empty" }}</p>
             </div>
-            <OverlayPanel ref="githubRepoSearch">
+            <OverlayPanel ref="githubRepoSearch" style="max-height: 400px; overflow: hidden;">
                 <p class="mt-0">Select Repo</p>
-                <Listbox filter :options="userRepos" optionLabel="name" style="max-height: 300px; overflow-y: scroll;" v-model="instance.git"></Listbox>
+                <Listbox filter :options="userRepos" optionLabel="name" style="height: 300px; overflow-y: scroll;" v-model="instance.git"></Listbox>
             </OverlayPanel>
         </Fieldset>
         <Fieldset :collapsed="!instance.network.isAccessable">
