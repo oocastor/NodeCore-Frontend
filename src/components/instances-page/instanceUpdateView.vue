@@ -74,7 +74,7 @@
             <Textarea class="w-full h-10rem surface-50 border-none font-mono" autoResize="false" autocorrect="off"
                 spellcheck="false" @input="instance.env = $event.target.value.split(/\n/);"></Textarea>
         </Fieldset>
-        <Fieldset :toggleable="true" :collapsed="true" v-if="!isCreation">
+        <Fieldset :toggleable="true" :collapsed="true" v-if="update">
             <template #legend>
                 <p class="m-0 text-red-500">Critical Area</p>
             </template>
