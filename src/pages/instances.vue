@@ -66,7 +66,7 @@
             </div>
         </div>
     </div>
-    <Toast :style="screen.width < 500 ? { width: '70%' } : {}" />
+    <Toast style="width: 70%; max-width: 400px;" />
     <settings ref="settings"></settings>
 </template>
 
