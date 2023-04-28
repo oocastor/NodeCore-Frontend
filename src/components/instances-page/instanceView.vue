@@ -79,11 +79,10 @@ export default {
                 } else {
                     this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
                 }
-                this.getInstance();
                 this.$EVENT.emit("update");
             });
         },
-        getInstance() {
+        update() {
             this.$STORAGE.socket.emit("instance:get", { _id: this.selectedInstanceId }, (data) => {
                 let { error, payload } = data;
                 if (!error) this.selectedInstance = payload;
@@ -91,11 +90,12 @@ export default {
         }
     },
     created() {
-        this.getInstance();
-        setInterval(() => {
-            this.getInstance();
-        }, this.$STORAGE.updateInterval);
-    }
+        this.update();
+        this.$EVENT.on("update", this.update);
+    },
+    unmounted() {
+        this.$EVENT.off("update", this.update);
+    },
 }
 </script>
 

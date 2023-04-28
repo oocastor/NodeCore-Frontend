@@ -33,8 +33,12 @@ app.use(ConfirmationService);
 app.use(ToastService);
 
 //TODO: rework storage method
-app.config.globalProperties.$STORAGE = {authed: false, socket, updateInterval: 2000};
-app.config.globalProperties.$EVENT = new Event();
+app.config.globalProperties.$STORAGE = {authed: false, socket};
+
+let event = new Event();
+app.config.globalProperties.$EVENT = event;
+
+setInterval(() => event.emit("update"), 2000);
 
 checkForAuthToken();
 

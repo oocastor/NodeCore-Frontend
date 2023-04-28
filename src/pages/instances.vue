@@ -130,7 +130,6 @@ export default {
         return {
             items,
             logout,
-            int: null,
             sys: {
                 cpu: "0.00",
                 mem: {
@@ -201,7 +200,6 @@ export default {
     },
     created() {
         this.update();
-        this.int = setInterval(this.update, this.$STORAGE.updateInterval);
         this.$EVENT.on("changeView", this.changeView);
         this.$EVENT.on("showToast", this.showToast);
         this.$EVENT.on("update", this.update);
@@ -209,8 +207,7 @@ export default {
         this.getScreenSize();
         window.addEventListener("resize", this.getScreenSize)
     },
-    destroyed() {
-        clearInterval(this.int);
+    unmounted() {
         this.$EVENT.off("changeView", this.changeView);
         this.$EVENT.off("showToast", this.showToast);
         this.$EVENT.off("update", this.update);
