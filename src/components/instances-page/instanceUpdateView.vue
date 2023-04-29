@@ -122,7 +122,6 @@ export default {
         OverlayPanel
     },
     props: {
-        isCreation: Boolean
     },
     data() {
         let available = [];
@@ -155,7 +154,6 @@ export default {
     },
     methods: {
         writeInstance() {
-            console.log(this.instance);
             this.$STORAGE.socket.emit("instance:write", this.instance, (data) => {
                 let { error, msg } = data;
                 if (error) {

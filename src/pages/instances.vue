@@ -216,7 +216,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .bg-white-a15 {
     background-color: rgba(255, 255, 255, 0.15) !important;
 }
