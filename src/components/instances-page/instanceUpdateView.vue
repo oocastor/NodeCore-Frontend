@@ -8,7 +8,7 @@
             </div>
         </div>
         <Fieldset legend="Project">
-            <div class="flex justify-content-between align-items-center -mt-3">
+            <div class="flex justify-content-between align-items-center -mt-3" v-if="!update">
                 <p class="ma-0 text-sm">Enabled</p>
                 <InputSwitch v-model="instance.status" :trueValue="1" :falseValue="0"></InputSwitch>
             </div>
@@ -33,7 +33,7 @@
             <template #legend>
                 <div class="flex align-items-center gap-2">
                     <p class="m-0">Public</p>
-                    <InputSwitch v-model="instance.network.isAccessable" style="transform: scale(0.85);" />
+                    <InputSwitch v-model="instance.network.isAccessable" @click="resetNetworkTab()" style="transform: scale(0.85);" />
                 </div>
             </template>
             <div class="flex flex-column gap-3">
@@ -66,13 +66,13 @@
             <p class="m-0 mb-4 text-sm">Define required setup commands for your <Tag value="node.js"
                     class="text-white bg-gray-900"></Tag> instance.</p>
             <Textarea class="w-full h-10rem surface-50 border-none font-mono" autoResize="false" autocorrect="off"
-                spellcheck="false" @input="instance.cmd = $event.target.value.split(/\n/);"></Textarea>
+                spellcheck="false" v-model="_CMD"></Textarea>
         </Fieldset>
         <Fieldset legend=".env" :toggleable="true" :collapsed="true">
             <p class="m-0 mb-4 text-sm">Set required environment variables for your <Tag value="node.js"
                     class="text-white bg-gray-900"></Tag> instance.</p>
             <Textarea class="w-full h-10rem surface-50 border-none font-mono" autoResize="false" autocorrect="off"
-                spellcheck="false" @input="instance.env = $event.target.value.split(/\n/);"></Textarea>
+                spellcheck="false" v-model="_ENV"></Textarea>
         </Fieldset>
         <Fieldset :toggleable="true" :collapsed="true" v-if="update">
             <template #legend>
@@ -121,7 +121,23 @@ export default {
         Listbox,
         OverlayPanel
     },
-    props: {
+    computed: {
+        _CMD: {
+            get() {
+                return this.instance.cmd.join("\n");
+            },
+            set(v){
+                this.instance.cmd = v.split(/\n/);
+            }
+        },
+        _ENV: {
+            get() {
+                return this.instance.env.join("\n");
+            },
+            set(v){
+                this.instance.env = v.split(/\n/);
+            }
+        }
     },
     data() {
         let available = [];
@@ -213,11 +229,14 @@ export default {
                 this.instance = JSON.parse(JSON.stringify(i)); //deep copy
             } else {
                 this.reset();
-                this.getUnusedPort();
-                this.instance.network.redirect.domain = this.available[0];
+                this.resetNetworkTab();
                 delete this.instance._id;
             }
             this.update = i != undefined;
+        },
+        resetNetworkTab() {
+            this.getUnusedPort();
+            this.instance.network.redirect.domain = this.available[0];
         }
     },
     created() {
