@@ -28,35 +28,35 @@
                     <div class="surface-card p-2 border-round-md relativ">
                         <div class="w-full mb-2 flex justify-content-between align-items-center">
                             <p class="m-0 ml-1 text-sm">Instances</p>
-                            <Button icon="pi pi-plus" class="-m-1 bg-white-a15 text-color"
-                                style="transform: scale(0.7);" @click="openInstanceUpdateView();"></Button>
+                            <Button icon="pi pi-plus" class="-m-1 bg-white-a15 text-color" style="transform: scale(0.7);"
+                                @click="openInstanceUpdateView();"></Button>
                         </div>
-                        <objListItem v-for="i in instances" :key="i" icon="pi-server" :name="i.name" :status="i.status"
-                            @click="openInstanceView(i._id)">
+                        <objListItem v-for=" i  in  instances " :key=" i " icon="pi-server" :name=" i.name " :status=" i.status "
+                            @click=" openInstanceView(i._id) ">
                         </objListItem>
-                        <p class="text-xs text-300 text-center" v-if="!instances.length">no instances found</p>
+                        <p class="text-xs text-300 text-center" v-if=" !instances.length ">no instances found</p>
                     </div>
 
                     <div class="surface-card p-2 border-round-md relativ">
                         <div class="w-full mb-2 flex justify-content-between align-items-center">
                             <p class="m-0 ml-1 text-sm">Redirects</p>
-                            <Button icon="pi pi-plus" class="-m-1 bg-white-a15 text-color"
-                                style="transform: scale(0.7);" @click="openRedirectView();"></Button>
+                            <Button icon="pi pi-plus" class="-m-1 bg-white-a15 text-color" style="transform: scale(0.7);"
+                                @click=" openRedirectView(); "></Button>
                         </div>
-                        <objListItem v-for="(re, i) in redirects" :key="i" icon="pi-arrow-right-arrow-left text-xs"
-                            :name="re.name" :status="re.status" @click="openRedirectView(re);">
+                        <objListItem v-for="( re, i ) in  redirects " :key=" i " icon="pi-arrow-right-arrow-left text-xs"
+                            :name=" re.name " :status=" re.status " @click=" openRedirectView(re); ">
                         </objListItem>
-                        <p class="text-xs text-300 text-center" v-if="!redirects.length">no redirects found</p>
+                        <p class="text-xs text-300 text-center" v-if=" !redirects.length ">no redirects found</p>
                     </div>
                 </div>
 
                 <div class="w-full md:w-8 flex-column h-min border-round-md flex fadein animation-duration-100 overflow-hidden"
-                    v-if="screen.width >= 770 || view != 0">
-                    <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
-                    <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId"
-                        :openInstanceUpdateView="openInstanceUpdateView" ref="instanceView"></instanceView>
-                    <redirectUpdateView v-if="view == 2" ref="redirectUpdateView"></redirectUpdateView>
-                    <instanceUpdateView ref="instanceUpdateView" v-if="view == 3"></instanceUpdateView>
+                    v-if=" screen.width >= 770 || view != 0 ">
+                    <overview v-if=" view == 0 " :redirects=" redirects " :instances=" instances "></overview>
+                    <instanceView v-if=" view == 1 " :selectedInstanceId=" selectedInstanceId "
+                        :openInstanceUpdateView=" openInstanceUpdateView " ref="instanceView"></instanceView>
+                    <redirectUpdateView v-if=" view == 2 " ref="redirectUpdateView"></redirectUpdateView>
+                    <instanceUpdateView ref="instanceUpdateView" v-if=" view == 3 "></instanceUpdateView>
                 </div>
 
             </div>
@@ -189,6 +189,13 @@ export default {
             let { severity, title, msg } = data;
             this.$toast.add({ severity, summary: title, detail: msg, life: 3000 });
         },
+        showNotification(ack) {
+            let msgs = Array.isArray(ack) ? ack : [ack];
+            msgs.forEach(m => {
+                let { error, msg } = m;
+                this.$toast.add({ severity: error ? "error" : "success", summary: error ? "Error" : "Success", detail: msg, life: 3000 });
+            })
+        },
         update() {
             this.fetchSysInfo();
             this.fetchRedirectEnitites();
@@ -204,17 +211,23 @@ export default {
     created() {
         this.update();
         this.$EVENT.on("changeView", this.changeView);
-        this.$EVENT.on("showToast", this.showToast);
+        this.$EVENT.on("showToast", this.showToast); //TODO: replace with showNotification
+        this.$EVENT.on("showNotification", this.showNotification);
         this.$EVENT.on("update", this.update);
 
         this.getScreenSize();
-        window.addEventListener("resize", this.getScreenSize)
+        window.addEventListener("resize", this.getScreenSize);
+
+        this.$STORAGE.socket.on("msg:get", this.showNotification);
     },
     unmounted() {
         this.$EVENT.off("changeView", this.changeView);
-        this.$EVENT.off("showToast", this.showToast);
+        this.$EVENT.off("showToast", this.showToast); //TODO: replace with showNotification
+        this.$EVENT.off("showNotification", this.showNotification);
         this.$EVENT.off("update", this.update);
-        window.removeEventListener("resize", this.getScreenSize)
+        window.removeEventListener("resize", this.getScreenSize);
+
+        this.$STORAGE.socket.off("msg:get", this.showNotification);
     }
 }
 </script>

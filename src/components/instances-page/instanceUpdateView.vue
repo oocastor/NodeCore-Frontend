@@ -154,7 +154,8 @@ export default {
                 }
             },
             cmd: [],
-            env: []
+            env: [],
+            method: this.update ? "UPDATE" : "CREATE"
         };
         //blank instance obj
         let blankInstance = JSON.parse(JSON.stringify(instance));
