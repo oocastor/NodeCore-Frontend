@@ -18,7 +18,7 @@
                 <div class="flex align-items-center gap-2">
                     <Button label="Github" @click="$refs.githubRepoSearch.toggle($event);"></Button>
                     <!-- <Button label="Upload" disabled></Button> -->
-                    <p class="ml-auto text-400 m-0">{{ instance.git.name ? instance.git.name : "empty" }}</p>
+                    <p class="ml-auto text-400 m-0">{{ instance.git?.name ? instance.git.name : "empty" }}</p>
                 </div>
                 <OverlayPanel ref="githubRepoSearch" style="max-height: 400px; overflow: hidden;">
                     <p class="mt-0">Select Repo</p>
@@ -39,8 +39,8 @@
                 <div>
                     <p class="m-0 mb-2 text-sm">Subdomain</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
-                        <InputText v-model=" instance.network.redirect.sub " type="text" class="w-4" style="height: inherit;"
-                            :disabled=" !instance.network.isAccessable " placeholder="tom">
+                        <InputText v-model=" instance.network.redirect.sub " type="text" class="w-4"
+                            style="height: inherit;" :disabled=" !instance.network.isAccessable " placeholder="tom">
                         </InputText>
                         <p>.</p>
                         <Dropdown v-model=" instance.network.redirect.domain " :options=" available " class="w-8"
@@ -84,7 +84,7 @@
             </div>
         </Fieldset>
         <div class="flex justify-content-end gap-2">
-            <Button label="Save" @click=" writeInstance(); "></Button>
+            <Button label="Save" @click=" writeInstance(); " :loading="writing"></Button>
             <Button label="Cancel" class="surface-100 text-white hover:surface-50"
                 @click=" cancelCreationProcess($event) "></Button>
             <ConfirmPopup></ConfirmPopup>
@@ -164,11 +164,13 @@ export default {
             blankInstance,
             available,
             update: false,
-            userRepos
+            userRepos,
+            writing: false,
         }
     },
     methods: {
         writeInstance() {
+            this.writing = true;
             this.$STORAGE.socket.emit("instance:write", this.instance, (data) => {
                 let { error, msg } = data;
                 if (error) {
@@ -177,6 +179,7 @@ export default {
                     this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
                     this.$EVENT.emit("changeView", 0);
                 }
+                this.writing = false;
             });
         },
         getAvailableDomains() {

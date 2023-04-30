@@ -54,7 +54,7 @@
                     v-if="screen.width >= 770 || view != 0">
                     <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
                     <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId"
-                        :openInstanceUpdateView="openInstanceUpdateView"></instanceView>
+                        :openInstanceUpdateView="openInstanceUpdateView" ref="instanceView"></instanceView>
                     <redirectUpdateView v-if="view == 2" ref="redirectUpdateView"></redirectUpdateView>
                     <instanceUpdateView ref="instanceUpdateView" v-if="view == 3"></instanceUpdateView>
                 </div>
@@ -175,6 +175,9 @@ export default {
         openInstanceView(id) {
             this.changeView(1);
             this.selectedInstanceId = id;
+            Vue.nextTick(() => {
+                this.$refs.instanceView?.update();
+            });
         },
         openInstanceUpdateView(i) {
             this.changeView(3);

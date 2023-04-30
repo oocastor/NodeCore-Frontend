@@ -18,28 +18,31 @@
                     <i class="pi pi-cog text-xl text-gray-400 cursor-pointer"
                         @click="openInstanceUpdateView(selectedInstance);"></i>
                     <i class="pi pi-times text-xl text-gray-400 cursor-pointer"
-                        @click="this.$EVENT.emit('changeView', 0);"></i>
+                        @click=" this.$EVENT.emit('changeView', 0); "></i>
                 </div>
             </div>
-            <div class="flex gap-2 align-item-center" :style="{ 'opacity': selectedInstance.network.isAccessable ? 1 : 0 }">
-                <i class="pi pi-link text-300"></i>
-                <a class="no-underline text-gray-400 font-mono"
-                    :href="`https://${selectedInstance.network.redirect.sub}.${selectedInstance.network.redirect.domain}`">{{
+            <div class="flex align-item-center">
+                <div class="flex gap-2 align-item-center" v-if=" selectedInstance.network.isAccessable ">
+                    <i class="pi pi-link text-300"></i>
+                    <a class="no-underline text-gray-400 font-mono"
+                        :href=" `https://${selectedInstance.network.redirect.sub}.${selectedInstance.network.redirect.domain}` ">{{
                         selectedInstance.network.redirect.sub }}.{{ selectedInstance.network.redirect.domain }}</a>
+                </div>
+                <p class="text-sm ml-auto m-0 text-gray-400 font-mono">Version {{ selectedInstance.version }}</p>
             </div>
             <span class="p-buttonset w-full flex">
-                <Button :loading="selectedInstance.status == 2" :label="selectedInstance.status == 0 ? 'Start' : 'Restart'"
+                <Button :loading=" selectedInstance.status == 2 " :label=" selectedInstance.status == 0 ? 'Start' : 'Restart' "
                     icon="pi pi-refresh" class="p-button-sm flex-auto bg-white-a15 text-white"
-                    @click="startAction(this.selectedInstance.status == 1 ? 2 : 1);"></Button>
+                    @click=" startAction(this.selectedInstance.status == 1 ? 2 : 1); "></Button>
                 <Button label="Stop" icon="pi pi-stop" class="p-button-sm flex-auto bg-white-a15 text-white"
-                    @click="startAction(0);"></Button>
+                    @click=" startAction(0); "></Button>
                 <Button label="Update" icon="pi pi-download" class="p-button-sm flex-auto bg-white-a15 text-white"
-                    @click="startAction(3);"></Button>
+                    @click=" startAction(3); "></Button>
             </span>
             <p class="m-0 mt-2 text-sm font-mono">Stats</p>
             <div class="flex gap-2">
-                <countItem str="RAM" :num="0" color="var(--white)"></countItem>
-                <countItem str="CPU" :num="0" color="var(--white)"></countItem>
+                <countItem str="RAM" :num=" 0 " color="var(--white)"></countItem>
+                <countItem str="CPU" :num=" 0 " color="var(--white)"></countItem>
             </div>
             <p class="m-0 mt-2 text-sm font-mono">Logs</p>
             <Textarea class="w-full h-10rem bg-white-a05 border-none" autoResize="false" readonly></Textarea>
@@ -90,7 +93,6 @@ export default {
         }
     },
     created() {
-        this.update();
         this.$EVENT.on("update", this.update);
     },
     unmounted() {
