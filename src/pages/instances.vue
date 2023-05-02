@@ -190,10 +190,9 @@ export default {
             this.$toast.add({ severity, summary: title, detail: msg, life: 3000 });
         },
         showNotification(ack) {
-            let msgs = Array.isArray(ack) ? ack : [ack];
+            let msgs = Array.isArray(ack.msg) ? ack.msg : [ack.msg];
             msgs.forEach(m => {
-                let { error, msg } = m;
-                this.$toast.add({ severity: error ? "error" : "success", summary: error ? "Error" : "Success", detail: msg, life: 3000 });
+                this.$toast.add({ severity: ack.error ? "error" : "success", summary: ack.error ? "Error" : "Success", detail: m, life: 3000 });
             })
         },
         update() {

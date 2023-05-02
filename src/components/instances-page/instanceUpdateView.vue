@@ -1,8 +1,8 @@
 <template>
-    <p class="m-0 mb-3 text-200 text-overflow">{{ !update ? "Instance" : `Instance (${instance.name})` }}</p>
+    <p class="m-0 mb-3 text-200 text-overflow">{{ instance.method == 'CREATE' ? "Instance" : `Instance (${instance.name})` }}</p>
     <div class="w-full flex flex-column gap-3 surface-card border-round p-3">
         <div class="flex justify-content-between">
-            <p class="text-3xl m-0 font-bold">{{ !update ? "New Instance" : "Update Instance" }}</p>
+            <p class="text-3xl m-0 font-bold">{{ instance.method == 'CREATE' ? "New Instance" : "Edit Instance" }}</p>
             <div class="flex gap-3">
                 <i class="pi pi-times text-xl text-gray-400 cursor-pointer" @click="cancelCreationProcess($event)"></i>
             </div>
@@ -13,7 +13,7 @@
                 <InputText v-model="instance.name" type="text" class="w-full" style="height: 40px;" placeholder="Tomato">
                 </InputText>
             </div>
-            <div v-if="!update">
+            <div v-if="instance.method == 'CREATE'">
                 <p class="mt-3 mb-2 text-sm">Import</p>
                 <div class="flex align-items-center gap-2">
                     <Button label="Github" @click="$refs.githubRepoSearch.toggle($event);"></Button>
@@ -73,7 +73,7 @@
             <Textarea class="w-full h-10rem surface-50 border-none font-mono" autoResize="false" autocorrect="off"
                 spellcheck="false" v-model=" _ENV "></Textarea>
         </Fieldset>
-        <Fieldset :toggleable=" true " :collapsed=" true " v-if=" update ">
+        <Fieldset :toggleable=" true " :collapsed=" true " v-if=" instance.method == 'UPDATE' ">
             <template #legend>
                 <p class="m-0 text-red-500">Critical Area</p>
             </template>
@@ -84,7 +84,7 @@
             </div>
         </Fieldset>
         <div class="flex justify-content-end gap-2">
-            <Button label="Save" @click=" writeInstance(); " :loading="writing"></Button>
+            <Button label="Save" @click=" writeInstance(); " :loading=" writing "></Button>
             <Button label="Cancel" class="surface-100 text-white hover:surface-50"
                 @click=" cancelCreationProcess($event) "></Button>
             <ConfirmPopup></ConfirmPopup>
@@ -155,7 +155,7 @@ export default {
             },
             cmd: [],
             env: [],
-            method: this.update ? "UPDATE" : "CREATE"
+            method: "CREATE"
         };
         //blank instance obj
         let blankInstance = JSON.parse(JSON.stringify(instance));
@@ -164,29 +164,25 @@ export default {
             instance,
             blankInstance,
             available,
-            update: false,
             userRepos,
             writing: false,
         }
     },
     methods: {
         writeInstance() {
+            console.log(this.instance);
             this.writing = true;
             this.$STORAGE.socket.emit("instance:write", this.instance, (data) => {
-                let { error, msg } = data;
-                if (error) {
-                    this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });
-                } else {
-                    this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
-                    this.$EVENT.emit("changeView", 0);
-                }
+                let { error } = data;
+                this.$EVENT.emit("showNotification", data);
+                if (!error) this.$EVENT.emit("changeView", 0);
                 this.writing = false;
             });
         },
         getAvailableDomains() {
             this.$STORAGE.socket.emit("domain:list", (data) => {
                 this.available = data.payload;
-                if (!this.update) this.instance.network.redirect.domain = this.available[0];
+                if (!this.instance.method == 'UPDATE') this.instance.network.redirect.domain = this.available[0];
             });
         },
         getUnusedPort() {
@@ -213,13 +209,9 @@ export default {
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => {
                     this.$STORAGE.socket.emit("instance:delete", this.instance, (data) => {
-                        let { error, msg } = data;
-                        if (error) {
-                            this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });
-                        } else {
-                            this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
-                            this.$EVENT.emit("changeView", 0);
-                        }
+                        let { error } = data;
+                        this.$EVENT.emit("showNotification", data);
+                        if (!error) this.$EVENT.emit("changeView", 0);
                     });
                 }
             });
@@ -230,12 +222,12 @@ export default {
         setPayload(i) {
             if (i) {
                 this.instance = JSON.parse(JSON.stringify(i)); //deep copy
+                this.instance.method = "UPDATE";
             } else {
                 this.reset();
                 this.resetNetworkTab();
                 delete this.instance._id;
             }
-            this.update = i != undefined;
         },
         resetNetworkTab() {
             this.getUnusedPort();
