@@ -41,11 +41,11 @@
             </span>
             <p class="m-0 mt-2 text-sm font-mono">Stats</p>
             <div class="flex gap-2">
-                <countItem str="RAM" :num=" 0 " color="var(--white)"></countItem>
-                <countItem str="CPU" :num=" 0 " color="var(--white)"></countItem>
+                <countItem str="RAM" :num="selectedInstance.pm2?.monit.memory || 0" color="var(--white)"></countItem>
+                <countItem str="CPU" :num="selectedInstance.pm2?.monit.cpu || 0" color="var(--white)"></countItem>
             </div>
             <p class="m-0 mt-2 text-sm font-mono">Logs</p>
-            <Textarea class="w-full h-10rem bg-white-a05 border-none" autoResize="false" readonly></Textarea>
+            <Textarea class="w-full h-10rem bg-white-a05 border-none overflow-y-scroll font-mono" autoResize="false" readonly :value="selectedInstance.pm2?.log || ''"></Textarea>
         </div>
     </div>
 </template>
