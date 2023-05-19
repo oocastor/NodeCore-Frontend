@@ -55,6 +55,29 @@
                 <InputText class="w-full" v-model="path" spellcheck="false"></InputText>
                 <Button label="Save" icon="pi pi-save" class="w-full mt-4" @click="setPath();"></Button>
             </Fieldset>
+            <Fieldset legend="Proxy">
+                <p class="-mt-1 mb-4 font-italic">Configure the proxy which handels the redirects to the instances. SSL Encryption by <a class="text-primary no-underline" href="https://git.rootprojects.org/root/greenlock.js.git">Greenlock/Let's Encrypt</a>.</p>
+                <div class="flex align-items-center justify-content-between my-4">
+                    <p class="text-sm m-0">Proxy</p>
+                    <ToggleButton v-model="proxy.enabled"></ToggleButton>
+                </div>
+                <div class="flex align-items-center justify-content-between my-4">
+                    <p class="text-sm m-0">Cluster</p>
+                    <InputSwitch v-model="proxy.cluster" :disabled="!this.proxy.enabled"></InputSwitch>
+                </div>
+                <div class="flex align-items-center justify-content-between my-4">
+                    <p class="text-sm m-0">Worker</p>
+                    <div class="flex align-items-center">
+                        <Button icon="pi pi-minus" style="transform: scale(0.7);" :disabled="!proxy.cluster || !this.proxy.enabled" @click="() => {if(proxy.workers > 1) proxy.workers--}"></Button>
+                        <p class="mx-3 text-sm text-300">{{ proxy.workers }}</p>
+                        <Button icon="pi pi-plus" style="transform: scale(0.7);" :disabled="!proxy.cluster || !this.proxy.enabled" @click="proxy.workers++"></Button>
+                    </div>
+                </div>
+                
+                <p class="text-sm">Maintainer Email</p>
+                <InputText class="w-full" spellcheck="false" v-model="proxy.maintainerEmail" :disabled="!this.proxy.enabled"></InputText>
+                <Button label="Save" icon="pi pi-save" class="w-full mt-4" @click="updateProxy"></Button>
+            </Fieldset>
         </div>
     </Dialog>
 </template>
@@ -65,6 +88,8 @@ import Fieldset from 'primevue/fieldset';
 import OverlayPanel from 'primevue/overlaypanel';
 import InputText from "primevue/inputtext";
 import Button from 'primevue/button';
+import InputSwitch from 'primevue/inputswitch';
+import ToggleButton from 'primevue/togglebutton';
 
 export default {
     data() {
@@ -80,7 +105,13 @@ export default {
                 user: "",
                 pwd: ""
             },
-            path: ""
+            path: "",
+            proxy: {
+                maintainerEmail: "",
+                cluster: false,
+                workers: 1,
+                enabled: false
+            }
         }
     },
     components: {
@@ -88,7 +119,14 @@ export default {
         Fieldset,
         OverlayPanel,
         InputText,
-        Button
+        Button,
+        InputSwitch,
+        ToggleButton
+    },
+    watch: {
+        "proxy.cluster"() {
+            if(!this.proxy.cluster) this.proxy.workers = 1;
+        }
     },
     methods: {
         fetchAvailableDomains() {
@@ -154,6 +192,19 @@ export default {
                 }
             });
         },
+        updateProxy() {
+            this.$STORAGE.socket.emit("proxy:set", this.proxy, (data) => {
+                let { error, msg } = data;
+                if (error) {
+                    this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });
+                } else {
+                    this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
+                }
+            });
+        },
+        fetchProxy() {
+            this.$STORAGE.socket.emit("proxy:get", (data) => this.proxy = data.payload);
+        },
         toggleSettingsDialog(b = undefined) {
             if (b) this.settingsDialog = b
             else this.settingsDialog = !this.settingsDialog;
@@ -163,6 +214,7 @@ export default {
         this.fetchAvailableDomains();
         this.fetchGithubAcc();
         this.fetchPath();
+        this.fetchProxy();
     }
 }
 </script>

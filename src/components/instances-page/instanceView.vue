@@ -7,6 +7,7 @@
                     <p class="text-3xl m-0 font-bold text-overflow">{{ selectedInstance.name }}</p>
                     <Chip label="running" icon="pi pi-check" class="text-xs bg-green-600"
                         v-if="selectedInstance.status == 1"></Chip>
+                        <Chip label="stopped" icon="pi pi-exclamation-triangle" class="text-xs bg-red-600" v-if="selectedInstance.status == -1"></Chip>
                     <Chip label="stopped" icon="pi pi-times" class="text-xs bg-red-600" v-if="selectedInstance.status == 0">
                     </Chip>
                     <Chip label="restarting" icon="pi pi-stopwatch" class="text-xs bg-orange-600"
