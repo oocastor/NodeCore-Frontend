@@ -2,7 +2,7 @@ import SocketIO from 'socket.io-client';
 import router from "@/router/index";
 import {app} from "@/main";
 
-const socket = SocketIO('http://localhost:3001', {
+const socket = SocketIO('http://5.230.66.53:1001', {
     withCredentials: true
 });
 

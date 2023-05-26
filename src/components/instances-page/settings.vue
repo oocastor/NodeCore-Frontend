@@ -12,15 +12,13 @@
             </Fieldset>
             <Fieldset legend="Github">
                 <p class="-mt-1 mb-4 font-italic">Add your github account to pull project data directly from your repos.</p>
-                <p class="text-sm">Username</p>
-                <InputText class="w-full" v-model="github.user"></InputText>
                 <p class="flex text-sm">PAT <span class="ml-auto text-400">(personal access token)</span></p>
                 <InputText class="w-full" v-model="github.pat" type="password"></InputText>
                 <div class="flex gap-2 mt-4">
                     <Button label="Save" icon="pi pi-save" class="w-6" @click="updateGithubAcc();"></Button>
                     <Button label="Delete" icon="pi pi-trash" type="password"
                     class="w-6 bg-red-500 text-white border-none" @click="{
-                        this.github = {user: '', pat: ''};
+                        this.github = {pat: ''};
                         updateGithubAcc();
                     }"></Button>
                 </div>
@@ -56,7 +54,7 @@
                 <Button label="Save" icon="pi pi-save" class="w-full mt-4" @click="setPath();"></Button>
             </Fieldset>
             <Fieldset legend="Proxy">
-                <p class="-mt-1 mb-4 font-italic">Configure the proxy which handels the redirects to the instances. SSL Encryption by <a class="text-primary no-underline" href="https://git.rootprojects.org/root/greenlock.js.git">Greenlock/Let's Encrypt</a>.</p>
+                <p class="-mt-1 mb-4 font-italic">Configure the proxy which handels the redirects to the instances. SSL Encryption by <a class="text-primary no-underline" href="https://www.npmjs.com/package/acme-client">acme-client.js/Let's Encrypt</a>.</p>
                 <div class="flex align-items-center justify-content-between my-4">
                     <p class="text-sm m-0">Proxy</p>
                     <ToggleButton v-model="proxy.enabled"></ToggleButton>
@@ -98,7 +96,6 @@ export default {
             availableDomains: [],
             newDomainInput: "",
             github: {
-                user: "",
                 pat: ""
             },
             account: {
