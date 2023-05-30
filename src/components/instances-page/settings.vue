@@ -59,19 +59,6 @@
                     <p class="text-sm m-0">Proxy</p>
                     <ToggleButton v-model="proxy.enabled"></ToggleButton>
                 </div>
-                <div class="flex align-items-center justify-content-between my-4">
-                    <p class="text-sm m-0">Cluster</p>
-                    <InputSwitch v-model="proxy.cluster" :disabled="!this.proxy.enabled"></InputSwitch>
-                </div>
-                <div class="flex align-items-center justify-content-between my-4">
-                    <p class="text-sm m-0">Worker</p>
-                    <div class="flex align-items-center">
-                        <Button icon="pi pi-minus" style="transform: scale(0.7);" :disabled="!proxy.cluster || !this.proxy.enabled" @click="() => {if(proxy.workers > 1) proxy.workers--}"></Button>
-                        <p class="mx-3 text-sm text-300">{{ proxy.workers }}</p>
-                        <Button icon="pi pi-plus" style="transform: scale(0.7);" :disabled="!proxy.cluster || !this.proxy.enabled" @click="proxy.workers++"></Button>
-                    </div>
-                </div>
-                
                 <p class="text-sm">Maintainer Email</p>
                 <InputText class="w-full" spellcheck="false" v-model="proxy.maintainerEmail" :disabled="!this.proxy.enabled"></InputText>
                 <Button label="Save" icon="pi pi-save" class="w-full mt-4" @click="updateProxy"></Button>
@@ -86,7 +73,6 @@ import Fieldset from 'primevue/fieldset';
 import OverlayPanel from 'primevue/overlaypanel';
 import InputText from "primevue/inputtext";
 import Button from 'primevue/button';
-import InputSwitch from 'primevue/inputswitch';
 import ToggleButton from 'primevue/togglebutton';
 
 export default {
@@ -105,8 +91,6 @@ export default {
             path: "",
             proxy: {
                 maintainerEmail: "",
-                cluster: false,
-                workers: 1,
                 enabled: false
             }
         }
@@ -117,7 +101,6 @@ export default {
         OverlayPanel,
         InputText,
         Button,
-        InputSwitch,
         ToggleButton
     },
     watch: {
