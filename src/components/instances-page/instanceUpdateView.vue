@@ -182,7 +182,7 @@ export default {
         getAvailableDomains() {
             this.$STORAGE.socket.emit("domain:list", (data) => {
                 this.available = data.payload;
-                if (!this.instance.method == 'UPDATE') this.instance.network.redirect.domain = this.available[0];
+                if (this.instance.method != 'UPDATE') this.instance.network.redirect.domain = this.available[0];
             });
         },
         getUnusedPort() {

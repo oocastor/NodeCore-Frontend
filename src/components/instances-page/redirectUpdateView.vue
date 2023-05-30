@@ -1,8 +1,10 @@
 <template>
-    <p class="m-0 mb-3 text-200 text-overflow">{{ update ? `Redirect (${redirect.name})` : "Redirect"}}</p>
+    <p class="m-0 mb-3 text-200 text-overflow">{{ this.redirect.method == "UPDATE" ? `Redirect (${redirect.name})` :
+        "Redirect" }}</p>
     <div class="w-full flex flex-column p-3 gap-3 surface-card border-round">
         <div class="flex justify-content-between">
-            <p class="text-3xl m-0 font-bold">{{ !update ? "New Redirect" : "Update Redirect" }}</p>
+            <p class="text-3xl m-0 font-bold">{{ this.redirect.method != "UPDATE" ? "New Redirect" : "Update Redirect" }}
+            </p>
             <div class="flex gap-3">
                 <i class="pi pi-times text-xl text-gray-400 cursor-pointer" @click="cancelCreationProcess($event)"></i>
             </div>
@@ -33,7 +35,8 @@
                 <div>
                     <p class="m-0 mb-2 text-sm">Port</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
-                        <InputNumber v-model="redirect.network.port" :useGrouping="false" type="text" class="flex-auto" style="height: inherit;">
+                        <InputNumber v-model="redirect.network.port" :useGrouping="false" type="text" class="flex-auto"
+                            style="height: inherit;">
                         </InputNumber>
                         <Button label="Unused" class="p-button-sm" style="height: inherit;"
                             @click="getUnusedPort();"></Button>
@@ -41,7 +44,7 @@
                 </div>
             </div>
         </Fieldset>
-        <Fieldset :toggleable="true" :collapsed="true" v-if="update">
+        <Fieldset :toggleable="true" :collapsed="true" v-if="this.redirect.method == 'UPDATE'">
             <template #legend>
                 <p class="m-0 text-red-500">Critical Area</p>
             </template>
@@ -52,7 +55,7 @@
             </div>
         </Fieldset>
         <div class="flex justify-content-end gap-2">
-            <Button label="Save" @click="writeRedirect()"></Button>
+            <Button label="Save" @click="writeRedirect()" :loading="writing"></Button>
             <Button label="Cancel" class="surface-100 text-white hover:surface-50"
                 @click="cancelCreationProcess($event)"></Button>
             <ConfirmPopup></ConfirmPopup>
@@ -93,6 +96,7 @@ export default {
 
             },
             status: 0,
+            method: "CREATE"
         }
         //blank redirect obj
         let blankRedirect = JSON.parse(JSON.stringify(redirect));
@@ -101,25 +105,23 @@ export default {
             redirect,
             blankRedirect,
             available,
-            update: false
+            writing: false
         }
     },
     methods: {
         writeRedirect() {
+            this.writing = true;
             this.$STORAGE.socket.emit("redirect:write", this.redirect, (data) => {
-                let { error, msg } = data;
-                if (error) {
-                    this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });
-                } else {
-                    this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
-                    this.$EVENT.emit("changeView", 0);
-                }
+                let { error } = data;
+                this.$EVENT.emit("showNotification", data);
+                if (!error) this.$EVENT.emit("changeView", 0);
+                this.writing = false;
             });
         },
         getAvailableDomains() {
             this.$STORAGE.socket.emit("domain:list", (data) => {
                 this.available = data.payload;
-                if (!this.update) this.redirect.network.domain = this.available[0];
+                if (this.redirect.method != "UPDATE") this.redirect.network.domain = this.available[0];
             });
         },
         getUnusedPort() {
@@ -143,13 +145,9 @@ export default {
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => {
                     this.$STORAGE.socket.emit("redirect:delete", this.redirect, (data) => {
-                        let { error, msg } = data;
-                        if (error) {
-                            this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });
-                        } else {
-                            this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
-                            this.$EVENT.emit("changeView", 0);
-                        }
+                        let { error } = data;
+                        this.$EVENT.emit("showNotification", data);
+                        if (!error) this.$EVENT.emit("changeView", 0);
                     });
                 }
             });
@@ -160,13 +158,13 @@ export default {
         setPayload(re) {
             if (re) {
                 this.redirect = JSON.parse(JSON.stringify(re)); //deep copy
+                this.redirect.method = "UPDATE";
             } else {
                 this.reset();
                 this.getUnusedPort();
                 this.redirect.network.domain = this.available[0];
                 delete this.redirect._id;
             }
-            this.update = re != undefined;
         }
     },
     created() {
