@@ -16,11 +16,11 @@
                 <InputText class="w-full" v-model="github.pat" type="password"></InputText>
                 <div class="flex gap-2 mt-4">
                     <Button label="Save" icon="pi pi-save" class="w-6" @click="updateGithubAcc();"></Button>
-                    <Button label="Delete" icon="pi pi-trash" type="password"
-                    class="w-6 bg-red-500 text-white border-none" @click="{
-                        this.github = {pat: ''};
-                        updateGithubAcc();
-                    }"></Button>
+                    <Button label="Delete" icon="pi pi-trash" type="password" class="w-6 bg-red-500 text-white border-none"
+                        @click="{
+                            this.github = { pat: '' };
+                            updateGithubAcc();
+                        }"></Button>
                 </div>
             </Fieldset>
             <Fieldset legend="Domains">
@@ -54,13 +54,23 @@
                 <Button label="Save" icon="pi pi-save" class="w-full mt-4" @click="setPath();"></Button>
             </Fieldset>
             <Fieldset legend="Proxy">
-                <p class="-mt-1 mb-4 font-italic">Configure the proxy which handels the redirects to the instances. SSL Encryption by <a class="text-primary no-underline" href="https://www.npmjs.com/package/acme-client">acme-client.js/Let's Encrypt</a>.</p>
+                <p class="-mt-1 mb-4 font-italic">Configure the proxy which handels the redirects to the instances. SSL
+                    Encryption by <a class="text-primary no-underline"
+                        href="https://www.npmjs.com/package/acme-client">acme-client.js/Let's Encrypt</a>.</p>
                 <div class="flex align-items-center justify-content-between my-4">
                     <p class="text-sm m-0">Proxy</p>
                     <ToggleButton v-model="proxy.enabled"></ToggleButton>
                 </div>
+                <div class="flex align-items-center justify-content-between my-4">
+                    <p class="text-sm m-0">Certificates</p>
+                    <div class="p-inputgroup w-min">
+                        <Button label="Force" class="bg-gray-700 text-white border-none" @click="updateCerts(true);"></Button>
+                        <Button label="Update" @click="updateCerts(false);"></Button>
+                    </div>
+                </div>
                 <p class="text-sm">Maintainer Email</p>
-                <InputText class="w-full" spellcheck="false" v-model="proxy.maintainerEmail" :disabled="!this.proxy.enabled"></InputText>
+                <InputText class="w-full" spellcheck="false" v-model="proxy.maintainerEmail"
+                    :disabled="!this.proxy.enabled"></InputText>
                 <Button label="Save" icon="pi pi-save" class="w-full mt-4" @click="updateProxy"></Button>
             </Fieldset>
         </div>
@@ -105,7 +115,7 @@ export default {
     },
     watch: {
         "proxy.cluster"() {
-            if(!this.proxy.cluster) this.proxy.workers = 1;
+            if (!this.proxy.cluster) this.proxy.workers = 1;
         }
     },
     methods: {
@@ -184,6 +194,16 @@ export default {
         },
         fetchProxy() {
             this.$STORAGE.socket.emit("proxy:get", (data) => this.proxy = data.payload);
+        },
+        updateCerts(force = false) {
+            this.$STORAGE.socket.emit("proxy:updateCerts", { force }, (data) => {
+                let { error, msg } = data;
+                if (error) {
+                    this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });
+                } else {
+                    this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
+                }
+            });
         },
         toggleSettingsDialog(b = undefined) {
             if (b) this.settingsDialog = b
