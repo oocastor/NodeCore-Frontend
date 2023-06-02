@@ -1,8 +1,8 @@
 <template>
     <div class="flex h-full align-items-center justify-content-center">
         <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6 max-w-30rem">
-            <div class="text-center text-900 text-6xl font-medium font-grandHotel">nodeup</div>
-            <Divider class="mb-3" style="background-color: white; height: 1px;"></Divider>
+            <div class="text-5xl font-monomaniac mb-2 text-center">deploy<span class="text-primary">Node</span></div>
+            <Divider class="mb-3" style="background-color: rgba(255, 255, 255, 0.25); height: 1px;"></Divider>
             <div class="bg-red-600 py-3 px-2 mb-3 flex align-items-center gap-2 fadein animation-duration-300" v-if="error">
                 <i class="pi pi-info-circle" style="font-size: 2rem"></i>
                 <p class="m-0">{{ msg }}</p>

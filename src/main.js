@@ -19,8 +19,8 @@ import 'primeicons/primeicons.css';
 import '/node_modules/primeflex/primeflex.css';
 
 //import 'primevue/resources/themes/md-dark-deeppurple/theme.css';
-//import 'primevue/resources/themes/arya-green/theme.css';
-import 'primevue/resources/themes/soho-dark/theme.css';
+import 'primevue/resources/themes/arya-green/theme.css';
+// import 'primevue/resources/themes/soho-dark/theme.css';
 
 const app = createApp(App);
 
