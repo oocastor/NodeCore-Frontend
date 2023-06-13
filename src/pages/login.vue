@@ -53,11 +53,27 @@ export default {
         }
     },
 
+    methods: {
+        enter(event) {
+            if(event.key === "Enter") {
+                this.loginWithPw(this.user);
+            }
+        }
+    },
+
     mounted() {
         this.$EVENT.on("loginError", (msg) => {
             this.msg = msg;
             this.error = true;
         });
+    },
+
+    created() {
+        document.addEventListener("keydown", this.enter);
+    },
+
+    unmounted() {
+        document.removeEventListener("keydown", this.enter);
     },
 
     components: {
