@@ -35,7 +35,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     Vue.nextTick(() => {
-        document.title = `nodeup | ${to.meta.title}`;
+        document.title = `NodeCore | ${to.meta.title}`;
     });
     if(!app.config.globalProperties.$STORAGE.authed && to.path !== "/login") {
         next({ path: "/login" })
