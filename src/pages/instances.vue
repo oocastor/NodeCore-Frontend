@@ -2,7 +2,7 @@
     <div class="flex flex-column h-full" style="min-width: 400px;">
 
         <div class="w-full surface-card flex justify-content-between align-items-center px-3" style="min-height: 60px;">
-            <div class="text-2xl font-monomaniac mb-2">deploy<span class="text-primary">Node</span></div>
+            <div class="text-2xl font-monomaniac mb-2">Node<span class="text-primary">Core</span></div>
             <Avatar class="surface-section cursor-pointer" icon="pi pi-user" @click="toggleAvatarMenu"></Avatar>
         </div>
         <Menu ref="menu" :model="items" :popup="true"></Menu>
