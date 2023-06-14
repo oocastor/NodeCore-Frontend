@@ -18,13 +18,27 @@
                 <p class="mt-3 mb-2 text-sm">Import</p>
                 <div class="flex align-items-center gap-2">
                     <Button label="Github" @click="$refs.githubRepoSearch.toggle($event);"></Button>
-                    <!-- <Button label="Upload" disabled></Button> -->
+                    <Button label="Link" class="surface-100 border-100 text-white hover:surface-50"
+                        @click="$refs.gitLinkInput.toggle($event)"></Button>
                     <p class="ml-auto text-400 m-0">{{ instance.git?.name ? instance.git.name : "empty" }}</p>
                 </div>
                 <OverlayPanel ref="githubRepoSearch" style="max-height: 400px; overflow: hidden;">
                     <p class="mt-0">Select Repo</p>
                     <Listbox filter :options="userRepos" optionLabel="name" style="height: 300px; overflow-y: scroll;"
                         v-model="instance.git"></Listbox>
+                </OverlayPanel>
+                <OverlayPanel ref="gitLinkInput">
+                    <p class="mt-0">Enter Link</p>
+                    <div class="flex align-items-center gap-2">
+                        <InputText v-model="linkInput"></InputText>
+                        <Button icon="pi pi-check" @click="() => {
+                            $refs.gitLinkInput.hide();
+                            instance.git = linkInput == '' ? '' : {
+                                name: linkInput,
+                                url: linkInput
+                            }
+                        }"></Button>
+                    </div>
                 </OverlayPanel>
             </div>
         </Fieldset>
@@ -40,8 +54,8 @@
                 <div>
                     <p class="m-0 mb-2 text-sm">Subdomain</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
-                        <InputText v-model="instance.network.redirect.sub" type="text" class="w-4"
-                            style="height: inherit;" :disabled="!instance.network.isAccessable" placeholder="tom">
+                        <InputText v-model="instance.network.redirect.sub" type="text" class="w-4" style="height: inherit;"
+                            :disabled="!instance.network.isAccessable" placeholder="tom">
                         </InputText>
                         <p>.</p>
                         <Dropdown v-model="instance.network.redirect.domain" :options="available" class="w-8"
@@ -86,7 +100,7 @@
         </Fieldset>
         <div class="flex justify-content-end gap-2">
             <Button label="Save" @click=" writeInstance();" :loading="writing"></Button>
-            <Button label="Cancel" class="surface-100 text-white hover:surface-50"
+            <Button label="Cancel" class="surface-100 border-100 text-white hover:surface-50"
                 @click=" cancelCreationProcess($event)"></Button>
             <ConfirmPopup></ConfirmPopup>
         </div>
@@ -253,7 +267,7 @@ export default {
         },
         fetchProxySettings() {
             this.$STORAGE.socket.emit("proxy:get", (data) => this.proxy = data.payload);
-        },
+        }
     },
     created() {
         this.fetchProxySettings();
