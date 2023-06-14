@@ -35,7 +35,8 @@
                             $refs.gitLinkInput.hide();
                             instance.git = linkInput == '' ? '' : {
                                 name: linkInput,
-                                url: linkInput
+                                uri: linkInput,
+                                extern: true
                             }
                         }"></Button>
                     </div>
