@@ -14,6 +14,11 @@
                 <InputText v-model="instance.name" type="text" class="w-full" style="height: 40px;" placeholder="Tomato">
                 </InputText>
             </div>
+            <div class="mt-3">
+                <p class="my-2 text-sm">Script <span class="text-200 ml-2">(optional)</span></p>
+                <InputText v-model="instance.script" type="text" class="w-full" style="height: 40px;" placeholder="app.js">
+                </InputText>
+            </div>
             <div v-if="instance.method == 'CREATE'">
                 <p class="mt-3 mb-2 text-sm">Import</p>
                 <div class="flex align-items-center gap-2">
@@ -34,7 +39,7 @@
                         <Button icon="pi pi-check" @click="() => {
                             $refs.gitLinkInput.hide();
                             instance.git = linkInput == '' ? '' : {
-                                name: linkInput,
+                                name: linkInput.slice(19),
                                 uri: linkInput,
                                 extern: true
                             }
@@ -174,7 +179,8 @@ export default {
             },
             cmd: [],
             env: [],
-            method: "CREATE"
+            method: "CREATE",
+            script: ""
         };
         //blank instance obj
         let blankInstance = JSON.parse(JSON.stringify(instance));
