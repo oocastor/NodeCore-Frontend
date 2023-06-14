@@ -1,32 +1,32 @@
 <template>
-    <Dialog v-model:visible="settingsDialog" modal :draggable="false" header="Settings"
+    <Dialog v-model:visible="settingsDialog" modal :draggable="false" :header="$t('main-page.settings-comp.settings')"
         style="max-width: 600px; width: 100%;">
         <div class="flex flex-column gap-4">
-            <Fieldset legend="Login">
-                <p class="-mt-1 mb-4 font-italic">Change your login data for this app.</p>
-                <p class="text-sm">Username</p>
+            <Fieldset :legend="$t('main-page.settings-comp.login')">
+                <p class="-mt-1 mb-4 font-italic">{{$t('main-page.settings-comp.login-text')}}</p>
+                <p class="text-sm">{{ $t('main-page.settings-comp.username') }}</p>
                 <InputText class="w-full" v-model="account.user"></InputText>
-                <p class="text-sm">Password</p>
+                <p class="text-sm">{{ $t('main-page.settings-comp.password') }}</p>
                 <InputText class="w-full" v-model="account.pwd" type="password"></InputText>
-                <Button label="Save" icon="pi pi-save" class="w-full mt-4" @click="updateNodeupLogin();"></Button>
+                <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4" @click="updateNodeupLogin();"></Button>
             </Fieldset>
-            <Fieldset legend="Github">
-                <p class="-mt-1 mb-4 font-italic">Add your github account to pull project data directly from your repos.</p>
-                <p class="flex text-sm">PAT <span class="ml-auto text-400">(personal access token)</span></p>
+            <Fieldset :legend="$t('main-page.settings-comp.github')">
+                <p class="-mt-1 mb-4 font-italic">{{ $t('main-page.settings-comp.github-text') }}</p>
+                <p class="flex text-sm">PAT <span class="ml-auto text-400">(Personal Access Token)</span></p>
                 <InputText class="w-full" v-model="github.pat" type="password"></InputText>
                 <div class="flex gap-2 mt-4">
-                    <Button label="Save" icon="pi pi-save" class="w-6" @click="updateGithubAcc();"></Button>
-                    <Button label="Delete" icon="pi pi-trash" type="password" class="w-6 bg-red-500 text-white border-none"
+                    <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-6" @click="updateGithubAcc();"></Button>
+                    <Button :label="$t('main-page.settings-comp.delete')" icon="pi pi-trash" type="password" class="w-6 bg-red-500 text-white border-none"
                         @click="{
                             this.github = { pat: '' };
                             updateGithubAcc();
                         }"></Button>
                 </div>
             </Fieldset>
-            <Fieldset legend="Domains">
+            <Fieldset :legend="$t('main-page.settings-comp.domains')">
                 <div class="flex justify-content-between align-items-center -mt-1 mb-4">
-                    <p class="w-8 font-italic">Add your managed domains which points to the server.</p>
-                    <Button icon="pi pi-plus" label="Add" class="p-button-sm"
+                    <p class="w-8 font-italic">{{$t('main-page.settings-comp.domains-text')}}</p>
+                    <Button icon="pi pi-plus" :label="$t('main-page.settings-comp.add')" class="p-button-sm"
                         @click="$refs.addDomOvPa.toggle($event);"></Button>
                 </div>
                 <div class="w-full flex flex-column justify-content-center gap-2">
@@ -40,38 +40,37 @@
                     <p class="m-0 text-300 font-italic" v-if="availableDomains.length == 0">- empty -</p>
                 </div>
                 <OverlayPanel ref="addDomOvPa">
-                    <p class="mt-0">Add domain</p>
+                    <p class="mt-0">{{$t('main-page.settings-comp.add-domain')}}</p>
                     <div class="p-inputgroup">
                         <InputText v-model="newDomainInput"></InputText>
                         <Button icon="pi pi-plus" @click="addNewDomain()"></Button>
                     </div>
                 </OverlayPanel>
             </Fieldset>
-            <Fieldset legend="Path">
-                <p class="-mt-1 mb-4 font-italic">Change the path, where the instances are stored.</p>
-                <p class="text-sm">Path</p>
+            <Fieldset :legend="$t('main-page.settings-comp.path')">
+                <p class="-mt-1 mb-4 font-italic">{{$t('main-page.settings-comp.path-text')}}</p>
+                <p class="text-sm">{{ $t('main-page.settings-comp.path') }}</p>
                 <InputText class="w-full" v-model="path" spellcheck="false"></InputText>
                 <Button label="Save" icon="pi pi-save" class="w-full mt-4" @click="setPath();"></Button>
             </Fieldset>
-            <Fieldset legend="Proxy">
-                <p class="-mt-1 mb-4 font-italic">Configure the proxy which handels the redirects to the instances. SSL
-                    Encryption by <a class="text-primary no-underline"
+            <Fieldset :legend="$t('main-page.settings-comp.proxy')">
+                <p class="-mt-1 mb-4 font-italic">{{$t('main-page.settings-comp.proxy-text')}}<a class="text-primary no-underline"
                         href="https://www.npmjs.com/package/acme-client">acme-client.js/Let's Encrypt</a>.</p>
                 <div class="flex align-items-center justify-content-between my-4">
-                    <p class="text-sm m-0">Proxy</p>
+                    <p class="text-sm m-0">{{ $t('main-page.settings-comp.proxy') }}</p>
                     <ToggleButton v-model="proxy.enabled"></ToggleButton>
                 </div>
                 <div class="flex align-items-center justify-content-between my-4">
-                    <p class="text-sm m-0">Certificates</p>
+                    <p class="text-sm m-0">{{$t('main-page.settings-comp.certificates')}}</p>
                     <div class="p-inputgroup w-min">
-                        <Button label="Force" class="bg-gray-700 text-white border-none" @click="updateCerts(true);"></Button>
-                        <Button label="Update" @click="updateCerts(false);"></Button>
+                        <Button :label="$t('main-page.settings-comp.force')" class="bg-gray-700 text-white border-none" @click="updateCerts(true);"></Button>
+                        <Button :label="$t('main-page.settings-comp.update')" @click="updateCerts(false);"></Button>
                     </div>
                 </div>
-                <p class="text-sm">Maintainer Email</p>
+                <p class="text-sm">{{$t('main-page.settings-comp.maintainer-mail')}}</p>
                 <InputText class="w-full" spellcheck="false" v-model="proxy.maintainerEmail"
                     :disabled="!this.proxy.enabled"></InputText>
-                <Button label="Save" icon="pi pi-save" class="w-full mt-4" @click="updateProxy"></Button>
+                <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4" @click="updateProxy"></Button>
             </Fieldset>
         </div>
     </Dialog>

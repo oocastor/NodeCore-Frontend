@@ -5,22 +5,22 @@
             <Divider class="mb-3" style="background-color: rgba(255, 255, 255, 0.25); height: 1px;"></Divider>
             <div class="bg-red-600 py-3 px-2 mb-3 flex align-items-center gap-2 fadein animation-duration-300" v-if="error">
                 <i class="pi pi-info-circle" style="font-size: 2rem"></i>
-                <p class="m-0">{{ msg }}</p>
+                <p class="m-0">{{ $t(msg) }}</p>
             </div>
             <div>
-                <label class="block text-900 font-medium mb-2">User</label>
+                <label class="block text-900 font-medium mb-2">{{ $t("login-page.user") }}</label>
                 <InputText type="text" v-model="user.user" class="w-full mb-3" />
 
-                <label class="block text-900 font-medium mb-2">Password</label>
+                <label class="block text-900 font-medium mb-2">{{ $t("login-page.password") }}</label>
                 <InputText type="password" v-model="user.pw" class="w-full mb-3" />
 
                 <div class="flex align-items-center justify-content-between mb-5">
                     <div class="flex align-items-center">
                         <Checkbox :binary="true" v-model="user.rememberMe" class="mr-2"></Checkbox>
-                        <label>Remember me</label>
+                        <label>{{ $t("login-page.remember") }}</label>
                     </div>
                 </div>
-                <Button label="Sign In" icon="pi pi-user" class="w-full" @click="loginWithPw(user);"></Button>
+                <Button :label="$t('login-page.sign_in')" icon="pi pi-user" class="w-full" @click="loginWithPw(user);"></Button>
             </div>
         </div>
     </div>

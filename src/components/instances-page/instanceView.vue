@@ -1,19 +1,19 @@
 <template>
     <div v-if="selectedInstance">
-        <p class="m-0 text-200 mb-3 text-overflow">Instance ({{ selectedInstance.name }})</p>
+        <p class="m-0 text-200 mb-3 text-overflow">{{ $t('main-page.instances-comp.instance') }} ({{ selectedInstance.name }})</p>
         <div class="w-full flex flex-column gap-3 surface-card border-round p-3">
             <div class="flex justify-content-between">
                 <div class="flex align-items-center gap-3 w-8">
                     <p class="text-3xl m-0 font-bold text-overflow">{{ selectedInstance.name }}</p>
-                    <Chip label="running" icon="pi pi-check" class="text-xs bg-green-600"
+                    <Chip :label="$t('main-page.instances-comp.running')" icon="pi pi-check" class="text-xs bg-green-600"
                         v-if="selectedInstance.status == 1"></Chip>
-                    <Chip label="stopped" icon="pi pi-exclamation-triangle" class="text-xs bg-red-600"
+                    <Chip :label="$t('main-page.instances-comp.stopped')" icon="pi pi-exclamation-triangle" class="text-xs bg-red-600"
                         v-if="selectedInstance.status == -1"></Chip>
-                    <Chip label="stopped" icon="pi pi-times" class="text-xs bg-red-600" v-if="selectedInstance.status == 0">
+                    <Chip :label="$t('main-page.instances-comp.stopped')" icon="pi pi-times" class="text-xs bg-red-600" v-if="selectedInstance.status == 0">
                     </Chip>
-                    <Chip label="restarting" icon="pi pi-stopwatch" class="text-xs bg-orange-600"
+                    <Chip :label="$t('main-page.instances-comp.restarting')" icon="pi pi-stopwatch" class="text-xs bg-orange-600"
                         v-if="selectedInstance.status == 2"></Chip>
-                    <Chip label="updating" icon="pi pi-stopwatch" class="text-xs bg-blue-600"
+                    <Chip :label="$t('main-page.instances-comp.updating')" icon="pi pi-stopwatch" class="text-xs bg-blue-600"
                         v-if="selectedInstance.status == 3"></Chip>
                 </div>
                 <div class="flex gap-3">
@@ -34,23 +34,23 @@
                         :href="`https://${selectedInstance.network.redirect.domain}`" v-else>{{
                             selectedInstance.network.redirect.domain }}</a>
                 </div>
-                <p class="text-sm ml-auto m-0 text-gray-400 font-mono">Version {{ selectedInstance.version }}</p>
+                <p class="text-sm ml-auto m-0 text-gray-400 font-mono">{{$t('main-page.instances-comp.version')}} {{ selectedInstance.version }}</p>
             </div>
             <span class="p-buttonset w-full flex">
-                <Button :loading="selectedInstance.status == 2" :label="selectedInstance.status == 0 ? 'Start' : 'Restart'"
+                <Button :loading="selectedInstance.status == 2" :label="selectedInstance.status == 0 ? $t('main-page.instances-comp.start') : $t('main-page.instances-comp.restart')"
                     icon="pi pi-refresh" class="p-button-sm flex-auto bg-white-a15 text-white"
                     @click=" startAction(this.selectedInstance.status == 1 ? 2 : 1);"></Button>
-                <Button label="Stop" icon="pi pi-stop" class="p-button-sm flex-auto bg-white-a15 text-white"
+                <Button :label="$t('main-page.instances-comp.stop')" icon="pi pi-stop" class="p-button-sm flex-auto bg-white-a15 text-white"
                     @click=" startAction(0);"></Button>
-                <Button label="Update" icon="pi pi-download" class="p-button-sm flex-auto bg-white-a15 text-white"
+                <Button :label="$t('main-page.instances-comp.update')" icon="pi pi-download" class="p-button-sm flex-auto bg-white-a15 text-white"
                     @click=" startAction(3);"></Button>
             </span>
-            <p class="m-0 mt-2 text-sm font-mono">Stats</p>
+            <p class="m-0 mt-2 text-sm font-mono">{{ $t('main-page.instances-comp.stats') }}</p>
             <div class="flex gap-2">
-                <countItem str="RAM" :num="selectedInstance.pm2?.monit.memory || 0" color="var(--white)"></countItem>
-                <countItem str="CPU" :num="selectedInstance.pm2?.monit.cpu || 0" color="var(--white)"></countItem>
+                <countItem :str="$t('main-page.ram')" :num="selectedInstance.pm2?.monit.memory || 0" color="var(--white)"></countItem>
+                <countItem :str="$t('main-page.cpu')" :num="selectedInstance.pm2?.monit.cpu || 0" color="var(--white)"></countItem>
             </div>
-            <p class="m-0 mt-2 text-sm font-mono">Logs</p>
+            <p class="m-0 mt-2 text-sm font-mono">{{ $t('main-page.instances-comp.logs') }}</p>
             <Textarea class="w-full h-10rem bg-white-a05 border-none overflow-y-scroll font-mono" autoResize="false"
                 readonly :value="selectedInstance.pm2?.log || ''"></Textarea>
         </div>

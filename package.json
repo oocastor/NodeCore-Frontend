@@ -1,5 +1,5 @@
 {
-  "name": "node-up",
+  "name": "node-core",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -15,6 +15,7 @@
     "socket.io-client": "^4.6.1",
     "vue": "^3.2.13",
     "vue-cookies": "^1.8.3",
+    "vue-i18n": "^9.2.2",
     "vue-router": "^4.0.13"
   },
   "devDependencies": {

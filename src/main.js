@@ -13,6 +13,7 @@ import ToastService from 'primevue/toastservice';
 import {socket} from "@/bin/socket.js";
 import {checkForAuthToken} from "@/bin/auth.js";
 import {Event} from "@/bin/event";
+import i18n from "@/bin/i18n";
 
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
@@ -31,6 +32,7 @@ app.use(VueCookies, { expires: '7d'})
 app.use(PrimeVue);
 app.use(ConfirmationService);
 app.use(ToastService);
+app.use(i18n);
 
 //TODO: rework storage method
 app.config.globalProperties.$STORAGE = {authed: false, socket};

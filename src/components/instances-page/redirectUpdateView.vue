@@ -1,30 +1,30 @@
 <template>
-    <p class="m-0 mb-3 text-200 text-overflow">{{ this.redirect.method == "UPDATE" ? `Redirect (${redirect.name})` :
-        "Redirect" }}</p>
+    <p class="m-0 mb-3 text-200 text-overflow">{{ this.redirect.method == "UPDATE" ? `${$t('main-page.redirects-comp.redirect')} (${redirect.name})` :
+        $t('main-page.redirects-comp.redirect') }}</p>
     <div class="w-full flex flex-column p-3 gap-3 surface-card border-round">
         <div class="flex justify-content-between">
-            <p class="text-3xl m-0 font-bold">{{ this.redirect.method != "UPDATE" ? "New Redirect" : "Update Redirect" }}
+            <p class="text-3xl m-0 font-bold">{{ this.redirect.method != "UPDATE" ? $t('main-page.redirects-comp.new-redirect') : $t('main-page.redirects-comp.update-redirect') }}
             </p>
             <div class="flex gap-3">
                 <i class="pi pi-times text-xl text-gray-400 cursor-pointer" @click="cancelCreationProcess($event)"></i>
             </div>
         </div>
-        <Fieldset legend="Info">
+        <Fieldset :legend="$t('main-page.redirects-comp.info')">
             <div class="flex justify-content-between align-items-center -mt-3">
-                <p class="ma-0 text-sm">Enabled</p>
+                <p class="ma-0 text-sm">{{ $t('main-page.enabled') }}</p>
                 <InputSwitch v-model="redirect.status" :trueValue="1" :falseValue="0"></InputSwitch>
             </div>
-            <p class="my-2 text-sm">Name</p>
-            <InputText v-model="redirect.name" type="text" class="w-full" style="height: 40px;" placeholder="Potato">
+            <p class="my-2 text-sm">{{ $t('main-page.redirects-comp.name') }}</p>
+            <InputText v-model="redirect.name" type="text" class="w-full" style="height: 40px;" :placeholder="$t('main-page.redirects-comp.placeholder-name')">
             </InputText>
         </Fieldset>
-        <Fieldset legend="Network">
+        <Fieldset :legend="$t('main-page.redirects-comp.network')">
             <div class="flex flex-column gap-3">
                 <div>
-                    <p class="m-0 mb-2 text-sm">Subdomain</p>
+                    <p class="m-0 mb-2 text-sm">{{ $t('main-page.instances-comp.subdomain') }}</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
                         <InputText v-model="redirect.network.sub" type="text" class="w-4" style="height: inherit;"
-                            placeholder="pot">
+                            placeholder="www">
                         </InputText>
                         <p>.</p>
                         <Dropdown v-model="redirect.network.domain" :options="available" class="w-8"
@@ -33,12 +33,12 @@
                     </div>
                 </div>
                 <div>
-                    <p class="m-0 mb-2 text-sm">Port</p>
+                    <p class="m-0 mb-2 text-sm">{{$t('main-page.redirects-comp.port')}}</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
                         <InputNumber v-model="redirect.network.port" :useGrouping="false" type="text" class="flex-auto"
                             style="height: inherit;">
                         </InputNumber>
-                        <Button label="Unused" class="p-button-sm" style="height: inherit;"
+                        <Button :label="$t('main-page.redirects-comp.unused')" class="p-button-sm" style="height: inherit;"
                             @click="getUnusedPort();"></Button>
                     </div>
                 </div>
@@ -46,17 +46,17 @@
         </Fieldset>
         <Fieldset :toggleable="true" :collapsed="true" v-if="this.redirect.method == 'UPDATE'">
             <template #legend>
-                <p class="m-0 text-red-500">Critical Area</p>
+                <p class="m-0 text-red-500">{{$t('main-page.redirects-comp.critical-area')}}</p>
             </template>
             <div class="flex align-items-center">
-                <p class="m-0 text-sm flex-auto">Delete current redirect</p>
-                <Button label="Delete" @click="deleteInstance($event)" icon="pi pi-trash"
+                <p class="m-0 text-sm flex-auto">{{ $t('main-page.redirects-comp.delete-redirect') }}</p>
+                <Button :label="$t('main-page.redirects-comp.delete')" @click="deleteInstance($event)" icon="pi pi-trash"
                     class="bg-red-500 text-white border-none"></Button>
             </div>
         </Fieldset>
         <div class="flex justify-content-end gap-2">
-            <Button label="Save" @click="writeRedirect()" :loading="writing"></Button>
-            <Button label="Cancel" class="surface-100 text-white hover:surface-50"
+            <Button :label="$t('main-page.redirects-comp.save')" @click="writeRedirect()" :loading="writing"></Button>
+            <Button :label="$t('main-page.redirects-comp.cancel')" class="surface-100 text-white hover:surface-50"
                 @click="cancelCreationProcess($event)"></Button>
             <ConfirmPopup></ConfirmPopup>
         </div>
