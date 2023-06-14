@@ -1,5 +1,6 @@
 <template>
-    <p class="m-0 mb-3 text-200 text-overflow">{{ instance.method == 'CREATE' ? "Instance" : `Instance (${instance.name})` }}</p>
+    <p class="m-0 mb-3 text-200 text-overflow">{{ instance.method == 'CREATE' ? "Instance" : `Instance (${instance.name})`
+    }}</p>
     <div class="w-full flex flex-column gap-3 surface-card border-round p-3">
         <div class="flex justify-content-between">
             <p class="text-3xl m-0 font-bold">{{ instance.method == 'CREATE' ? "New Instance" : "Edit Instance" }}</p>
@@ -22,16 +23,16 @@
                 </div>
                 <OverlayPanel ref="githubRepoSearch" style="max-height: 400px; overflow: hidden;">
                     <p class="mt-0">Select Repo</p>
-                    <Listbox filter :options=" userRepos " optionLabel="name" style="height: 300px; overflow-y: scroll;"
-                        v-model=" instance.git "></Listbox>
+                    <Listbox filter :options="userRepos" optionLabel="name" style="height: 300px; overflow-y: scroll;"
+                        v-model="instance.git"></Listbox>
                 </OverlayPanel>
             </div>
         </Fieldset>
-        <Fieldset :collapsed=" !instance.network.isAccessable ">
+        <Fieldset :collapsed="!instance.network.isAccessable">
             <template #legend>
                 <div class="flex align-items-center gap-2">
                     <p class="m-0">Public</p>
-                    <InputSwitch v-model=" instance.network.isAccessable " @click=" resetNetworkTab() "
+                    <InputSwitch v-model="readonlyAccessability" @click="toggleAccessability();"
                         style="transform: scale(0.85);" />
                 </div>
             </template>
@@ -39,54 +40,54 @@
                 <div>
                     <p class="m-0 mb-2 text-sm">Subdomain</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
-                        <InputText v-model=" instance.network.redirect.sub " type="text" class="w-4"
-                            style="height: inherit;" :disabled=" !instance.network.isAccessable " placeholder="tom">
+                        <InputText v-model="instance.network.redirect.sub" type="text" class="w-4"
+                            style="height: inherit;" :disabled="!instance.network.isAccessable" placeholder="tom">
                         </InputText>
                         <p>.</p>
-                        <Dropdown v-model=" instance.network.redirect.domain " :options=" available " class="w-8"
-                            style="height: inherit;" :disabled=" !instance.network.isAccessable "
-                            :loading=" !available.length ">
+                        <Dropdown v-model="instance.network.redirect.domain" :options="available" class="w-8"
+                            style="height: inherit;" :disabled="!instance.network.isAccessable"
+                            :loading="!available.length">
                         </Dropdown>
                     </div>
                 </div>
                 <div>
                     <p class="m-0 mb-2 text-sm">Port</p>
                     <div class="flex w-full align-items-center gap-2" style="height: 40px;">
-                        <InputNumber v-model=" instance.network.redirect.port " :useGrouping=" false " type="text"
-                            class="flex-auto" style="height: inherit;" :disabled=" !instance.network.isAccessable ">
+                        <InputNumber v-model="instance.network.redirect.port" :useGrouping="false" type="text"
+                            class="flex-auto" style="height: inherit;" :disabled="!instance.network.isAccessable">
                         </InputNumber>
                         <Button label="Unused" class="p-button-sm" style="height: inherit;"
-                            :disabled=" !instance.network.isAccessable " @click=" getUnusedPort(); "></Button>
+                            :disabled="!instance.network.isAccessable" @click=" getUnusedPort();"></Button>
                     </div>
                 </div>
             </div>
         </Fieldset>
-        <Fieldset legend="Cmd" :toggleable=" true " :collapsed=" true ">
+        <Fieldset legend="Cmd" :toggleable="true" :collapsed="true">
             <p class="m-0 mb-4 text-sm">Define required setup commands for your <Tag value="node.js"
                     class="text-white bg-gray-900"></Tag> instance.</p>
             <Textarea class="w-full h-10rem surface-50 border-none font-mono" autoResize="false" autocorrect="off"
-                spellcheck="false" v-model=" _CMD "></Textarea>
+                spellcheck="false" v-model="_CMD"></Textarea>
         </Fieldset>
-        <Fieldset legend=".env" :toggleable=" true " :collapsed=" true ">
+        <Fieldset legend=".env" :toggleable="true" :collapsed="true">
             <p class="m-0 mb-4 text-sm">Set required environment variables for your <Tag value="node.js"
                     class="text-white bg-gray-900"></Tag> instance.</p>
             <Textarea class="w-full h-10rem surface-50 border-none font-mono" autoResize="false" autocorrect="off"
-                spellcheck="false" v-model=" _ENV "></Textarea>
+                spellcheck="false" v-model="_ENV"></Textarea>
         </Fieldset>
-        <Fieldset :toggleable=" true " :collapsed=" true " v-if=" instance.method == 'UPDATE' ">
+        <Fieldset :toggleable="true" :collapsed="true" v-if="instance.method == 'UPDATE'">
             <template #legend>
                 <p class="m-0 text-red-500">Critical Area</p>
             </template>
             <div class="flex align-items-center">
                 <p class="m-0 text-sm flex-auto">Delete current instance</p>
-                <Button label="Delete" @click=" deleteInstance($event) " icon="pi pi-trash"
+                <Button label="Delete" @click=" deleteInstance($event)" icon="pi pi-trash"
                     class="bg-red-500 text-white border-none"></Button>
             </div>
         </Fieldset>
         <div class="flex justify-content-end gap-2">
-            <Button label="Save" @click=" writeInstance(); " :loading=" writing "></Button>
+            <Button label="Save" @click=" writeInstance();" :loading="writing"></Button>
             <Button label="Cancel" class="surface-100 text-white hover:surface-50"
-                @click=" cancelCreationProcess($event) "></Button>
+                @click=" cancelCreationProcess($event)"></Button>
             <ConfirmPopup></ConfirmPopup>
         </div>
     </div>
@@ -136,6 +137,9 @@ export default {
             set(v) {
                 this.instance.env = v.split(/\n/);
             }
+        },
+        readonlyAccessability() {
+            return this.instance.network.isAccessable;
         }
     },
     data() {
@@ -166,6 +170,7 @@ export default {
             available,
             userRepos,
             writing: false,
+            proxy: {}
         }
     },
     methods: {
@@ -229,12 +234,29 @@ export default {
                 delete this.instance._id;
             }
         },
+        toggleAccessability() {
+            if (!this.proxy.enabled) {
+                this.instance.network.isAccessable = false;
+                this.$EVENT.emit("showNotification", {
+                    error: true,
+                    msg: "Cannot create redirects with proxy disabled",
+                    payload: null
+                });
+            } else {
+                this.instance.network.isAccessable = !this.instance.network.isAccessable;
+                this.resetNetworkTab();
+            }
+        },
         resetNetworkTab() {
             this.getUnusedPort();
             this.instance.network.redirect.domain = this.available[0];
-        }
+        },
+        fetchProxySettings() {
+            this.$STORAGE.socket.emit("proxy:get", (data) => this.proxy = data.payload);
+        },
     },
     created() {
+        this.fetchProxySettings();
         this.getAvailableDomains();
         this.getUserRepos();
     }

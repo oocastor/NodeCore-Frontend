@@ -208,13 +208,17 @@ export default {
         toggleSettingsDialog(b = undefined) {
             if (b) this.settingsDialog = b
             else this.settingsDialog = !this.settingsDialog;
+            if(this.settingsDialog) this.update();
+        },
+        update() {
+            this.fetchAvailableDomains();
+            this.fetchGithubAcc();
+            this.fetchPath();
+            this.fetchProxy();
         }
     },
     created() {
-        this.fetchAvailableDomains();
-        this.fetchGithubAcc();
-        this.fetchPath();
-        this.fetchProxy();
+        this.update();
     }
 }
 </script>
