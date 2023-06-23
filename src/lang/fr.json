@@ -104,7 +104,10 @@
             "proxy": "Proxy",
             "proxy-text": "Configurer le proxy qui gère les redirections vers les instances. Cryptage SSL par ",
             "certificates": "Certificats",
-            "maintainer-mail": "E-mail du responsable"
+            "maintainer-mail": "E-mail du responsable",
+            "language": "Langue",
+            "language-text": "Modifier la langue de l'application.",
+            "language-selected": "Langue sélectionnée"
         }
     }
 }

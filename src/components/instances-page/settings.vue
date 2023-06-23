@@ -2,22 +2,30 @@
     <Dialog v-model:visible="settingsDialog" modal :draggable="false" :header="$t('main-page.settings-comp.settings')"
         style="max-width: 600px; width: 100%;">
         <div class="flex flex-column gap-4">
+            <Fieldset :legend="$t('main-page.settings-comp.language')">
+                <p class="-mt-1 mb-4 font-italic">{{ $t('main-page.settings-comp.language-text') }}</p>
+                <p class="text-sm">{{ $t('main-page.settings-comp.language-selected') }}</p>
+                <Dropdown :options="languages" optionLabel="name" optionValue="code" v-model="selectedLanguage"
+                    @update:modelValue="changeLanguage" placeholder="Language" class="w-full md:w-14rem m-0 p-2" />
+            </Fieldset>
             <Fieldset :legend="$t('main-page.settings-comp.login')">
-                <p class="-mt-1 mb-4 font-italic">{{$t('main-page.settings-comp.login-text')}}</p>
+                <p class="-mt-1 mb-4 font-italic">{{ $t('main-page.settings-comp.login-text') }}</p>
                 <p class="text-sm">{{ $t('main-page.settings-comp.username') }}</p>
                 <InputText class="w-full" v-model="account.user"></InputText>
                 <p class="text-sm">{{ $t('main-page.settings-comp.password') }}</p>
                 <InputText class="w-full" v-model="account.pwd" type="password"></InputText>
-                <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4" @click="updateNodeupLogin();"></Button>
+                <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4"
+                    @click="updateNodeupLogin();"></Button>
             </Fieldset>
             <Fieldset :legend="$t('main-page.settings-comp.github')">
                 <p class="-mt-1 mb-4 font-italic">{{ $t('main-page.settings-comp.github-text') }}</p>
                 <p class="flex text-sm">PAT <span class="ml-auto text-400">(Personal Access Token)</span></p>
                 <InputText class="w-full" v-model="github.pat" type="password"></InputText>
                 <div class="flex gap-2 mt-4">
-                    <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-6" @click="updateGithubAcc();"></Button>
-                    <Button :label="$t('main-page.settings-comp.delete')" icon="pi pi-trash" type="password" class="w-6 bg-red-500 text-white border-none"
-                        @click="{
+                    <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-6"
+                        @click="updateGithubAcc();"></Button>
+                    <Button :label="$t('main-page.settings-comp.delete')" icon="pi pi-trash" type="password"
+                        class="w-6 bg-red-500 text-white border-none" @click="{
                             this.github = { pat: '' };
                             updateGithubAcc();
                         }"></Button>
@@ -25,7 +33,7 @@
             </Fieldset>
             <Fieldset :legend="$t('main-page.settings-comp.domains')">
                 <div class="flex justify-content-between align-items-center -mt-1 mb-4">
-                    <p class="w-8 font-italic">{{$t('main-page.settings-comp.domains-text')}}</p>
+                    <p class="w-8 font-italic">{{ $t('main-page.settings-comp.domains-text') }}</p>
                     <Button icon="pi pi-plus" :label="$t('main-page.settings-comp.add')" class="p-button-sm"
                         @click="$refs.addDomOvPa.toggle($event);"></Button>
                 </div>
@@ -40,7 +48,7 @@
                     <p class="m-0 text-300 font-italic" v-if="availableDomains.length == 0">- empty -</p>
                 </div>
                 <OverlayPanel ref="addDomOvPa">
-                    <p class="mt-0">{{$t('main-page.settings-comp.add-domain')}}</p>
+                    <p class="mt-0">{{ $t('main-page.settings-comp.add-domain') }}</p>
                     <div class="p-inputgroup">
                         <InputText v-model="newDomainInput"></InputText>
                         <Button icon="pi pi-plus" @click="addNewDomain()"></Button>
@@ -48,29 +56,32 @@
                 </OverlayPanel>
             </Fieldset>
             <Fieldset :legend="$t('main-page.settings-comp.path')">
-                <p class="-mt-1 mb-4 font-italic">{{$t('main-page.settings-comp.path-text')}}</p>
+                <p class="-mt-1 mb-4 font-italic">{{ $t('main-page.settings-comp.path-text') }}</p>
                 <p class="text-sm">{{ $t('main-page.settings-comp.path') }}</p>
                 <InputText class="w-full" v-model="path" spellcheck="false"></InputText>
                 <Button label="Save" icon="pi pi-save" class="w-full mt-4" @click="setPath();"></Button>
             </Fieldset>
             <Fieldset :legend="$t('main-page.settings-comp.proxy')">
-                <p class="-mt-1 mb-4 font-italic">{{$t('main-page.settings-comp.proxy-text')}}<a class="text-primary no-underline"
+                <p class="-mt-1 mb-4 font-italic">{{ $t('main-page.settings-comp.proxy-text') }}<a
+                        class="text-primary no-underline"
                         href="https://www.npmjs.com/package/acme-client">acme-client.js/Let's Encrypt</a>.</p>
                 <div class="flex align-items-center justify-content-between my-4">
                     <p class="text-sm m-0">{{ $t('main-page.settings-comp.proxy') }}</p>
                     <ToggleButton v-model="proxy.enabled"></ToggleButton>
                 </div>
                 <div class="flex align-items-center justify-content-between my-4">
-                    <p class="text-sm m-0">{{$t('main-page.settings-comp.certificates')}}</p>
+                    <p class="text-sm m-0">{{ $t('main-page.settings-comp.certificates') }}</p>
                     <div class="p-inputgroup w-min">
-                        <Button :label="$t('main-page.settings-comp.force')" class="bg-gray-700 text-white border-none" @click="updateCerts(true);"></Button>
+                        <Button :label="$t('main-page.settings-comp.force')" class="bg-gray-700 text-white border-none"
+                            @click="updateCerts(true);"></Button>
                         <Button :label="$t('main-page.settings-comp.update')" @click="updateCerts(false);"></Button>
                     </div>
                 </div>
-                <p class="text-sm">{{$t('main-page.settings-comp.maintainer-mail')}}</p>
+                <p class="text-sm">{{ $t('main-page.settings-comp.maintainer-mail') }}</p>
                 <InputText class="w-full" spellcheck="false" v-model="proxy.maintainerEmail"
                     :disabled="!this.proxy.enabled"></InputText>
-                <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4" @click="updateProxy"></Button>
+                <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4"
+                    @click="updateProxy"></Button>
             </Fieldset>
         </div>
     </Dialog>
@@ -83,6 +94,7 @@ import OverlayPanel from 'primevue/overlaypanel';
 import InputText from "primevue/inputtext";
 import Button from 'primevue/button';
 import ToggleButton from 'primevue/togglebutton';
+import Dropdown from 'primevue/dropdown';
 
 export default {
     data() {
@@ -101,7 +113,15 @@ export default {
             proxy: {
                 maintainerEmail: "",
                 enabled: false
-            }
+            },
+            selectedLanguage: this.$i18n.locale,
+            languages: [
+                { name: 'English', code: 'en' },
+                { name: 'Deutsch', code: 'de' },
+                { name: 'Français', code: 'fr' },
+                { name: 'Español', code: 'es' },
+                { name: 'Nederlands', code: 'nl' }
+            ]
         }
     },
     components: {
@@ -110,7 +130,8 @@ export default {
         OverlayPanel,
         InputText,
         Button,
-        ToggleButton
+        ToggleButton,
+        Dropdown
     },
     watch: {
         "proxy.cluster"() {
@@ -118,6 +139,9 @@ export default {
         }
     },
     methods: {
+        changeLanguage(language) {
+            this.$i18n.locale = language;
+        },
         fetchAvailableDomains() {
             this.$STORAGE.socket.emit("domain:list", (data) => this.availableDomains = data.payload);
         },
@@ -207,7 +231,7 @@ export default {
         toggleSettingsDialog(b = undefined) {
             if (b) this.settingsDialog = b
             else this.settingsDialog = !this.settingsDialog;
-            if(this.settingsDialog) this.update();
+            if (this.settingsDialog) this.update();
         },
         update() {
             this.fetchAvailableDomains();

@@ -104,7 +104,10 @@
             "proxy": "Proxy",
             "proxy-text": "Konfigurieren Sie den Proxy, der die Weiterleitungen zu den Instanzen handhabt. SSL-Verschlüsselung durch ",
             "certificates": "Zertifikate",
-            "maintainer-mail": "E-Mail des Administrators"
+            "maintainer-mail": "E-Mail des Administrators",
+            "language": "Sprache",
+            "language-text": "Ändern Sie die Sprache der Anwendung.",
+            "language-selected": "Ausgewählte Sprache"
         }
     }
 }

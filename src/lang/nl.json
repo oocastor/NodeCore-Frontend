@@ -104,7 +104,10 @@
             "proxy": "Proxy",
             "proxy-text": "Configureer de proxy die de doorverwijzingen naar de instanties afhandelt. SSL-codering door ",
             "certificates": "Certificaten",
-            "maintainer-mail": "Onderhouds-E-mail"
+            "maintainer-mail": "Onderhouds-E-mail",
+            "language": "Taal",
+            "language-text": "Wijzig de taal van de app.",
+            "language-selected": "Geselecteerde taal"
         }
     }
 }

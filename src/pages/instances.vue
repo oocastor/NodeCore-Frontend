@@ -1,159 +1,82 @@
 <template>
   <div class="flex flex-column h-full" style="min-width: 400px">
-    <div
-      class="w-full surface-card flex justify-content-between align-items-center px-3"
-      style="min-height: 60px"
-    >
+    <div class="w-full surface-card flex justify-content-between align-items-center px-3" style="min-height: 60px">
       <div class="text-2xl font-monomaniac mb-2">
-        Node<span class="text-primary">Core</span>  <span class="text-xs">v {{ projectData.version }}</span>
+        Node<span class="text-primary">Core</span> <span class="text-xs text-500">v {{ projectData.version }}</span>
       </div>
-      <Dropdown :options="languages"
-      optionLabel="name"
-      optionValue="code"
-      v-model="selectedLanguage"
-      @update:modelValue="changeLanguage" placeholder="Language" class="w-full md:w-14rem m-0 p-2" />
-      <Avatar
-        class="surface-section cursor-pointer"
-        icon="pi pi-user"
-        @click="toggleAvatarMenu"
-      ></Avatar>
+      <Avatar class="surface-section cursor-pointer" icon="pi pi-user" @click="toggleAvatarMenu"></Avatar>
     </div>
     <Menu ref="menu" :model="items" :popup="true"></Menu>
 
-    <div
-      class="flex-auto flex w-full flex-column mx-auto px-4 mt-3 gap-3"
-      style="max-width: 900px"
-    >
+    <div class="flex-auto flex w-full flex-column mx-auto px-4 mt-3 gap-3" style="max-width: 900px">
       <p class="m-0 text-200">{{ $t("main-page.system") }}</p>
-      <div
-        class="relativ justify-content-between gap-3 flex fadein animation-duration-100"
-      >
-        <serverInfo
-          :current="this.sys.mem.used"
-          :max="this.sys.mem.total"
-          :str="$t('main-page.ram')"
-          op="GB"
-        ></serverInfo>
-        <serverInfo
-          :current="this.sys.cpu"
-          max="100"
-          :str="$t('main-page.cpu')"
-          op="%"
-        ></serverInfo>
+      <div class="relativ justify-content-between gap-3 flex fadein animation-duration-100">
+        <serverInfo :current="this.sys.mem.used" :max="this.sys.mem.total" :str="$t('main-page.ram')" op="GB">
+        </serverInfo>
+        <serverInfo :current="this.sys.cpu" max="100" :str="$t('main-page.cpu')" op="%"></serverInfo>
       </div>
 
       <div class="md:hidden fadein animation-duration-100">
         <overview :redirects="redirects" :instances="instances"></overview>
       </div>
 
-      <div
-        class="flex-auto relativ gap-3 flex flex-row fadein animation-duration-100"
-      >
-        <div
-          class="w-full md:w-4 md:h-full flex flex-column gap-3 fadein animation-duration-100"
-          v-if="(screen.width < 770 && view == 0) || screen.width >= 770"
-        >
+      <div class="flex-auto relativ gap-3 flex flex-row fadein animation-duration-100">
+        <div class="w-full md:w-4 md:h-full flex flex-column gap-3 fadein animation-duration-100"
+          v-if="(screen.width < 770 && view == 0) || screen.width >= 770">
           <p class="m-0 text-200">{{ $t("main-page.entities") }}</p>
 
           <div class="surface-card p-2 border-round-md relativ">
-            <div
-              class="w-full mb-2 flex justify-content-between align-items-center"
-            >
+            <div class="w-full mb-2 flex justify-content-between align-items-center">
               <p class="m-0 ml-1 text-sm">{{ $t("main-page.instances") }}</p>
-              <Button
-                icon="pi pi-plus"
-                class="-m-1 bg-white-a15 text-color"
-                style="transform: scale(0.7)"
-                @click="openInstanceUpdateView()"
-              ></Button>
+              <Button icon="pi pi-plus" class="-m-1 bg-white-a15 text-color" style="transform: scale(0.7)"
+                @click="openInstanceUpdateView()"></Button>
             </div>
-            <objListItem
-              v-for="(inst, i) in instances"
-              :key="i"
-              icon="pi-server"
-              :name="inst.name"
-              :status="inst.status"
-              @click="openInstanceView(inst._id)"
-            >
+            <objListItem v-for="(inst, i) in instances" :key="i" icon="pi-server" :name="inst.name" :status="inst.status"
+              @click="openInstanceView(inst._id)">
             </objListItem>
             <p class="text-xs text-300 text-center" v-if="!instances.length">
-                {{$t("main-page.no-instances-text")}}
+              {{ $t("main-page.no-instances-text") }}
             </p>
           </div>
 
           <div class="surface-card p-2 border-round-md relativ">
-            <div
-              class="w-full mb-2 flex justify-content-between align-items-center"
-            >
+            <div class="w-full mb-2 flex justify-content-between align-items-center">
               <p class="m-0 ml-1 text-sm">{{ $t("main-page.redirects") }}</p>
-              <Button
-                icon="pi pi-plus"
-                class="-m-1 bg-white-a15 text-color"
-                style="transform: scale(0.7)"
-                @click="
-                  proxy?.enabled
-                    ? openRedirectView()
-                    : showNotification({
-                        error: true,
-                        msg: 'Cannot create redirects with proxy disabled',
-                        payload: null,
-                      })
-                "
-              ></Button>
+              <Button icon="pi pi-plus" class="-m-1 bg-white-a15 text-color" style="transform: scale(0.7)" @click="
+                proxy?.enabled
+                  ? openRedirectView()
+                  : showNotification({
+                    error: true,
+                    msg: 'Cannot create redirects with proxy disabled',
+                    payload: null,
+                  })
+                "></Button>
             </div>
-            <objListItem
-              v-for="(re, i) in redirects"
-              :key="i"
-              icon="pi-arrow-right-arrow-left text-xs"
-              :name="re.name"
-              :status="re.status"
-              @click="openRedirectView(re)"
-            >
+            <objListItem v-for="(re, i) in redirects" :key="i" icon="pi-arrow-right-arrow-left text-xs" :name="re.name"
+              :status="re.status" @click="openRedirectView(re)">
             </objListItem>
             <p class="text-xs text-300 text-center" v-if="!redirects.length">
-                {{$t("main-page.no-redirects-text")}}
+              {{ $t("main-page.no-redirects-text") }}
             </p>
           </div>
         </div>
 
-        <div
-          class="w-full md:w-8 flex-column h-min border-round-md flex fadein animation-duration-100 overflow-hidden"
-          v-if="screen.width >= 770 || view != 0"
-        >
-          <overview
-            v-if="view == 0"
-            :redirects="redirects"
-            :instances="instances"
-          ></overview>
-          <instanceView
-            v-if="view == 1"
-            :selectedInstanceId="selectedInstanceId"
-            :openInstanceUpdateView="openInstanceUpdateView"
-            ref="instanceView"
-          ></instanceView>
-          <redirectUpdateView
-            v-if="view == 2"
-            ref="redirectUpdateView"
-          ></redirectUpdateView>
-          <instanceUpdateView
-            ref="instanceUpdateView"
-            v-if="view == 3"
-          ></instanceUpdateView>
+        <div class="w-full md:w-8 flex-column h-min border-round-md flex fadein animation-duration-100 overflow-hidden"
+          v-if="screen.width >= 770 || view != 0">
+          <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
+          <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId"
+            :openInstanceUpdateView="openInstanceUpdateView" ref="instanceView"></instanceView>
+          <redirectUpdateView v-if="view == 2" ref="redirectUpdateView"></redirectUpdateView>
+          <instanceUpdateView ref="instanceUpdateView" v-if="view == 3"></instanceUpdateView>
         </div>
       </div>
 
-      <div
-        class="w-full flex justify-content-center align-items-center gap-1"
-      >
-        <i class="pi pi-link text-300"></i>
-        <a href="#" class="no-underline text-300">oocastor</a>
-        
-      </div>
-      <div
-        class="w-full flex justify-content-center align-items-center gap-1"
-      >
-      <p class="text-xs text-300">Build Version {{ projectData.version }}</p>
-        
+      <div class="w-full flex flex-column align-items-center">
+        <div class="flex justify-content-center align-items-center gap-1">
+          <i class="pi pi-link text-300"></i>
+          <a href="#" class="no-underline text-300">oocastor</a>
+        </div>
+        <p class="text-xs text-300">Build Version {{ projectData.version }}</p>
       </div>
     </div>
   </div>
@@ -166,7 +89,6 @@
 import Menu from "primevue/menu";
 import Avatar from "primevue/avatar";
 import Button from "primevue/button";
-import Dropdown from 'primevue/dropdown';
 import Toast from "primevue/toast";
 import projectData from "../../package.json";
 import serverInfo from "@/components/instances-page/serverInfo.vue";
@@ -189,7 +111,6 @@ export default {
     Button,
     Menu,
     Avatar,
-    Dropdown,
     Toast,
     serverInfo,
     objListItem,
@@ -240,20 +161,9 @@ export default {
         height: 0,
       },
       proxy: {},
-      selectedLanguage: this.$i18n.locale,
-      languages: [
-        { name: 'English', code: 'en' },
-        { name: 'Deutsch', code: 'de' },
-        { name: 'Français', code: 'fr' },
-        { name: 'Español', code: 'es' },
-        { name: 'Nederlands', code: 'nl' }
-      ]
     };
   },
   methods: {
-    changeLanguage(language) {
-      this.$i18n.locale = language;
-    },
     toggleAvatarMenu(e) {
       this.$refs.menu.toggle(e);
     },

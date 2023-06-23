@@ -104,7 +104,10 @@
             "proxy": "Proxy",
             "proxy-text": "Configure the proxy which handels the redirects to the instances. SSL Encryption by ",
             "certificates": "Certificates",
-            "maintainer-mail": "Maintainer E-Mail"
+            "maintainer-mail": "Maintainer E-Mail",
+            "language": "Language",
+            "language-text": "Change the language of the app.",
+            "language-selected": "Selected Language"
         }
     }
 }

@@ -104,7 +104,10 @@
             "proxy": "Proxy",
             "proxy-text": "Configurar el proxy que maneja las redirecciones a las instancias. Cifrado SSL por ",
             "certificates": "Certificados",
-            "maintainer-mail": "Correo del Mantenedor"
+            "maintainer-mail": "Correo del Mantenedor",
+            "language": "Idioma",
+            "language-text": "Cambie el idioma de la aplicación.",
+            "language-selected": "Idioma seleccionado"
         }
     }
 }
