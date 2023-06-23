@@ -6,7 +6,7 @@
                 <p class="-mt-1 mb-4 font-italic">{{ $t('main-page.settings-comp.language-text') }}</p>
                 <p class="text-sm">{{ $t('main-page.settings-comp.language-selected') }}</p>
                 <Dropdown :options="languages" optionLabel="name" optionValue="code" v-model="selectedLanguage"
-                    @update:modelValue="changeLanguage" placeholder="Language" class="w-full md:w-14rem m-0 p-2" />
+                    @update:modelValue="changeLanguage" placeholder="Language" class="w-full p-2" />
             </Fieldset>
             <Fieldset :legend="$t('main-page.settings-comp.login')">
                 <p class="-mt-1 mb-4 font-italic">{{ $t('main-page.settings-comp.login-text') }}</p>
