@@ -1,4 +1,5 @@
 import { createI18n } from 'vue-i18n';
+import VueCookies from 'vue-cookies'
 
 // Sprachpakete importieren
 import de from "../lang/de.json"
@@ -16,7 +17,7 @@ const messages = {
 };
 
 const i18n = createI18n({
-  locale: 'de',
+  locale: VueCookies.get("lang") || "en",
   fallbackLocale: 'en',
   messages
 });

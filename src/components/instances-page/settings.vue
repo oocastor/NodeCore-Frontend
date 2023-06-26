@@ -88,6 +88,8 @@
 </template>
 
 <script>
+import VueCookies from 'vue-cookies';
+
 import Dialog from 'primevue/dialog';
 import Fieldset from 'primevue/fieldset';
 import OverlayPanel from 'primevue/overlaypanel';
@@ -141,6 +143,7 @@ export default {
     methods: {
         changeLanguage(language) {
             this.$i18n.locale = language;
+            VueCookies.set("lang", language);
         },
         fetchAvailableDomains() {
             this.$STORAGE.socket.emit("domain:list", (data) => this.availableDomains = data.payload);
