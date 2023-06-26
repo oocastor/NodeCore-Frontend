@@ -3,7 +3,7 @@
         $t('main-page.redirects-comp.redirect') }}</p>
     <div class="w-full flex flex-column p-3 gap-3 surface-card border-round">
         <div class="flex justify-content-between">
-            <p class="text-3xl m-0 font-bold">{{ this.redirect.method != "UPDATE" ? $t('main-page.redirects-comp.new-redirect') : $t('main-page.redirects-comp.update-redirect') }}
+            <p class="text-3xl m-0 font-bold">{{ this.redirect.method != "UPDATE" ? $t('main-page.redirects-comp.new-redirect') : $t('main-page.redirects-comp.edit-redirect') }}
             </p>
             <div class="flex gap-3">
                 <i class="pi pi-times text-xl text-gray-400 cursor-pointer" @click="cancelCreationProcess($event)"></i>
