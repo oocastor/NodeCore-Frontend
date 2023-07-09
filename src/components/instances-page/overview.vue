@@ -1,19 +1,31 @@
 <template>
     <p class="m-0 mb-3 text-200">{{ $t('main-page.overview') }}</p>
-    <div class="p-3 surface-card border-round">
-        <div class="flex gap-2">
-            <div class="flex flex-column flex-auto">
-                <p class="m-0 text-xs mb-3">{{ $t('main-page.instances') }}</p>
-                <div class="flex gap-2">
-                    <countItem :str="$t('main-page.running')" :num="instances.filter(f => f.status == 1).length" color="var(--green-400)"></countItem>
-                    <countItem :str="$t('main-page.stopped')" :num="instances.filter(f => f.status != 1).length" color="var(--red-400)"></countItem>
+    <div class="flex flex-column sm:flex-row gap-2">
+        <div class="sm:w-6 w-full p-3 surface-card border-round flex flex-column">
+            <p class="m-0 text-sm text-400">{{ $t('main-page.instances') }}</p>
+            <div class="mt-3 flex gap-3 align-items-center justify-content-center flex-auto">
+                <div class="flex gap-2 align-items-center justify-content-center flex-auto flex-wrap text-center">
+                    <p class="m-0 text-5xl font-bold w-3rem">{{ instances.filter(f => f.status == 1).length }}</p>
+                    <p class="m-0 text-green-400 label">{{ $t('main-page.running') }}</p>
+                </div>
+                <div class="divider"></div>
+                <div class="flex gap-2 align-items-center justify-content-center flex-auto flex-wrap text-center">
+                    <p class="m-0 text-5xl font-bold w-3rem">{{ instances.filter(f => f.status != 1).length }}</p>
+                    <p class="m-0 text-red-400 label">{{ $t('main-page.stopped') }}</p>
                 </div>
             </div>
-            <div class="flex flex-column flex-auto">
-                <p class="m-0 text-xs mb-3">{{ $t('main-page.redirects') }}</p>
-                <div class="flex gap-2">
-                    <countItem :str="$t('main-page.enabled')" :num="redirects.filter(f => f.status == 1).length" color="var(--surface-400)"></countItem>
-                    <countItem :str="$t('main-page.disabled')" :num="redirects.filter(f => f.status != 1).length" color="var(--surface-400)"></countItem>
+        </div>
+        <div class="sm:w-6 w-full p-3 surface-card border-round flex flex-column">
+            <p class="m-0 text-sm text-400">{{ $t('main-page.redirects') }}</p>
+            <div class="mt-3 flex gap-3 align-items-center justify-content-center flex-auto">
+                <div class="flex gap-2 align-items-center justify-content-center flex-auto flex-wrap text-center">
+                    <p class="m-0 text-5xl font-bold w-3rem">{{ redirects.filter(f => f.status == 1).length }}</p>
+                    <p class="m-0 text-400 label">{{ $t('main-page.enabled') }}</p>
+                </div>
+                <div class="divider"></div>
+                <div class="flex gap-2 align-items-center justify-content-center flex-auto flex-wrap text-center">
+                    <p class="m-0 text-5xl font-bold w-3rem">{{ redirects.filter(f => f.status != 1).length }}</p>
+                    <p class="m-0 text-400 label">{{ $t('main-page.disabled') }}</p>
                 </div>
             </div>
         </div>
@@ -21,15 +33,20 @@
 </template>
 
 <script>
-import countItem from "@/components/instances-page/countItem.vue";
+/* eslint-disable */
 
 export default {
-    components: {
-        countItem
-    },
     props: {
         instances: Array,
         redirects: Array
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.divider {
+    width: 2px;
+    height: 25px;
+    background-color: var(--surface-200);
+}
+</style>
