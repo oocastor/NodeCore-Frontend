@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-column h-full" style="min-width: 400px">
+  <div class="flex flex-column h-full" style="min-width: 300px">
     <div class="w-full surface-card flex justify-content-between align-items-center px-3" style="min-height: 60px">
       <div class="text-2xl font-monomaniac mb-2">
         Node<span class="text-primary">Core</span> <span class="text-xs text-500">v {{ projectData.version }}</span>
@@ -8,12 +8,12 @@
     </div>
     <Menu ref="menu" :model="items" :popup="true"></Menu>
 
-    <div class="flex-auto flex w-full flex-column mx-auto px-4 mt-3 gap-3" style="max-width: 900px">
+    <div class="flex-auto flex w-full flex-column mx-auto px-4 mt-3 gap-3" style="max-width: 1000px">
       <p class="m-0 text-200">{{ $t("main-page.system") }}</p>
       <div class="relativ justify-content-between gap-3 flex fadein animation-duration-100">
-        <serverInfo :current="this.sys.mem.used" :max="this.sys.mem.total" :str="$t('main-page.ram')" op="GB">
+        <serverInfo :data="this.sys.mem" :max="this.sys.maxMemory" :str="$t('main-page.ram')" op="GB">
         </serverInfo>
-        <serverInfo :current="this.sys.cpu" max="100" :str="$t('main-page.cpu')" op="%"></serverInfo>
+        <serverInfo :data="this.sys.cpu" max="100" :str="$t('main-page.cpu')" op="%"></serverInfo>
       </div>
 
       <div class="md:hidden fadein animation-duration-100">
@@ -146,11 +146,9 @@ export default {
       projectData,
       logout,
       sys: {
-        cpu: "0.00",
-        mem: {
-          total: "0.00",
-          used: "0.00",
-        },
+        cpu: ["0.0"],
+        mem: ["0.0"],
+        maxMemory: "0.0"
       },
       redirects: [],
       instances: [],
