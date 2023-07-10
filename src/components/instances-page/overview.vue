@@ -34,11 +34,31 @@
 
 <script>
 /* eslint-disable */
+import { nextTick } from 'vue';
 
 export default {
     props: {
         instances: Array,
         redirects: Array
+    },
+    mounted() {
+        this.getLargestLabelWidth();
+    },
+    methods: {
+        getLargestLabelWidth() {
+            // even out the label widths
+            let labels = [...document.querySelectorAll('.label')];
+            labels.forEach(label => label.style.width = 'auto');
+            let largestLabelWidth = Math.max(...labels.map(label => label.offsetWidth)) + 2;
+            labels.forEach(label => label.style.width = `${largestLabelWidth}px`);
+        }
+    },
+    watch: {
+        "$i18n.locale"() {
+            nextTick(() => {
+                this.getLargestLabelWidth();
+            });
+        }
     }
 }
 </script>
@@ -48,5 +68,12 @@ export default {
     width: 2px;
     height: 25px;
     background-color: var(--surface-200);
+}
+
+.label {
+    max-width: 85px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 </style>

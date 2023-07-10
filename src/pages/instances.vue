@@ -74,7 +74,7 @@
       <div class="w-full flex flex-column align-items-center">
         <div class="flex justify-content-center align-items-center gap-1">
           <i class="pi pi-link text-300"></i>
-          <a href="#" class="no-underline text-300">oocastor</a>
+          <a href="https://github.com/oocastor" class="no-underline text-300">oocastor</a>
         </div>
         <p class="text-xs text-300">Build Version {{ projectData.version }}</p>
       </div>
