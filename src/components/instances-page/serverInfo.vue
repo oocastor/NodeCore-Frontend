@@ -1,7 +1,7 @@
 <template>
     <div class="flex-1 p-4 surface-card h-full border-round-md flex flex-column select-none relative overflow-hidden" style="isolation: isolate;">
         <Chart type="line" :data="chartData" :options="chartOptions" class="absolute w-full h-full top-0 left-0 opacity-40" style="z-index: -1;"/>
-        <p class="m-0 mb-2 -mt-2 font-mono text-lg">{{ str }}</p>
+        <p class="m-0 mb-2 -mt-2 font-mono text-lg" style="word-break: break-word;">{{ str }}</p>
         <div class="flex font align-items-baseline text-600 gap-2">
             <p class="md:text-5xl text-2xl m-0 font-bold text-color">{{ data[data.length - 1] }}</p>
             <p class="text-xl m-0 hidden md:block">/</p>

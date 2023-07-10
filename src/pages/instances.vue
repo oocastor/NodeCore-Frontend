@@ -4,13 +4,13 @@
       <div class="text-2xl font-monomaniac mb-2">
         Node<span class="text-primary">Core</span> <span class="text-xs text-500">v {{ projectData.version }}</span>
       </div>
-      <Avatar class="surface-section cursor-pointer" icon="pi pi-user" @click="toggleAvatarMenu"></Avatar>
+      <Avatar class="surface-section cursor-pointer" icon="pi pi-ellipsis-h" @click="toggleAvatarMenu"></Avatar>
     </div>
     <Menu ref="menu" :model="items" :popup="true"></Menu>
 
     <div class="flex-auto flex w-full flex-column mx-auto px-4 mt-3 gap-3" style="max-width: 1000px">
       <p class="m-0 text-200">{{ $t("main-page.system") }}</p>
-      <div class="relativ justify-content-between gap-3 flex fadein animation-duration-100">
+      <div class="relativ justify-content-between gap-2 flex fadein animation-duration-100">
         <serverInfo :data="this.sys.mem" :max="this.sys.maxMemory" :str="$t('main-page.ram')" op="GB">
         </serverInfo>
         <serverInfo :data="this.sys.cpu" max="100" :str="$t('main-page.cpu')" op="%"></serverInfo>
@@ -123,26 +123,8 @@ export default {
   },
 
   data() {
-    let items = [
-      {
-        icon: "pi pi-cog",
-        label: this.$t('menu.settings'),
-        command: () => this.$refs.settings.toggleSettingsDialog(),
-      },
-      {
-        icon: "pi pi-refresh",
-        label: this.$t('menu.reload'),
-        command: () => location.reload(),
-      },
-      {
-        icon: "pi pi-sign-out",
-        label: this.$t('menu.logout'),
-        command: () => logout(),
-      },
-    ];
-
     return {
-      items,
+      items: [],
       projectData,
       logout,
       sys: {
@@ -161,7 +143,33 @@ export default {
       proxy: {},
     };
   },
+  watch: {
+    "$i18n.locale"() {
+      Vue.nextTick(() => {
+        this.setMenuItems();
+      });
+    }
+  },
   methods: {
+    setMenuItems() {
+      this.items = [
+        {
+          icon: "pi pi-cog",
+          label: this.$t('menu.settings'),
+          command: () => this.$refs.settings.toggleSettingsDialog(),
+        },
+        {
+          icon: "pi pi-refresh",
+          label: this.$t('menu.reload'),
+          command: () => location.reload(),
+        },
+        {
+          icon: "pi pi-sign-out",
+          label: this.$t('menu.logout'),
+          command: () => logout(),
+        },
+      ];
+    },
     toggleAvatarMenu(e) {
       this.$refs.menu.toggle(e);
     },
@@ -240,6 +248,8 @@ export default {
     },
   },
   created() {
+    this.setMenuItems();
+
     this.update();
     this.$EVENT.on("changeView", this.changeView);
     this.$EVENT.on("showToast", this.showToast); //TODO: replace with showNotification
