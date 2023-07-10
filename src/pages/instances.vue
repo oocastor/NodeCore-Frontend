@@ -43,11 +43,11 @@
             <div class="w-full mb-2 flex justify-content-between align-items-center">
               <p class="m-0 ml-1 text-sm">{{ $t("main-page.redirects") }}</p>
               <Button icon="pi pi-plus" class="-m-1 bg-white-a15 text-color" style="transform: scale(0.7)" @click="
-                proxy?.enabled
+                networkReady
                   ? openRedirectView()
                   : showNotification({
                     error: true,
-                    msg: 'Cannot create redirects with proxy disabled',
+                    msg: 'Proxy is disabled or no domains are set',
                     payload: null,
                   })
                 "></Button>
@@ -140,7 +140,7 @@ export default {
         width: 0,
         height: 0,
       },
-      proxy: {},
+      networkReady: false
     };
   },
   watch: {
@@ -232,7 +232,7 @@ export default {
       this.fetchSysInfo();
       this.fetchRedirectEnitites();
       this.fetchInstanceEnitites();
-      this.fetchProxySettings();
+      this.checkNetworkStatus();
     },
     getScreenSize() {
       this.screen = {
@@ -240,10 +240,10 @@ export default {
         height: window.innerHeight,
       };
     },
-    fetchProxySettings() {
+    checkNetworkStatus() {
       this.$STORAGE.socket.emit(
-        "proxy:get",
-        (data) => (this.proxy = data.payload)
+        "network:ready",
+        (data) => (this.networkReady = data.payload)
       );
     },
   },

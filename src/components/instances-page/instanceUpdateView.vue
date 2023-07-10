@@ -191,7 +191,7 @@ export default {
             available,
             userRepos,
             writing: false,
-            proxy: {}
+            networkReady: false
         }
     },
     methods: {
@@ -256,11 +256,11 @@ export default {
             }
         },
         toggleAccessability() {
-            if (!this.proxy.enabled) {
+            if (!this.networkReady) {
                 this.instance.network.isAccessable = false;
                 this.$EVENT.emit("showNotification", {
                     error: true,
-                    msg: "Cannot create redirects with proxy disabled",
+                    msg: "Proxy is disabled or no domains are set",
                     payload: null
                 });
             } else {
@@ -272,12 +272,12 @@ export default {
             this.getUnusedPort();
             this.instance.network.redirect.domain = this.available[0];
         },
-        fetchProxySettings() {
-            this.$STORAGE.socket.emit("proxy:get", (data) => this.proxy = data.payload);
+        checkNetworkStatus() {
+            this.$STORAGE.socket.emit("network:ready", (data) => this.networkReady = data.payload);
         }
     },
     created() {
-        this.fetchProxySettings();
+        this.checkNetworkStatus();
         this.getAvailableDomains();
         this.getUserRepos();
     }
