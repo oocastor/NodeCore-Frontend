@@ -26,17 +26,29 @@
           <p class="m-0 text-200">{{ $t("main-page.entities") }}</p>
 
           <div class="surface-card p-2 border-round-md relativ">
-            <div class="w-full mb-2 flex justify-content-between align-items-center">
+            <div class="w-full mb-2 flex align-items-center">
               <p class="m-0 ml-1 text-sm">{{ $t("main-page.instances") }}</p>
-              <Button icon="pi pi-plus" class="-m-1 bg-white-a15 text-color" style="transform: scale(0.7)"
+              <Button icon="pi pi-filter" class="ml-1 -m-1 p-button-text" style="transform: scale(0.7)"
+                @click="($event) => { $refs.filterPanel.toggle($event) }"></Button>
+              <Button icon="pi pi-plus" class="ml-auto -m-1 bg-white-a15 text-color" style="transform: scale(0.7)"
                 @click="openInstanceUpdateView()"></Button>
             </div>
-            <objListItem v-for="(inst, i) in instances" :key="i" icon="pi pi-desktop" :name="inst.name" :status="inst.status"
-              @click="openInstanceView(inst._id)">
-            </objListItem>
+            <template v-for="(instances, group, i) in filteredGroups" :key="i">
+              <div class="w-full surface-100 my-4 mx-auto relative flex align-items-center" style="height: 1px;">
+                <Chip :label="group" class="text-xs absolute surface-100"></Chip>
+              </div>
+              <objListItem v-for="inst in instances" :key="inst" icon="pi pi-desktop" :name="inst.name"
+                :status="inst.status" @click="openInstanceView(inst._id)">
+              </objListItem>
+            </template>
             <p class="text-xs text-300 text-center" v-if="!instances.length">
               {{ $t("main-page.no-instances-text") }}
             </p>
+            <OverlayPanel ref="filterPanel">
+              <p class="mt-0">{{ $t('main-page.filter') }}</p>
+              <Listbox style="width: 200px;" :options="getGroupsOnly" v-model="selectedGroups" multiple
+                :emptyMessage="$t('main-page.noTagsFound')" @change="storeFilter();"></Listbox>
+            </OverlayPanel>
           </div>
 
           <div class="surface-card p-2 border-round-md relativ">
@@ -52,8 +64,8 @@
                   })
                 "></Button>
             </div>
-            <objListItem v-for="(re, i) in redirects" :key="i" icon="pi pi-directions" :name="re.name"
-              :status="re.status" @click="openRedirectView(re)">
+            <objListItem v-for="(re, i) in redirects" :key="i" icon="pi pi-directions" :name="re.name" :status="re.status"
+              @click="openRedirectView(re)">
             </objListItem>
             <p class="text-xs text-300 text-center" v-if="!redirects.length">
               {{ $t("main-page.no-redirects-text") }}
@@ -90,6 +102,11 @@ import Menu from "primevue/menu";
 import Avatar from "primevue/avatar";
 import Button from "primevue/button";
 import Toast from "primevue/toast";
+import Listbox from "primevue/listbox";
+import OverlayPanel from "primevue/overlaypanel";
+import Checkbox from 'primevue/checkbox';
+import Chip from 'primevue/chip';
+
 import projectData from "../../package.json";
 import serverInfo from "@/components/instances-page/serverInfo.vue";
 import objListItem from "@/components/instances-page/objListItem.vue";
@@ -101,6 +118,7 @@ import overview from "@/components/instances-page/overview.vue";
 import settings from "@/components/instances-page/settings.vue";
 
 import * as Vue from "vue";
+import VueCookies from 'vue-cookies';
 
 import { logout } from "@/bin/auth";
 
@@ -112,6 +130,10 @@ export default {
     Menu,
     Avatar,
     Toast,
+    Listbox,
+    OverlayPanel,
+    Checkbox,
+    Chip,
     serverInfo,
     objListItem,
     countItem,
@@ -140,7 +162,8 @@ export default {
         width: 0,
         height: 0,
       },
-      networkReady: false
+      networkReady: false,
+      selectedGroups: []
     };
   },
   watch: {
@@ -148,6 +171,40 @@ export default {
       Vue.nextTick(() => {
         this.setMenuItems();
       });
+    }
+  },
+  computed: {
+    groupInstances() {
+      let grouped = {};
+      this.instances.forEach((i) => {
+        if (!i.tags.length) {
+          if (!grouped["Untagged"]) {
+            grouped["Untagged"] = [];
+          }
+          grouped["Untagged"].push(i);
+        }
+        i.tags.forEach((t) => {
+          if (!grouped[t]) {
+            grouped[t] = [];
+          }
+          grouped[t].push(i);
+        });
+      });
+      return grouped;
+    },
+    getGroupsOnly() {
+      return Object.keys(this.groupInstances);
+    },
+    filteredGroups() {
+      let filtered = {};
+      for (let [i, g] of Object.entries(this.selectedGroups)) {
+        if (Object.keys(this.groupInstances)?.length && !this.groupInstances[g]) {
+          delete this.selectedGroups[i];
+          continue;
+        }
+        filtered[g] = this.groupInstances[g];
+      }
+      return filtered;
     }
   },
   methods: {
@@ -246,9 +303,15 @@ export default {
         (data) => (this.networkReady = data.payload)
       );
     },
+    storeFilter() {
+      console.log(this.selectedGroups);
+      VueCookies.set("filter", this.selectedGroups);
+      // console.log(Object.assign({}, VueCookies.get("filter")));
+    }
   },
   created() {
     this.setMenuItems();
+    this.selectedGroups = VueCookies.get("filter");
 
     this.update();
     this.$EVENT.on("changeView", this.changeView);

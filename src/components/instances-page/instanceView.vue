@@ -177,7 +177,7 @@ export default {
             this.$refs.addTagPanel.hide();
             this.$STORAGE.socket.emit("instance:write", this.selectedInstance, (data) => {
                 this.$EVENT.emit("showNotification", data);
-                this.update();
+                this.$EVENT.emit("update");
             });
         },
         removeInstanceTag(tag) {
