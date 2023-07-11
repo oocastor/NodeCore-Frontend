@@ -24,6 +24,8 @@
         "stopped": "Inactief",
         "enabled": "Actief",
         "disabled": "Inactief",
+        "filter": "Filter",
+        "noTagsFound": "Geen tags gevonden",
         "instances-comp": {
             "name": "Naam",
             "project": "Project",
@@ -63,7 +65,8 @@
             "stop": "Stoppen",
             "update": "Bijwerken",
             "stats": "Statistieken",
-            "logs": "Logboeken"
+            "logs": "Logboeken",
+            "selectTag": "Selecteer Tag"
         },
         "redirects-comp": {
             "name": "Naam",

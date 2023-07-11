@@ -24,6 +24,8 @@
         "stopped": "Stopped",
         "enabled": "Enabled",
         "disabled": "Disabled",
+        "filter": "Filter",
+        "noTagsFound": "No Tags found",
         "instances-comp": {
             "name": "Name",
             "project": "Projekt",
@@ -63,7 +65,8 @@
             "stop": "Stop",
             "update": "Update",
             "stats": "Statistics",
-            "logs": "Logs"
+            "logs": "Logs",
+            "selectTag": "Select Tag"
         },
         "redirects-comp": {
             "name": "Name",

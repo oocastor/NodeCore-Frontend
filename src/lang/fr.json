@@ -24,6 +24,8 @@
         "stopped": "Inactif",
         "enabled": "Actif",
         "disabled": "Inactif",
+        "filter": "Filtre",
+        "noTagsFound": "Aucun tag trouvé",
         "instances-comp": {
             "name": "Nom",
             "project": "Projet",
@@ -63,7 +65,8 @@
             "stop": "Arrêter",
             "update": "Mettre à jour",
             "stats": "Statistiques",
-            "logs": "Journaux"
+            "logs": "Journaux",
+            "selectTag": "Sélectionner un tag"
         },
         "redirects-comp": {
             "name": "Nom",

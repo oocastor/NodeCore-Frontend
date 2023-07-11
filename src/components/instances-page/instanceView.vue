@@ -31,7 +31,7 @@
                 <OverlayPanel ref="addTagPanel">
                     <p class="mt-0">{{ $t('main-page.instances-comp.selectTag') }}</p>
                     <Listbox class="w-full border-bottom-none border-noround-bottom" :options="tags" v-model="selectedTags"
-                        multiple>
+                        multiple :emptyMessage="$t('main-page.noTagsFound')">
                         <template #option="slotProps">
                             <div class="flex align-items-center justify-content-between">
                                 <p class="m-0">{{ slotProps.option }}</p>
