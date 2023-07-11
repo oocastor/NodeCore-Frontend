@@ -197,9 +197,9 @@ export default {
     },
     filteredGroups() {
       let filtered = {};
-      for (let [i, g] of Object.entries(this.selectedGroups)) {
+      for (let g of this.selectedGroups) {
         if (Object.keys(this.groupInstances)?.length && !this.groupInstances[g]) {
-          delete this.selectedGroups[i];
+          this.selectedGroups = this.selectedGroups.filter((e) => e !== g);
           continue;
         }
         filtered[g] = this.groupInstances[g];
