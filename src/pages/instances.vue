@@ -28,7 +28,7 @@
           <div class="surface-card p-2 border-round-md relativ">
             <div class="w-full mb-2 flex align-items-center">
               <p class="m-0 ml-1 text-sm">{{ $t("main-page.instances") }}</p>
-              <Button icon="pi pi-filter" class="ml-1 -m-1 p-button-text" style="transform: scale(0.7)"
+              <Button icon="pi pi-filter" :class="`ml-1 -m-1 p-button-text ${selectedGroups.length ? 'text-primary' : 'text-gray-200'}`" style="transform: scale(0.7)"
                 @click="($event) => { $refs.filterPanel.toggle($event) }"></Button>
               <Button icon="pi pi-plus" class="ml-auto -m-1 bg-white-a15 text-color" style="transform: scale(0.7)"
                 @click="openInstanceUpdateView()"></Button>
@@ -204,7 +204,8 @@ export default {
         }
         filtered[g] = this.groupInstances[g];
       }
-      return filtered;
+      //show all if no groups are selected
+      return !this.selectedGroups.length ? {"All": this.instances} : filtered;
     }
   },
   methods: {
