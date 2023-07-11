@@ -31,7 +31,7 @@
               <Button icon="pi pi-plus" class="-m-1 bg-white-a15 text-color" style="transform: scale(0.7)"
                 @click="openInstanceUpdateView()"></Button>
             </div>
-            <objListItem v-for="(inst, i) in instances" :key="i" icon="pi-server" :name="inst.name" :status="inst.status"
+            <objListItem v-for="(inst, i) in instances" :key="i" icon="pi pi-desktop" :name="inst.name" :status="inst.status"
               @click="openInstanceView(inst._id)">
             </objListItem>
             <p class="text-xs text-300 text-center" v-if="!instances.length">
@@ -52,7 +52,7 @@
                   })
                 "></Button>
             </div>
-            <objListItem v-for="(re, i) in redirects" :key="i" icon="pi-arrow-right-arrow-left text-xs" :name="re.name"
+            <objListItem v-for="(re, i) in redirects" :key="i" icon="pi pi-directions" :name="re.name"
               :status="re.status" @click="openRedirectView(re)">
             </objListItem>
             <p class="text-xs text-300 text-center" v-if="!redirects.length">

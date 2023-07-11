@@ -17,11 +17,37 @@
             </div>
             <div class="flex justify-content-between align-items-center">
                 <p class="text-3xl m-0 font-bold text-overflow w-9">{{ selectedInstance.name }}</p>
-                    <p class="text-sm m-0 text-gray-400 font-mono">{{ $t('main-page.instances-comp.version') }} {{
+                <p class="text-sm m-0 text-gray-400 font-mono">{{ $t('main-page.instances-comp.version') }} {{
                     selectedInstance.version }}</p>
             </div>
-            <div class="flex align-item-center">
-                <Chip label="Production" class="text-xs bg-grey-600"></Chip>
+            <div class="flex align-items-center gap-1 flex-wrap -mt-2">
+                <p class="m-0 text-xs text-gray-400 mr-2">Tags</p>
+                <template v-for="t in selectedInstance?.tags" :key="t">
+                    <Chip :label="t" class="text-xs bg-grey-600 h-2rem" removable @remove="removeInstanceTag(t)"></Chip>
+                </template>
+                <Button icon="pi pi-plus" class="p-button-text"
+                    style="transform: scale(0.7); transform-origin: left center;"
+                    @click="($event) => { $refs.addTagPanel.toggle($event); getAllTags(); selectedTags = selectedInstance.tags; }"></Button>
+                <OverlayPanel ref="addTagPanel">
+                    <p class="mt-0">{{ $t('main-page.instances-comp.selectTag') }}</p>
+                    <Listbox class="w-full border-bottom-none border-noround-bottom" :options="tags" v-model="selectedTags"
+                        multiple>
+                        <template #option="slotProps">
+                            <div class="flex align-items-center justify-content-between">
+                                <p class="m-0">{{ slotProps.option }}</p>
+                                <Button icon="pi pi-trash" class="p-button-text p-button-sm" @click="($event) => {$event.stopPropagation();deleteTagFromList(slotProps.option)}"></Button>
+                            </div>
+                        </template>
+                    </Listbox>
+                    <div class="p-inputgroup flex-1">
+                        <InputText v-model="newTagInput" class="flex-auto border-noround-top"></InputText>
+                        <Button icon="pi pi-plus"
+                            class="p-button-text surface-section border-1 surface-border border-left-none border-noround-top"
+                            @click="saveNewTag"></Button>
+                    </div>
+                    <Button class="w-full mt-3" icon="pi pi-check"
+                        :label="$t('main-page.instances-comp.save')" @click="saveInstanceTags"></Button>
+                </OverlayPanel>
                 <!-- <div class="flex gap-2 align-item-center" v-if="selectedInstance.network.isAccessable">
                     <i class="pi pi-link text-300"></i>
                     <a class="no-underline text-gray-400 font-mono"
@@ -33,16 +59,16 @@
                             selectedInstance.network.redirect.domain }}</a>
                 </div> -->
             </div>
-            <span class="p-buttonset w-full flex">
+            <div class="p-buttonset w-full flex">
                 <Button :loading="selectedInstance.status == 2"
                     :label="selectedInstance.status == 0 ? $t('main-page.instances-comp.start') : $t('main-page.instances-comp.restart')"
-                    icon="pi pi-refresh" class="p-button-sm flex-auto bg-white-a15 text-white"
+                    icon="pi pi-refresh" class="p-button-sm flex-auto"
                     @click=" startAction(this.selectedInstance.status == 1 ? 2 : 1);"></Button>
                 <Button :label="$t('main-page.instances-comp.stop')" icon="pi pi-stop"
                     class="p-button-sm flex-auto bg-white-a15 text-white" @click=" startAction(0);"></Button>
                 <Button :label="$t('main-page.instances-comp.update')" icon="pi pi-download"
                     class="p-button-sm flex-auto bg-white-a15 text-white" @click=" startAction(3);"></Button>
-            </span>
+            </div>
             <p class="m-0 mt-2 text-sm font-mono">{{ $t('main-page.instances-comp.stats') }}</p>
             <div class="flex gap-2">
                 <countItem :str="$t('main-page.ram')" :num="selectedInstance.pm2?.monit.memory || 0" color="var(--white)">
@@ -63,20 +89,29 @@
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import Chip from 'primevue/chip';
+import OverlayPanel from 'primevue/overlaypanel';
+import InputText from "primevue/inputtext";
+import Listbox from "primevue/listbox";
 
 import countItem from "@/components/instances-page/countItem.vue";
 
 export default {
     data() {
         return {
-            selectedInstance: null
+            selectedInstance: null,
+            newTagInput: "",
+            selectedTags: [],
+            tags: []
         }
     },
     components: {
         countItem,
         Button,
         Textarea,
-        Chip
+        Chip,
+        OverlayPanel,
+        InputText,
+        Listbox
     },
     props: {
         selectedInstanceId: String,
@@ -105,12 +140,7 @@ export default {
     methods: {
         startAction(i) {
             this.$STORAGE.socket.emit("instance:action", { _id: this.selectedInstance._id, status: i }, (data) => {
-                let { error, msg } = data;
-                if (error) {
-                    this.$EVENT.emit("showToast", { severity: "error", title: "Error", msg });
-                } else {
-                    this.$EVENT.emit("showToast", { severity: "success", title: "Done", msg });
-                }
+                this.$EVENT.emit("showNotification", data);
                 this.$EVENT.emit("update");
             });
         },
@@ -118,7 +148,41 @@ export default {
             this.$STORAGE.socket.emit("instance:get", { _id: this.selectedInstanceId }, (data) => {
                 let { error, payload } = data;
                 if (!error) this.selectedInstance = payload;
-            })
+            });
+        },
+        getAllTags() {
+            this.$STORAGE.socket.emit("tags:get", (data) => {
+                this.tags = data.payload;
+            });
+        },
+        saveNewTag() {
+            this.$STORAGE.socket.emit("tags:add", { tag: this.newTagInput }, (data) => {
+                this.$EVENT.emit("showNotification", data);
+                this.newTagInput = "";
+                this.getAllTags();
+            });
+        },
+        deleteTagFromList(tag) {
+            this.$STORAGE.socket.emit("tags:delete", { tag }, (data) => {
+                this.$EVENT.emit("showNotification", data);
+                this.getAllTags();
+                this.update();
+                this.selectedTags = this.selectedTags.filter(t => t != tag);
+            });
+        },
+        saveInstanceTags() {
+            if (!this.selectedInstance.tags) this.selectedInstance.tags = [];
+            this.selectedInstance.tags = Object.values(this.selectedTags);
+            this.selectedInstance.method = "UPDATE";
+            this.$refs.addTagPanel.hide();
+            this.$STORAGE.socket.emit("instance:write", this.selectedInstance, (data) => {
+                this.$EVENT.emit("showNotification", data);
+                this.update();
+            });
+        },
+        removeInstanceTag(tag) {
+            this.selectedTags = this.selectedInstance.tags.filter(t => t != tag);
+            this.saveInstanceTags();
         }
     },
     created() {
@@ -140,7 +204,7 @@ export default {
 }
 
 .status_indicator {
-    --ind-size: 10px;
+    --ind-size: 7px;
     --ind-color: rgb(253, 65, 55);
 
     display: flex;
@@ -169,7 +233,7 @@ export default {
 
     p {
         font-size: 0.8rem;
-        margin: 0 0 2px 0;
+        margin: 0;
         color: var(--ind-color);
         text-transform: uppercase;
     }
