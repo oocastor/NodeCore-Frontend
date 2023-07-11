@@ -28,22 +28,25 @@
           <div class="surface-card p-2 border-round-md relativ">
             <div class="w-full mb-2 flex align-items-center">
               <p class="m-0 ml-1 text-sm">{{ $t("main-page.instances") }}</p>
-              <Button icon="pi pi-filter" :class="`ml-1 -m-1 p-button-text ${selectedGroups.length ? 'text-primary' : 'text-gray-200'}`" style="transform: scale(0.7)"
-                @click="($event) => { $refs.filterPanel.toggle($event) }"></Button>
+              <Button icon="pi pi-filter"
+                :class="`ml-1 -m-1 p-button-text ${selectedGroups.length ? 'text-primary' : 'text-gray-200'}`"
+                style="transform: scale(0.7)" @click="($event) => { $refs.filterPanel.toggle($event) }"></Button>
               <Button icon="pi pi-plus" class="ml-auto -m-1 bg-white-a15 text-color" style="transform: scale(0.7)"
                 @click="openInstanceUpdateView()"></Button>
             </div>
-            <template v-for="(instances, group, i) in filteredGroups" :key="i">
-              <div class="w-full surface-100 my-4 mx-auto relative flex align-items-center" style="height: 1px;">
-                <Chip :label="group" class="text-xs absolute surface-100"></Chip>
-              </div>
-              <objListItem v-for="inst in instances" :key="inst" icon="pi pi-desktop" :name="inst.name"
-                :status="inst.status" @click="openInstanceView(inst._id)">
-              </objListItem>
-            </template>
-            <p class="text-xs text-300 text-center" v-if="!instances.length">
-              {{ $t("main-page.no-instances-text") }}
-            </p>
+            <div class="overflow-y-auto overflow-x-hidden" style="max-height: 500px;">
+              <template v-for="(instances, group, i) in filteredGroups" :key="i">
+                <div class="w-full surface-100 my-4 mx-auto relative flex align-items-center" style="height: 1px;">
+                  <Chip :label="group" class="text-xs absolute surface-100"></Chip>
+                </div>
+                <objListItem v-for="inst in instances" :key="inst" icon="pi pi-desktop" :name="inst.name"
+                  :status="inst.status" @click="openInstanceView(inst._id)">
+                </objListItem>
+              </template>
+              <p class="text-xs text-300 text-center" v-if="!instances.length">
+                {{ $t("main-page.no-instances-text") }}
+              </p>
+            </div>
             <OverlayPanel ref="filterPanel">
               <p class="mt-0">{{ $t('main-page.filter') }}</p>
               <Listbox style="width: 200px;" :options="getGroupsOnly" v-model="selectedGroups" multiple
@@ -64,12 +67,14 @@
                   })
                 "></Button>
             </div>
-            <objListItem v-for="(re, i) in redirects" :key="i" icon="pi pi-directions" :name="re.name" :status="re.status"
-              @click="openRedirectView(re)">
-            </objListItem>
-            <p class="text-xs text-300 text-center" v-if="!redirects.length">
-              {{ $t("main-page.no-redirects-text") }}
-            </p>
+            <div class="overflow-y-auto overflow-x-hidden" style="max-height: 500px;">
+              <objListItem v-for="(re, i) in redirects" :key="i" icon="pi pi-directions" :name="re.name"
+                :status="re.status" @click="openRedirectView(re)">
+              </objListItem>
+              <p class="text-xs text-300 text-center" v-if="!redirects.length">
+                {{ $t("main-page.no-redirects-text") }}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -205,7 +210,7 @@ export default {
         filtered[g] = this.groupInstances[g];
       }
       //show all if no groups are selected
-      return !this.selectedGroups.length ? {"All": this.instances} : filtered;
+      return !this.selectedGroups.length ? { "All": this.instances } : filtered;
     }
   },
   methods: {

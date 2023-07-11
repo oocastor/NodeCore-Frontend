@@ -17,7 +17,7 @@
             </div>
             <div class="flex justify-content-between align-items-center">
                 <p class="text-3xl m-0 font-bold text-overflow w-9">{{ selectedInstance.name }}</p>
-                <p class="text-sm m-0 text-gray-400 font-mono">{{ $t('main-page.instances-comp.version') }} {{
+                <p class="text-sm m-0 text-gray-400 font-mono text-right">{{ $t('main-page.instances-comp.version') }} {{
                     selectedInstance.version }}</p>
             </div>
             <div class="flex align-items-center gap-1 flex-wrap -mt-2">
