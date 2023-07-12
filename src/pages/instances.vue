@@ -319,7 +319,7 @@ export default {
   },
   created() {
     this.setMenuItems();
-    this.selectedGroups = VueCookies.get("filter");
+    this.selectedGroups = VueCookies.get("filter") || [];
 
     this.update();
     this.$EVENT.on("changeView", this.changeView);
