@@ -72,7 +72,7 @@
             </div>
             <div class="w-full surface-100 mt-1" style="height: 1px;"></div>
             <div class="flex flex-column gap-3" v-if="selectedInstance.network.isAccessable">
-                <p class="m-0 text-sm font-mono">{{ $t('main-page.instances-comp.public') }}</p>
+                <p class="m-0 text-sm font-mono">{{ $t('main-page.instances-comp.connections') }}</p>
                 <div class="flex flex-column gap-1">
                     <template v-for="i in getMatchingRedirects" :key="i._id">
                         <div class="surface-section w-full flex p-3 align-items-center border-round flex-wrap">

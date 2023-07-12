@@ -66,7 +66,8 @@
             "update": "Aktualisieren",
             "stats": "Statistiken",
             "logs": "Logs",
-            "selectTag": "Tag auswählen"
+            "selectTag": "Tag auswählen",
+            "connections": "Verbindungen"
         },
         "redirects-comp": {
             "name": "Name",

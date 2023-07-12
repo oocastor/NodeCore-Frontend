@@ -83,7 +83,7 @@
           <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
           <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId"
             :openInstanceUpdateView="openInstanceUpdateView" :openRedirectView="openRedirectView" :redirects="redirects" ref="instanceView"></instanceView>
-          <redirectUpdateView v-if="view == 2" ref="redirectUpdateView"></redirectUpdateView>
+          <redirectUpdateView v-if="view == 2" :instances="instances" ref="redirectUpdateView"></redirectUpdateView>
           <instanceUpdateView ref="instanceUpdateView" v-if="view == 3"></instanceUpdateView>
         </div>
       </div>
