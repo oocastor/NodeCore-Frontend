@@ -35,11 +35,11 @@
                 @click="openInstanceUpdateView()"></Button>
             </div>
             <div class="overflow-y-auto overflow-x-hidden" style="max-height: 500px;">
-              <template v-for="(instances, group, i) in filteredGroups" :key="i">
+              <template v-for="(instances, group) in filteredGroups" :key="group">
                 <div class="w-full surface-100 my-4 mx-auto relative flex align-items-center" style="height: 1px;">
                   <Chip :label="group" class="text-xs absolute surface-100"></Chip>
                 </div>
-                <objListItem v-for="inst in instances" :key="inst" icon="pi pi-desktop" :name="inst.name"
+                <objListItem v-for="inst in instances" :key="inst._id" icon="pi pi-desktop" :name="inst.name"
                   :status="inst.status" @click="openInstanceView(inst._id)">
                 </objListItem>
               </template>
@@ -82,7 +82,7 @@
           v-if="screen.width >= 770 || view != 0">
           <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
           <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId"
-            :openInstanceUpdateView="openInstanceUpdateView" ref="instanceView"></instanceView>
+            :openInstanceUpdateView="openInstanceUpdateView" :openRedirectView="openRedirectView" :redirects="redirects" ref="instanceView"></instanceView>
           <redirectUpdateView v-if="view == 2" ref="redirectUpdateView"></redirectUpdateView>
           <instanceUpdateView ref="instanceUpdateView" v-if="view == 3"></instanceUpdateView>
         </div>
@@ -310,9 +310,7 @@ export default {
       );
     },
     storeFilter() {
-      console.log(this.selectedGroups);
       VueCookies.set("filter", this.selectedGroups);
-      // console.log(Object.assign({}, VueCookies.get("filter")));
     }
   },
   created() {

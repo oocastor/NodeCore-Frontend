@@ -35,7 +35,8 @@
                         <template #option="slotProps">
                             <div class="flex align-items-center justify-content-between">
                                 <p class="m-0">{{ slotProps.option }}</p>
-                                <Button icon="pi pi-trash" class="p-button-text p-button-sm" @click="($event) => {$event.stopPropagation();deleteTagFromList(slotProps.option)}"></Button>
+                                <Button icon="pi pi-trash" class="p-button-text p-button-sm"
+                                    @click="($event) => { $event.stopPropagation(); deleteTagFromList(slotProps.option) }"></Button>
                             </div>
                         </template>
                     </Listbox>
@@ -45,8 +46,8 @@
                             class="p-button-text surface-section border-1 surface-border border-left-none border-noround-top"
                             @click="saveNewTag"></Button>
                     </div>
-                    <Button class="w-full mt-3" icon="pi pi-check"
-                        :label="$t('main-page.instances-comp.save')" @click="saveInstanceTags"></Button>
+                    <Button class="w-full mt-3" icon="pi pi-check" :label="$t('main-page.instances-comp.save')"
+                        @click="saveInstanceTags"></Button>
                 </OverlayPanel>
                 <!-- <div class="flex gap-2 align-item-center" v-if="selectedInstance.network.isAccessable">
                     <i class="pi pi-link text-300"></i>
@@ -69,14 +70,49 @@
                 <Button :label="$t('main-page.instances-comp.update')" icon="pi pi-download"
                     class="p-button-sm flex-auto bg-white-a15 text-white" @click=" startAction(3);"></Button>
             </div>
-            <p class="m-0 mt-2 text-sm font-mono">{{ $t('main-page.instances-comp.stats') }}</p>
-            <div class="flex gap-2">
+            <div class="w-full surface-100 mt-1" style="height: 1px;"></div>
+            <div class="flex flex-column gap-3" v-if="selectedInstance.network.isAccessable">
+                <p class="m-0 text-sm font-mono">{{ $t('main-page.instances-comp.public') }}</p>
+                <div class="flex flex-column gap-1">
+                    <template v-for="i in getMatchingRedirects" :key="i._id">
+                        <div class="surface-section w-full flex p-3 align-items-center border-round flex-wrap">
+                            <i :class="`pi ${i.type != 'instance' ? 'pi-directions' : 'pi-desktop'} ${i.type == 'instance' ? 'text-400' : i.status == 1 ? 'text-green-600' : 'text-red-600'} text-xl`"></i>
+                            <p class="m-0 text-sm ml-3">{{ i.name.length > 15 ? i.name.slice(0, 15) + "..." : i.name }}
+                                <span class="text-gray-400 ml-1 text-xs" style="text-transform: capitalize;">({{ i.type
+                                }})</span>
+                            </p>
+                            <div class="sm:w-auto w-full sm:m-0 mt-3 flex flex-auto align-items-center gap-3">
+                                <div class="flex gap-2 align-item-center ml-auto"
+                                    v-if="selectedInstance.network.isAccessable">
+                                    <i class="pi pi-link text-300"></i>
+                                    <a class="no-underline text-gray-400 font-mono"
+                                        :href="`https://${i.network.sub}.${i.network.domain}`"
+                                        v-if="i.network.sub != '@'">{{
+                                            `${i.network.sub}.${i.network.domain}`.length > 20 ?
+                                            "..." + `${i.network.sub}.${i.network.domain}`.slice(-20) :
+                                            `${i.network.sub}.${i.network.domain}` }}</a>
+                                    <a class="no-underline text-gray-400 font-mono" :href="`https://${i.network.domain}`"
+                                        v-else>{{ i.network.domain.length > 20 ?
+                                            "..." + i.network.domain.slice(-20) :
+                                            i.network.domain }}</a>
+                                </div>
+                                <div class="surface-200" style="width: 1px; height: 15px;" v-if="i.type == 'redirect'">
+                                </div>
+                                <Button class="p-button-text -m-2" style="transform: scale(0.8);" icon="pi pi-cog"
+                                    v-if="i.type == 'redirect'" @click="openRedirectView(i)"></Button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <p class="m-0 text-sm font-mono">{{ $t('main-page.instances-comp.stats') }}</p>
+            <div class="flex gap-1">
                 <countItem :str="$t('main-page.ram')" :num="selectedInstance.pm2?.monit.memory || 0" color="var(--white)">
                 </countItem>
                 <countItem :str="$t('main-page.cpu')" :num="selectedInstance.pm2?.monit.cpu || 0" color="var(--white)">
                 </countItem>
             </div>
-            <p class="m-0 mt-2 text-sm font-mono">{{ $t('main-page.instances-comp.logs') }}</p>
+            <p class="m-0 text-sm font-mono">{{ $t('main-page.instances-comp.logs') }}</p>
             <Textarea class="w-full h-10rem bg-white-a05 border-none overflow-y-scroll font-mono" autoResize="false"
                 readonly :value="selectedInstance.pm2?.log || ''"></Textarea>
         </div>
@@ -115,7 +151,9 @@ export default {
     },
     props: {
         selectedInstanceId: String,
-        openInstanceUpdateView: Function
+        openInstanceUpdateView: Function,
+        openRedirectView: Function,
+        redirects: Array
     },
     computed: {
         statusColor() {
@@ -135,6 +173,11 @@ export default {
                     i == 0 ? 'main-page.instances-comp.stopped' :
                         i == 2 ? 'main-page.instances-comp.restarting' :
                             i == 3 ? 'main-page.instances-comp.updating' : 'main-page.instances-comp.error')
+        },
+        getMatchingRedirects() {
+            let res = this.redirects.filter(re => re.network.port == this.selectedInstance.network.redirect.port);
+            res.unshift({ name: this.selectedInstance.name, type: "instance", network: { sub: this.selectedInstance.network.redirect.sub, domain: this.selectedInstance.network.redirect.domain } });
+            return res;
         }
     },
     methods: {
@@ -248,5 +291,4 @@ export default {
         transform: scale(2.5);
         opacity: 0;
     }
-}
-</style>
+}</style>
