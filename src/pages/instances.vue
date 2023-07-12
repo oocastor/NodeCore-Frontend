@@ -35,14 +35,16 @@
                 @click="openInstanceUpdateView()"></Button>
             </div>
             <div class="overflow-y-auto overflow-x-hidden" style="max-height: 500px;">
-              <template v-for="(instances, group) in filteredGroups" :key="group">
-                <div class="w-full surface-100 my-4 mx-auto relative flex align-items-center" style="height: 1px;">
-                  <Chip :label="group" class="text-xs absolute surface-100"></Chip>
-                </div>
-                <objListItem v-for="inst in instances" :key="inst._id" icon="pi pi-desktop" :name="inst.name"
-                  :status="inst.status" @click="openInstanceView(inst._id)">
-                </objListItem>
-              </template>
+              <div v-if="instances.length">
+                <template v-for="(instances, group) in filteredGroups" :key="group">
+                  <div class="w-full surface-100 my-4 mx-auto relative flex align-items-center" style="height: 1px;">
+                    <Chip :label="group" class="text-xs absolute surface-100"></Chip>
+                  </div>
+                  <objListItem v-for="inst in instances" :key="inst._id" icon="pi pi-desktop" :name="inst.name"
+                    :status="inst.status" @click="openInstanceView(inst._id)">
+                  </objListItem>
+                </template>
+              </div>
               <p class="text-xs text-300 text-center" v-if="!instances.length">
                 {{ $t("main-page.no-instances-text") }}
               </p>
@@ -82,7 +84,8 @@
           v-if="screen.width >= 770 || view != 0">
           <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
           <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId"
-            :openInstanceUpdateView="openInstanceUpdateView" :openRedirectView="openRedirectView" :redirects="redirects" ref="instanceView"></instanceView>
+            :openInstanceUpdateView="openInstanceUpdateView" :openRedirectView="openRedirectView" :redirects="redirects"
+            ref="instanceView"></instanceView>
           <redirectUpdateView v-if="view == 2" :instances="instances" ref="redirectUpdateView"></redirectUpdateView>
           <instanceUpdateView ref="instanceUpdateView" v-if="view == 3"></instanceUpdateView>
         </div>
@@ -182,18 +185,19 @@ export default {
     groupInstances() {
       let grouped = {};
       this.instances.forEach((i) => {
-        if (!i.tags.length) {
+        if (!i.tags?.length) {
           if (!grouped["Untagged"]) {
             grouped["Untagged"] = [];
           }
           grouped["Untagged"].push(i);
+        } else {
+          i.tags.forEach((t) => {
+            if (!grouped[t]) {
+              grouped[t] = [];
+            }
+            grouped[t].push(i);
+          });
         }
-        i.tags.forEach((t) => {
-          if (!grouped[t]) {
-            grouped[t] = [];
-          }
-          grouped[t].push(i);
-        });
       });
       return grouped;
     },
