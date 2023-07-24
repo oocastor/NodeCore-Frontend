@@ -111,7 +111,18 @@
             "maintainer-mail": "Maintainer E-Mail",
             "language": "Language",
             "language-text": "Change the language of the app.",
-            "language-selected": "Selected Language"
+            "language-selected": "Selected Language",
+            "databases": "Databases",
+            "databases-text": "Install Databases on your Server and activate them for NodeCore.",
+            "install-mysql": "Install MySQL",
+            "uninstall-mysql": "Uninstall MySQL",
+            "install-mongodb": "Install MongoDB",
+            "uninstall-mongodb": "Uninstall MongoDB",
+            "create-mysql-superuser" : "Create Superuser",
+            "delete-mysql-superuser" : "Delete Superuser",
+            "mysql-user": "MySQL Username",
+            "mysql-password": "MySQL Password",
+            "mysql-host": "MySQL Host"
         }
     }
 }
