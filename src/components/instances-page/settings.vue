@@ -1,11 +1,6 @@
 <template>
-  <Dialog
-    v-model:visible="settingsDialog"
-    modal
-    :draggable="false"
-    :header="$t('main-page.settings-comp.settings')"
-    style="max-width: 600px; width: 100%"
-  >
+  <Dialog v-model:visible="settingsDialog" modal :draggable="false" :header="$t('main-page.settings-comp.settings')"
+    style="max-width: 600px; width: 100%">
     <div class="flex flex-column gap-4">
       <Fieldset :legend="$t('main-page.settings-comp.language')">
         <p class="-mt-1 mb-4 font-italic">
@@ -14,15 +9,8 @@
         <p class="text-sm">
           {{ $t("main-page.settings-comp.language-selected") }}
         </p>
-        <Dropdown
-          :options="languages"
-          optionLabel="name"
-          optionValue="code"
-          v-model="selectedLanguage"
-          @update:modelValue="changeLanguage"
-          placeholder="Language"
-          class="w-full p-2"
-        />
+        <Dropdown :options="languages" optionLabel="name" optionValue="code" v-model="selectedLanguage"
+          @update:modelValue="changeLanguage" placeholder="Language" class="w-full p-2" />
       </Fieldset>
       <Fieldset :legend="$t('main-page.settings-comp.login')">
         <p class="-mt-1 mb-4 font-italic">
@@ -31,17 +19,9 @@
         <p class="text-sm">{{ $t("main-page.settings-comp.username") }}</p>
         <InputText class="w-full" v-model="account.user"></InputText>
         <p class="text-sm">{{ $t("main-page.settings-comp.password") }}</p>
-        <InputText
-          class="w-full"
-          v-model="account.pwd"
-          type="password"
-        ></InputText>
-        <Button
-          :label="$t('main-page.settings-comp.save')"
-          icon="pi pi-save"
-          class="w-full mt-4"
-          @click="updateNodeupLogin()"
-        ></Button>
+        <InputText class="w-full" v-model="account.pwd" type="password"></InputText>
+        <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4"
+          @click="updateAccount()"></Button>
       </Fieldset>
       <Fieldset :legend="$t('main-page.settings-comp.github')">
         <p class="-mt-1 mb-4 font-italic">
@@ -50,30 +30,17 @@
         <p class="flex text-sm">
           PAT <span class="ml-auto text-400">(Personal Access Token)</span>
         </p>
-        <InputText
-          class="w-full"
-          v-model="github.pat"
-          type="password"
-        ></InputText>
+        <InputText class="w-full" v-model="github.pat" type="password"></InputText>
         <div class="flex gap-2 mt-4">
-          <Button
-            :label="$t('main-page.settings-comp.save')"
-            icon="pi pi-save"
-            class="w-6"
-            @click="updateGithubAcc()"
-          ></Button>
-          <Button
-            :label="$t('main-page.settings-comp.delete')"
-            icon="pi pi-trash"
-            type="password"
-            class="w-6 bg-red-500 text-white border-none"
-            @click="
-              {
-                this.github = { pat: '' };
-                updateGithubAcc();
-              }
-            "
-          ></Button>
+          <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-6"
+            @click="updateGithubAcc()"></Button>
+          <Button :label="$t('main-page.settings-comp.delete')" icon="pi pi-trash" type="password"
+            class="w-6 bg-red-500 text-white border-none" @click="
+                                                                                                                                                                          {
+              this.github = { pat: '' };
+              updateGithubAcc();
+            }
+              "></Button>
         </div>
       </Fieldset>
       <Fieldset :legend="$t('main-page.settings-comp.domains')">
@@ -81,30 +48,17 @@
           <p class="w-8 font-italic">
             {{ $t("main-page.settings-comp.domains-text") }}
           </p>
-          <Button
-            icon="pi pi-plus"
-            :label="$t('main-page.settings-comp.add')"
-            class="p-button-sm"
-            @click="$refs.addDomOvPa.toggle($event)"
-          ></Button>
+          <Button icon="pi pi-plus" :label="$t('main-page.settings-comp.add')" class="p-button-sm"
+            @click="$refs.addDomOvPa.toggle($event)"></Button>
         </div>
         <div class="w-full flex flex-column justify-content-center gap-2">
           <template v-for="ad in availableDomains" :key="ad">
-            <div
-              class="border-round-sm surface-section flex justify-content-between align-items-center"
-            >
+            <div class="border-round-sm surface-section flex justify-content-between align-items-center">
               <p class="m-0 mb-1 ml-3 font-mono select-none">{{ ad }}</p>
-              <Button
-                icon="pi pi-times"
-                class="surface-200 text-white border-none"
-                @click="deleteDomain(ad)"
-              ></Button>
+              <Button icon="pi pi-times" class="surface-200 text-white border-none" @click="deleteDomain(ad)"></Button>
             </div>
           </template>
-          <p
-            class="m-0 text-300 font-italic"
-            v-if="availableDomains.length == 0"
-          >
+          <p class="m-0 text-300 font-italic" v-if="availableDomains.length == 0">
             - empty -
           </p>
         </div>
@@ -122,21 +76,13 @@
         </p>
         <p class="text-sm">{{ $t("main-page.settings-comp.path") }}</p>
         <InputText class="w-full" v-model="path" spellcheck="false"></InputText>
-        <Button
-          label="Save"
-          icon="pi pi-save"
-          class="w-full mt-4"
-          @click="setPath()"
-        ></Button>
+        <Button label="Save" icon="pi pi-save" class="w-full mt-4" @click="setPath()"></Button>
       </Fieldset>
       <Fieldset :legend="$t('main-page.settings-comp.proxy')">
         <p class="-mt-1 mb-4 font-italic">
           {{ $t("main-page.settings-comp.proxy-text")
-          }}<a
-            class="text-primary no-underline"
-            href="https://www.npmjs.com/package/acme-client"
-            >acme-client.js/Let's Encrypt</a
-          >.
+          }}<a class="text-primary no-underline" href="https://www.npmjs.com/package/acme-client">acme-client.js/Let's
+            Encrypt</a>.
         </p>
         <div class="flex align-items-center justify-content-between my-4">
           <p class="text-sm m-0">{{ $t("main-page.settings-comp.proxy") }}</p>
@@ -147,32 +93,18 @@
             {{ $t("main-page.settings-comp.certificates") }}
           </p>
           <div class="p-inputgroup w-min">
-            <Button
-              :label="$t('main-page.settings-comp.force')"
-              class="bg-gray-700 text-white border-none"
-              @click="updateCerts(true)"
-            ></Button>
-            <Button
-              :label="$t('main-page.settings-comp.update')"
-              @click="updateCerts(false)"
-            ></Button>
+            <Button :label="$t('main-page.settings-comp.force')" class="bg-gray-700 text-white border-none"
+              @click="updateCerts(true)"></Button>
+            <Button :label="$t('main-page.settings-comp.update')" @click="updateCerts(false)"></Button>
           </div>
         </div>
         <p class="text-sm">
           {{ $t("main-page.settings-comp.maintainer-mail") }}
         </p>
-        <InputText
-          class="w-full"
-          spellcheck="false"
-          v-model="proxy.maintainerEmail"
-          :disabled="!this.proxy.enabled"
-        ></InputText>
-        <Button
-          :label="$t('main-page.settings-comp.save')"
-          icon="pi pi-save"
-          class="w-full mt-4"
-          @click="updateProxy"
-        ></Button>
+        <InputText class="w-full" spellcheck="false" v-model="proxy.maintainerEmail" :disabled="!this.proxy.enabled">
+        </InputText>
+        <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4"
+          @click="updateProxy"></Button>
       </Fieldset>
       <Fieldset :legend="$t('main-page.settings-comp.databases')">
         <div class="flex justify-content-between align-items-center -mt-1 mb-4">
@@ -190,100 +122,55 @@
                       {{ "MySQL Version " + databases.mysql.version }}
                     </div>
 
-                    <Button
-                      :label="$t('main-page.settings-comp.uninstall-mysql')"
-                      class="bg-red-500 text-white border-none"
-                      @click="uninstallMySQL"
-                    ></Button>
+                    <Button :label="$t('main-page.settings-comp.uninstall-mysql')"
+                      class="bg-red-500 text-white border-none" @click="uninstallMySQL"></Button>
                   </div>
                 </div>
                 <div class="w-full" v-else>
-                  <Button
-                    :label="$t('main-page.settings-comp.install-mysql')"
-                    icon="pi pi-database"
-                    class="w-12"
-                    @click="installMySQL"
-                  ></Button>
+                  <Button :label="$t('main-page.settings-comp.install-mysql')" icon="pi pi-database" class="w-12"
+                    @click="installMySQL"></Button>
                 </div>
               </div>
             </div>
-            <div
-              class="w-full flex flex-column justify-content-center gap-2 mt-4"
-            >
+            <div class="w-full flex flex-column justify-content-center gap-2 mt-4">
               <div class="flex align-items-center justify-content-between">
-                <div
-                  class="w-full"
-                  v-if="
-                    databases.mysql.installed &&
-                    !databases.mysql.superuser.created
-                  "
-                >
+                <div class="w-full" v-if="databases.mysql.installed &&
+                  !databases.mysql.superuser.created
+                  ">
                   <p class="text-sm">
                     {{ $t("main-page.settings-comp.mysql-user") }}
                   </p>
-                  <InputText
-                    class="w-full"
-                    spellcheck="false"
-                    v-model="databases.mysql.superuser.username"
-                    :disabled="!this.proxy.enabled"
-                  ></InputText>
+                  <InputText class="w-full" spellcheck="false" v-model="databases.mysql.superuser.username"></InputText>
                   <p class="text-sm">
                     {{ $t("main-page.settings-comp.mysql-password") }}
                   </p>
 
                   <div class="p-inputgroup flex-1">
-                    <InputText
-                      class="w-full"
-                      :type="mysqlPasswordVisibility ? 'text' : 'password'"
-                      spellcheck="false"
-                      v-model="databases.mysql.superuser.password"
-                      :disabled="!this.proxy.enabled"
-                    ></InputText>
-                    <Button
-                      :icon="
-                        mysqlPasswordVisibility
-                          ? 'pi pi-eye'
-                          : 'pi pi-eye-slash'
-                      "
-                      @click="
-                        mysqlPasswordVisibility = !mysqlPasswordVisibility
-                      "
-                      severity="secondary"
-                    />
-                    <Button
-                      icon="pi pi-replay"
-                      severity="warning"
-                      @click="
-                        databases.mysql.superuser.password = generierePasswort()
-                      "
-                    />
+                    <InputText class="w-full" :type="mysqlPasswordVisibility ? 'text' : 'password'" spellcheck="false"
+                      v-model="databases.mysql.superuser.password"></InputText>
+                    <Button :icon="mysqlPasswordVisibility
+                      ? 'pi pi-eye'
+                      : 'pi pi-eye-slash'
+                      " @click="
+    mysqlPasswordVisibility = !mysqlPasswordVisibility
+    " severity="secondary" />
+                    <Button icon="pi pi-replay" severity="warning" @click="
+                      databases.mysql.superuser.password = generatePassword()
+                      " />
                   </div>
                   <p class="text-sm w-full">
                     {{ $t("main-page.settings-comp.mysql-host") }}
                   </p>
-                  <InputText
-                    class="w-full"
-                    spellcheck="false"
-                    v-model="databases.mysql.superuser.host"
-                    :disabled="!this.proxy.enabled"
-                  ></InputText>
-                  <Button
-                    :label="
-                      $t('main-page.settings-comp.create-mysql-superuser')
-                    "
-                    icon="pi pi-user"
-                    class="w-12 mt-4"
-                    :disabled="
-                      !(
-                        databases.mysql.superuser.username &&
-                        databases.mysql.superuser.username.length > 6 &&
-                        databases.mysql.superuser.password &&
-                        databases.mysql.superuser.password.length > 7 &&
-                        databases.mysql.superuser.host
-                      )
-                    "
-                    @click="createMySQLSuperUser"
-                  ></Button>
+                  <InputText class="w-full" spellcheck="false" v-model="databases.mysql.superuser.host"></InputText>
+                  <Button :label="$t('main-page.settings-comp.create-mysql-superuser')
+                    " icon="pi pi-user" class="w-12 mt-4" :disabled="!(
+    databases.mysql.superuser.username &&
+    databases.mysql.superuser.username.length > 6 &&
+    databases.mysql.superuser.password &&
+    databases.mysql.superuser.password.length > 7 &&
+    databases.mysql.superuser.host
+  )
+    " @click="createMySQLSuperUser"></Button>
                 </div>
                 <div class="w-12" v-else>
                   <div class="flex align-items-center justify-content-between">
@@ -310,11 +197,8 @@
                       {{ databases.mysql.superuser.host }}
                     </div>
                   </div>
-                  <Button
-                      :label="$t('main-page.settings-comp.delete-mysql-superuser')"
-                      class="bg-red-500 text-white border-none w-full"
-                      @click="deleteMySQLSuperUser"
-                    ></Button>
+                  <Button :label="$t('main-page.settings-comp.delete-mysql-superuser')"
+                    class="bg-red-500 text-white border-none w-full" @click="deleteMySQLSuperUser"></Button>
                 </div>
               </div>
             </div>
@@ -464,21 +348,13 @@ export default {
     },
     installMySQL() {
       this.$STORAGE.socket.emit("databases:install:mysql", (data) => {
-        this.$EVENT.emit("showToast", {
-          severity: "success",
-          title: "Done",
-          msg: data.msg,
-        });
+        this.$EVENT.emit("showNotification", data);
         this.fetchMySQLData();
       });
     },
     uninstallMySQL() {
       this.$STORAGE.socket.emit("databases:uninstall:mysql", (data) => {
-        this.$EVENT.emit("showToast", {
-          severity: "success",
-          title: "Done",
-          msg: data.msg,
-        });
+        this.$EVENT.emit("showNotification", data);
         this.fetchMySQLData();
       });
     },
@@ -491,11 +367,7 @@ export default {
           host: this.databases.mysql.superuser.host,
         },
         (data) => {
-          this.$EVENT.emit("showToast", {
-            severity: "success",
-            title: "Done",
-            msg: data.msg,
-          });
+          this.$EVENT.emit("showNotification", data);
           this.fetchMySQLData();
         }
       );
@@ -509,11 +381,7 @@ export default {
           host: this.databases.mysql.superuser.host,
         },
         (data) => {
-          this.$EVENT.emit("showToast", {
-            severity: "success",
-            title: "Done",
-            msg: data.msg,
-          });
+          this.$EVENT.emit("showNotification", data);
           this.fetchMySQLData();
         }
       );
@@ -534,15 +402,15 @@ export default {
         this.databases.mysql = data.payload;
       });
     },
-    generierePasswort(laenge = 10) {
-      const zeichensatz =
+    generatePassword(length = 12) {
+      const chars =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+=-";
-      let passwort = "";
-      for (let i = 0; i < laenge; i++) {
-        const randomIndex = Math.floor(Math.random() * zeichensatz.length);
-        passwort += zeichensatz[randomIndex];
+      let password = "";
+      for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * chars.length);
+        password += chars[randomIndex];
       }
-      return passwort;
+      return password;
     },
     updateGithubAcc() {
       this.$STORAGE.socket.emit("github:set", this.github, (data) => {
@@ -562,7 +430,7 @@ export default {
         }
       });
     },
-    updateNodeupLogin() {
+    updateAccount() {
       this.$STORAGE.socket.emit("account:set", this.account, (data) => {
         let { error, msg } = data;
         if (error) {
