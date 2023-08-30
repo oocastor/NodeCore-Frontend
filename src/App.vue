@@ -18,4 +18,8 @@ export default {
 ::-webkit-scrollbar-thumb {
   background: #555;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+}
 </style>
