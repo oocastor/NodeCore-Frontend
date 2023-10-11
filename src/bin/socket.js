@@ -2,7 +2,10 @@ import SocketIO from 'socket.io-client';
 import router from "@/router/index";
 import {app} from "@/main";
 
-const socket = SocketIO("http://localhost:1001");
+//const socket = SocketIO("http://localhost:1001");
+const socket = SocketIO("http://217.173.132.100:1001", {
+    transports: ['websocket']
+});
 
 socket.on("goto:login", (data) => {
     let event = app.config.globalProperties.$EVENT;

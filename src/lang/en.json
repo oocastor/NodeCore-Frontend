@@ -122,7 +122,11 @@
             "delete-mysql-superuser" : "Delete Superuser",
             "mysql-user": "MySQL Username",
             "mysql-password": "MySQL Password",
-            "mysql-host": "MySQL Host"
+            "mysql-host": "MySQL Host",
+            "tracking": "Tracking",
+            "tracking-text": "NodeCore can track the IP-Adresses of incoming connections.",
+            "anonymiseIP": "Anonymise IPs",
+            "dataStorageDays": "Data storage time"
         }
     }
 }

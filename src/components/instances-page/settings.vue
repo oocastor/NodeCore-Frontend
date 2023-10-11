@@ -113,6 +113,26 @@
             <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4"
               @click="updateProxy"></Button>
           </Fieldset>
+          <Fieldset :legend="$t('main-page.settings-comp.tracking')">
+            <p class="-mt-1 my-4 font-italic">
+              {{ $t("main-page.settings-comp.tracking-text")
+              }}
+            </p>
+            <div class="flex align-items-center justify-content-between my-4">
+              <p class="text-sm m-0">{{ $t("main-page.settings-comp.tracking") }}</p>
+              <ToggleButton v-model="proxy.enabled"></ToggleButton>
+            </div>
+            <div class="flex align-items-center justify-content-between my-4">
+              <p class="text-sm m-0">{{ $t("main-page.settings-comp.anonymiseIP") }}</p>
+              <ToggleButton v-model="proxy.enabled"></ToggleButton>
+            </div>
+            <InputText class="w-full" spellcheck="false" v-model="proxy.maintainerEmail" :disabled="!this.proxy.enabled">
+            </InputText>
+            <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4"
+              @click="updateProxy"></Button>
+          </Fieldset>
+         
+            
         </div>
         <!-- GITHUB -->
         <div class="flex flex-column gap-4" v-if="menu.id == 2">
@@ -239,6 +259,7 @@
             </div>
           </Fieldset>
         </div>
+        
       </div>
     </div>
   </Dialog>
@@ -260,12 +281,12 @@ export default {
     return {
       settingsDialog: true,
       menu: {
-        id: 0,
+        id: 1,
         items: [
           { label: "General", icon: "pi pi-cog", id: 0 },
           { label: "Proxy", icon: "pi pi-directions", id: 1 },
           { label: "GitHub", icon: "pi pi-github", id: 2 },
-          { label: "Database", icon: "pi pi-database", id: 3 },
+          { label: "Database", icon: "pi pi-database", id: 3 }
         ]
       },
       availableDomains: [],
