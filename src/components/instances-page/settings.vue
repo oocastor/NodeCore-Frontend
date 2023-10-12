@@ -113,6 +113,7 @@
             <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4"
               @click="updateProxy"></Button>
           </Fieldset>
+          <!-- TRACKING -->
           <Fieldset :legend="$t('main-page.settings-comp.tracking')">
             <p class="-mt-1 my-4 font-italic">
               {{ $t("main-page.settings-comp.tracking-text")
@@ -120,19 +121,21 @@
             </p>
             <div class="flex align-items-center justify-content-between my-4">
               <p class="text-sm m-0">{{ $t("main-page.settings-comp.tracking") }}</p>
-              <ToggleButton v-model="proxy.enabled"></ToggleButton>
+              <ToggleButton v-model="tracking.enabled"></ToggleButton>
             </div>
             <div class="flex align-items-center justify-content-between my-4">
               <p class="text-sm m-0">{{ $t("main-page.settings-comp.anonymiseIP") }}</p>
-              <ToggleButton v-model="proxy.enabled"></ToggleButton>
+              <ToggleButton v-model="tracking.anonymiseIP" :disabled="!tracking.enabled"></ToggleButton>
             </div>
-            <InputText class="w-full" spellcheck="false" v-model="proxy.maintainerEmail" :disabled="!this.proxy.enabled">
-            </InputText>
-            <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4"
-              @click="updateProxy"></Button>
+            <div class="flex gap-2 justify-content-between">
+              <p>Save for days</p>
+              <InputNumber v-model="tracking.saveDays" spellcheck="false" :useGrouping="false" :min="0" :max="90" :disabled="!tracking.enabled">
+              </InputNumber>
+            </div>
+            <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4" @click="updateTracking"></Button>
           </Fieldset>
-         
-            
+
+
         </div>
         <!-- GITHUB -->
         <div class="flex flex-column gap-4" v-if="menu.id == 2">
@@ -259,7 +262,7 @@
             </div>
           </Fieldset>
         </div>
-        
+
       </div>
     </div>
   </Dialog>
@@ -272,6 +275,7 @@ import Dialog from "primevue/dialog";
 import Fieldset from "primevue/fieldset";
 import OverlayPanel from "primevue/overlaypanel";
 import InputText from "primevue/inputtext";
+import InputNumber from "primevue/inputnumber";
 import Button from "primevue/button";
 import ToggleButton from "primevue/togglebutton";
 import Dropdown from "primevue/dropdown";
@@ -314,6 +318,11 @@ export default {
           databases: [],
         },
       },
+      tracking: {
+        enabled: false,
+        anonymiseIP: false,
+        saveDays: 7,
+      },
       github: {
         pat: "",
       },
@@ -344,6 +353,7 @@ export default {
     Button,
     ToggleButton,
     Dropdown,
+    InputNumber,
   },
   watch: {
     "proxy.cluster"() {
@@ -590,7 +600,32 @@ export default {
       this.fetchPath();
       this.fetchProxy();
       this.fetchMySQLData();
+      this.fetchTracking();
     },
+    fetchTracking() {
+      this.$STORAGE.socket.emit(
+        "tracking:get",
+        (data) => (this.tracking = data.payload)
+      );
+    },
+    updateTracking() {
+      this.$STORAGE.socket.emit("tracking:set", this.tracking, (data) => {
+        let { error, msg } = data;
+        if (error) {
+          this.$EVENT.emit("showToast", {
+            severity: "error",
+            title: "Error",
+            msg,
+          });
+        } else {
+          this.$EVENT.emit("showToast", {
+            severity: "success",
+            title: "Done",
+            msg,
+          });
+        }
+      });
+    }
   },
   created() {
     this.update();
