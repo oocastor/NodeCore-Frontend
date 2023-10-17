@@ -3,7 +3,7 @@ import router from "@/router/index";
 import {app} from "@/main";
 
 //const socket = SocketIO("http://localhost:1001");
-const socket = SocketIO("http://localhost:1001", {
+const socket = SocketIO("https://gaming-hour.com", {
     transports: ['websocket']
 });
 

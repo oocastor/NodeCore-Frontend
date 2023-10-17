@@ -127,6 +127,9 @@
             "tracking-text": "NodeCore can track the IP-Adresses of incoming connections.",
             "anonymiseIP": "Anonymise IPs",
             "dataStorageDays": "Data storage time"
+        },
+        "tracking-comp": {
+            "tracking": "Tracking"  
         }
     }
 }

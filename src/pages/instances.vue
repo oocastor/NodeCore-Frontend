@@ -93,8 +93,9 @@
 
       <div class="w-full flex flex-column align-items-center">
         <div class="flex justify-content-center align-items-center gap-1">
-          <i class="pi pi-link text-300"></i>
-          <a href="https://github.com/oocastor" class="no-underline text-300">oocastor</a>
+          <i class="pi pi-github text-300 mr-1"></i>
+          <a href="https://github.com/oocastor" class="no-underline text-300">oocastor |</a>
+          <a href="https://github.com/DerSchoepfer" class="no-underline text-300">DerSchoepfer</a>
         </div>
         <p class="text-xs text-300">Build Version {{ projectData.version }}</p>
       </div>
@@ -102,6 +103,7 @@
   </div>
   <Toast style="width: 70%; max-width: 400px" />
   <settings ref="settings"></settings>
+  <tracking ref="tracking"></tracking>
 </template>
 
 <script>
@@ -124,6 +126,7 @@ import instanceUpdateView from "@/components/instances-page/instanceUpdateView.v
 import redirectUpdateView from "@/components/instances-page/redirectUpdateView.vue";
 import overview from "@/components/instances-page/overview.vue";
 import settings from "@/components/instances-page/settings.vue";
+import tracking from "@/components/instances-page/tracking.vue";
 
 import * as Vue from "vue";
 import VueCookies from 'vue-cookies';
@@ -150,6 +153,7 @@ export default {
     instanceUpdateView,
     overview,
     settings,
+    tracking,
   },
 
   data() {

@@ -283,7 +283,7 @@ import Dropdown from "primevue/dropdown";
 export default {
   data() {
     return {
-      settingsDialog: true,
+      settingsDialog: false,
       menu: {
         id: 1,
         items: [
