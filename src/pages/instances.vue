@@ -230,6 +230,11 @@ export default {
           command: () => this.$refs.settings.toggleSettingsDialog(),
         },
         {
+          icon: "pi pi-arrow-right-arrow-left",
+          label: this.$t('main-page.tracking-comp.tracking'),
+          command: () => this.$refs.tracking.toggleTrackingDialog(),
+        },
+        {
           icon: "pi pi-refresh",
           label: this.$t('menu.reload'),
           command: () => location.reload(),

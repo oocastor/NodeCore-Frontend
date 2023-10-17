@@ -2,7 +2,7 @@
     <Dialog v-model:visible="trackingPanel" modal :draggable="false" :header="$t('main-page.tracking-comp.tracking')"
         style="max-width: 1000px; width: 100%;" class="relative">
         <DataTable :value="trackingData" v-if="trackingData.length" v-model:filters="filters" filterDisplay="menu"
-            :globalFilterFields="['ip', 'target', 'timestap']">
+            :globalFilterFields="['ip', 'target', 'timestap']" breakpoint="0px">
             <Column field="ip" header="IP">
                 <template #body="{ data }">
                     {{ data.ip }}
@@ -21,16 +21,18 @@
                         placeholder="Search by name" />
                 </template>
             </Column>
-            <Column field="timestamp" header="Date">
+            <Column field="date" header="Date" dataType="date" filterField="date" sortable>
                 <template #body="slotProps">
-                    {{ timestapToDate(slotProps.data.timestamp) }}
+                    {{ formatDate(slotProps.data.date) }}
                 </template>
                 <template #filter="{ filterModel }">
-                    <Calendar v-model="filterModel.value" dateFormat="mm.dd.yy" placeholder="mm.dd.yyyy"
+                    <Calendar v-model="filterModel.value" dateFormat="dd.mm.yy" placeholder="dd.mm.yyyy"
                         mask="99.99.9999" />
                 </template>
             </Column>
-            <Column field="authorized" header="Status">
+            <Column field="time" header="Time" sortable>
+            </Column>
+            <Column field="authorized" header="Status" sortable>
                 <template #body="slotProps">
                     <Tag :value="slotProps.data.authorized ? 'Authorized' : 'Unauthorized'"
                         :severity="slotProps.data.authorized ? 'success' : 'danger'" />
@@ -54,11 +56,12 @@ import Calendar from 'primevue/calendar';
 export default {
     data() {
         return {
-            trackingPanel: true,
+            trackingPanel: false,
             trackingData: [],
             filters: {
                 ip: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-                timestap: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
+                target: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+                date: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
             }
         }
     },
@@ -75,13 +78,24 @@ export default {
             this.$STORAGE.socket.emit(
                 "tracking:data",
                 (data) => {
-                    this.trackingData = data.payload;
+                    this.trackingData = data.payload.map(m => {
+                        m.date = new Date(m.timestamp);
+                        m.time = new Date(m.timestamp).toLocaleTimeString("de-DE");
+                        return m;
+                    });
                     console.log(data.payload)
                 }
             );
         },
-        timestapToDate(timestamp) {
-            return new Date(timestamp).toLocaleString();
+        formatDate(date) {
+            return new Date(date).toLocaleDateString("de-DE", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+            });
+        },
+        toggleTrackingDialog() {
+            this.trackingPanel = !this.trackingPanel;
         }
     },
     created() {
@@ -90,8 +104,13 @@ export default {
 }
 </script>
 
-<style>
-.p-dropdown {
-    padding: 8px 2px !important;
+<style lang="scss">
+.p-column-filter-overlay {
+    .p-dropdown {
+        padding: 8px 4px !important;
+    }
+    .p-calendar > .p-inputtext {
+        padding: 8px 4px !important;
+    }
 }
 </style>
