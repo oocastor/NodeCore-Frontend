@@ -125,7 +125,7 @@
             </div>
             <div class="flex align-items-center justify-content-between my-4">
               <p class="text-sm m-0">{{ $t("main-page.settings-comp.anonymiseIP") }}</p>
-              <ToggleButton v-model="tracking.anonymiseIP" :disabled="!tracking.enabled"></ToggleButton>
+              <ToggleButton v-model="tracking.anonymizeIP" :disabled="!tracking.enabled"></ToggleButton>
             </div>
             <div class="flex gap-2 justify-content-between">
               <p>Save for days</p>
@@ -320,7 +320,7 @@ export default {
       },
       tracking: {
         enabled: false,
-        anonymiseIP: false,
+        anonymizeIP: false,
         saveDays: 7,
       },
       github: {

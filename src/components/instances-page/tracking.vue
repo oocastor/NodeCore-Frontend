@@ -96,6 +96,7 @@ export default {
         },
         toggleTrackingDialog() {
             this.trackingPanel = !this.trackingPanel;
+            this.getData();
         }
     },
     created() {
