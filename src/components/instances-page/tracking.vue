@@ -1,43 +1,52 @@
 <template>
     <Dialog v-model:visible="trackingPanel" modal :draggable="false" :header="$t('main-page.tracking-comp.tracking')"
         style="max-width: 1000px; width: 100%;" class="relative">
-        <DataTable :value="trackingData" v-if="trackingData.length" v-model:filters="filters" filterDisplay="menu"
-            :globalFilterFields="['ip', 'target', 'timestap']" breakpoint="0px">
+        <div class="p-1 mb-2 flex align-items-center">
+            <span class="p-input-icon-left w-5">
+                <i class="pi pi-search"></i>
+                <InputText v-model="filter.text" placeholder="Search" class="w-full" />
+            </span>
+            <div class="ml-auto flex flex-column gap-2">
+                <div class="p-inputgroup">
+                    <Button icon="pi pi-arrow-up" @click="sort.ascending = true" :class="`p-button-text surface-border border-left-none ${!sort.ascending ? 'surface-section' : 'text-white bg-primary-900'}`"></Button>
+                    <Button icon="pi pi-arrow-down" @click="sort.ascending = false" :class="`p-button-text surface-border border-left-none ${sort.ascending ? 'surface-section' : 'text-white bg-primary-900'}`"></Button>
+                </div>
+            </div>
+            <div style="height: 30px; width: 1px; background-color: var(--surface-200); margin: 0 10px;"></div>
+            <div class=" flex flex-column gap-2">
+                <div class="p-inputgroup">
+                    <Button :icon="`pi ${filter.authorized == 2 ? 'pi-lock-open' : filter.authorized == 1 ? 'pi-lock' : 'pi-lock'}`" @click="filter.authorized = filter.authorized == 2 ? 0 : filter.authorized += 1" :class="`p-button-text surface-border border-left-none ${filter.authorized == 0 ? 'surface-section' : 'text-white bg-primary-900'}`"></Button>
+                </div>
+            </div>
+        </div>
+        <DataTable :value="trackingData" :totalRecords="totalRecords" breakpoint="0px" lazy @page="onPage($event)" paginator
+            :rows="20" :loading="loading" :globalFilterFields="['ip']" class="px-2">
             <Column field="ip" header="IP">
                 <template #body="{ data }">
                     {{ data.ip }}
-                </template>
-                <template #filter="{ filterModel }">
-                    <InputText v-model="filterModel.value" type="text" class="p-column-filter"
-                        placeholder="Search by name" />
                 </template>
             </Column>
             <Column field="target" header="Target">
                 <template #body="{ data }">
                     {{ data.target }}
                 </template>
-                <template #filter="{ filterModel }">
-                    <InputText v-model="filterModel.value" type="text" class="p-column-filter"
-                        placeholder="Search by name" />
-                </template>
             </Column>
-            <Column field="date" header="Date" dataType="date" filterField="date" sortable>
+            <Column field="date" header="Date">
                 <template #body="slotProps">
                     {{ formatDate(slotProps.data.date) }}
                 </template>
-                <template #filter="{ filterModel }">
-                    <Calendar v-model="filterModel.value" dateFormat="dd.mm.yy" placeholder="dd.mm.yyyy"
-                        mask="99.99.9999" />
-                </template>
             </Column>
-            <Column field="time" header="Time" sortable>
+            <Column field="time" header="Time">
             </Column>
-            <Column field="authorized" header="Status" sortable>
+            <Column field="authorized" header="Status">
                 <template #body="slotProps">
                     <Tag :value="slotProps.data.authorized ? 'Authorized' : 'Unauthorized'"
                         :severity="slotProps.data.authorized ? 'success' : 'danger'" />
                 </template>
             </Column>
+            <template #empty>
+                <p class="text-400 font-bold text-center">No tracking data found.</p>
+            </template>
         </DataTable>
     </Dialog>
 </template>
@@ -45,23 +54,41 @@
 <script>
 /* eslint-disable */
 
-import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import Dialog from 'primevue/dialog';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Tag from 'primevue/tag';
 import InputText from 'primevue/inputtext';
-import Calendar from 'primevue/calendar';
+import Button from 'primevue/button';
 
 export default {
     data() {
         return {
             trackingPanel: false,
             trackingData: [],
-            filters: {
-                ip: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-                target: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-                date: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
+            totalRecords: 0,
+            loading: false,
+            filter: {
+                text: "",
+                authorized: 0
+            },
+            sort: {
+                ascending: false,
+            },
+            page: 0
+        }
+    },
+    watch: {
+        sort: {
+            deep: true,
+            handler() {
+                this.getData();
+            }
+        },
+        filter: {
+            deep: true,
+            handler() {
+                this.getData();
             }
         }
     },
@@ -71,19 +98,26 @@ export default {
         Column,
         Tag,
         InputText,
-        Calendar
+        Button
     },
     methods: {
+        onPage(e) {
+            this.page = e.page;
+            this.getData();
+        },
         getData() {
+            this.loading = true;
             this.$STORAGE.socket.emit(
                 "tracking:data",
+                { filter: this.filter, page: this.page, sort: this.sort },
                 (data) => {
-                    this.trackingData = data.payload.map(m => {
+                    this.trackingData = data.payload.trackingData.map(m => {
                         m.date = new Date(m.timestamp);
                         m.time = new Date(m.timestamp).toLocaleTimeString("de-DE");
                         return m;
                     });
-                    console.log(data.payload)
+                    this.totalRecords = data.payload.totalRecords;
+                    this.loading = false;
                 }
             );
         },
@@ -110,7 +144,8 @@ export default {
     .p-dropdown {
         padding: 8px 4px !important;
     }
-    .p-calendar > .p-inputtext {
+
+    .p-calendar>.p-inputtext {
         padding: 8px 4px !important;
     }
 }
