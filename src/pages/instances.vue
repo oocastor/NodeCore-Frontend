@@ -18,6 +18,7 @@
 
       <div class="md:hidden fadein animation-duration-100">
         <overview :redirects="redirects" :instances="instances"></overview>
+        <chart></chart>
       </div>
 
       <div class="flex-auto relativ gap-3 flex flex-row fadein animation-duration-100">
@@ -83,6 +84,7 @@
         <div class="w-full md:w-8 flex-column h-min border-round-md flex fadein animation-duration-100 overflow-hidden"
           v-if="screen.width >= 770 || view != 0">
           <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
+          <chart v-if="view == 0"></chart>
           <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId"
             :openInstanceUpdateView="openInstanceUpdateView" :openRedirectView="openRedirectView" :redirects="redirects"
             ref="instanceView"></instanceView>
@@ -127,6 +129,7 @@ import redirectUpdateView from "@/components/instances-page/redirectUpdateView.v
 import overview from "@/components/instances-page/overview.vue";
 import settings from "@/components/instances-page/settings.vue";
 import tracking from "@/components/instances-page/tracking.vue";
+import chart from "@/components/instances-page/chart.vue";
 
 import * as Vue from "vue";
 import VueCookies from 'vue-cookies';
@@ -154,6 +157,7 @@ export default {
     overview,
     settings,
     tracking,
+    chart,
   },
 
   data() {

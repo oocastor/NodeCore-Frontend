@@ -140,13 +140,5 @@ export default {
 </script>
 
 <style lang="scss">
-.p-column-filter-overlay {
-    .p-dropdown {
-        padding: 8px 4px !important;
-    }
 
-    .p-calendar>.p-inputtext {
-        padding: 8px 4px !important;
-    }
-}
 </style>
