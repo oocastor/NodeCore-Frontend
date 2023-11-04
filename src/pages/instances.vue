@@ -18,7 +18,7 @@
 
       <div class="md:hidden fadein animation-duration-100">
         <overview :redirects="redirects" :instances="instances"></overview>
-        <chart :toggleVisibility="true"></chart>
+        <chart :toggleVisibility="true" v-if="trackingEnabled"></chart>
       </div>
 
       <div class="flex-auto relativ gap-3 flex flex-row fadein animation-duration-100">
@@ -84,7 +84,7 @@
         <div class="w-full md:w-8 flex-column h-min border-round-md flex fadein animation-duration-100 overflow-hidden"
           v-if="screen.width >= 770 || view != 0">
           <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
-          <chart v-if="view == 0"></chart>
+          <chart v-if="view == 0 && trackingEnabled"></chart>
           <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId"
             :openInstanceUpdateView="openInstanceUpdateView" :openRedirectView="openRedirectView" :redirects="redirects"
             ref="instanceView"></instanceView>
@@ -179,6 +179,7 @@ export default {
         height: 0,
       },
       networkReady: false,
+      trackingEnabled: false,
       selectedGroups: []
     };
   },
@@ -313,6 +314,7 @@ export default {
       this.fetchRedirectEnitites();
       this.fetchInstanceEnitites();
       this.checkNetworkStatus();
+      this.checkTrackingStatus();
     },
     getScreenSize() {
       this.screen = {
@@ -328,6 +330,12 @@ export default {
     },
     storeFilter() {
       VueCookies.set("filter", this.selectedGroups);
+    },
+    checkTrackingStatus() {
+      this.$STORAGE.socket.emit(
+        "tracking:get",
+        (data) => (this.trackingEnabled = data.payload.enabled)
+      );
     }
   },
   created() {
