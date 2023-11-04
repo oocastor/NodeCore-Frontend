@@ -18,7 +18,7 @@
 
       <div class="md:hidden fadein animation-duration-100">
         <overview :redirects="redirects" :instances="instances"></overview>
-        <chart></chart>
+        <chart :toggleVisibility="true"></chart>
       </div>
 
       <div class="flex-auto relativ gap-3 flex flex-row fadein animation-duration-100">

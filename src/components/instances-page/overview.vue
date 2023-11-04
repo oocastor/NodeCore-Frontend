@@ -1,7 +1,7 @@
 <template>
     <p class="m-0 mb-3 text-200">{{ $t('main-page.overview') }}</p>
     <div class="flex flex-column sm:flex-row gap-2">
-        <div class="sm:w-6 w-full p-3 surface-card border-round flex flex-column">
+        <div class="sm:w-6 w-full p-3 surface-card border-round-md flex flex-column">
             <p class="m-0 text-sm text-400">{{ $t('main-page.instances') }}</p>
             <div class="mt-3 flex gap-3 align-items-center justify-content-center flex-auto">
                 <div class="flex gap-2 align-items-center justify-content-center flex-auto flex-wrap text-center">
@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-        <div class="sm:w-6 w-full p-3 surface-card border-round flex flex-column">
+        <div class="sm:w-6 w-full p-3 surface-card border-round-md flex flex-column">
             <p class="m-0 text-sm text-400">{{ $t('main-page.redirects') }}</p>
             <div class="mt-3 flex gap-3 align-items-center justify-content-center flex-auto">
                 <div class="flex gap-2 align-items-center justify-content-center flex-auto flex-wrap text-center">
