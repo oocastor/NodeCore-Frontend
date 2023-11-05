@@ -104,6 +104,18 @@
     </div>
   </div>
   <Toast style="width: 70%; max-width: 400px" />
+  <Toast group="sticky" style="width: 90%; max-width: 400px; opacity: 1;">
+    <template #message="{ message }">
+      <div class="bg-gray-600 w-full border-round-md">
+        <div class="p-3">
+          <p class="m-0 mb-2">{{ message.summary }}</p>
+          <p class="text-sm m-0 font-light">{{ message.detail }}</p>
+        </div>
+        <ProgressBar mode="indeterminate"
+          style="height: 8px; width: 100%; border-top-right-radius: 0; border-top-left-radius: 0px;"></ProgressBar>
+      </div>
+    </template>
+  </Toast>
   <settings ref="settings"></settings>
   <tracking ref="tracking"></tracking>
 </template>
@@ -118,6 +130,7 @@ import Listbox from "primevue/listbox";
 import OverlayPanel from "primevue/overlaypanel";
 import Checkbox from 'primevue/checkbox';
 import Chip from 'primevue/chip';
+import ProgressBar from 'primevue/progressbar';
 
 import projectData from "../../package.json";
 import serverInfo from "@/components/instances-page/serverInfo.vue";
@@ -140,6 +153,7 @@ export default {
   name: "instances",
 
   components: {
+    ProgressBar,
     Button,
     Menu,
     Avatar,
@@ -180,7 +194,8 @@ export default {
       },
       networkReady: false,
       trackingEnabled: false,
-      selectedGroups: []
+      selectedGroups: [],
+      stickyNotifications: []
     };
   },
   watch: {
@@ -315,6 +330,7 @@ export default {
       this.fetchInstanceEnitites();
       this.checkNetworkStatus();
       this.checkTrackingStatus();
+      this.getStickyNotifications();
     },
     getScreenSize() {
       this.screen = {
@@ -336,6 +352,24 @@ export default {
         "tracking:get",
         (data) => (this.trackingEnabled = data.payload.enabled)
       );
+    },
+    getStickyNotifications() {
+      this.$STORAGE.socket.emit("notifications:get", (data) => {
+        let { payload } = data;
+
+        if(JSON.stringify(this.stickyNotifications) != JSON.stringify(payload)) {
+          this.$toast.removeGroup("sticky");
+          payload.forEach(e => {
+            this.$toast.add({
+              summary: e.title,
+              detail: e.message,
+              closable: false,
+              group: "sticky"
+            });
+          });
+          this.stickyNotifications = payload;
+        }
+      });
     }
   },
   created() {

@@ -129,10 +129,12 @@
             </div>
             <div class="flex gap-2 justify-content-between">
               <p>Save for days</p>
-              <InputNumber v-model="tracking.saveDays" spellcheck="false" :useGrouping="false" :min="0" :max="90" :disabled="!tracking.enabled">
+              <InputNumber v-model="tracking.saveDays" spellcheck="false" :useGrouping="false" :min="7" :max="90"
+                :disabled="!tracking.enabled">
               </InputNumber>
             </div>
-            <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4" @click="updateTracking"></Button>
+            <Button :label="$t('main-page.settings-comp.save')" icon="pi pi-save" class="w-full mt-4"
+              @click="updateTracking"></Button>
           </Fieldset>
 
 
@@ -178,16 +180,16 @@
                         </div>
 
                         <Button :label="$t('main-page.settings-comp.uninstall-mysql')"
-                          class="bg-red-500 text-white border-none" @click="uninstallMySQL"></Button>
+                          class="bg-red-500 text-white border-none" @click="{uninstallMySQL(); fetchMySQLData()}" :loading="databases.mysql.processRunning"></Button>
                       </div>
                     </div>
                     <div class="w-full" v-else>
                       <Button :label="$t('main-page.settings-comp.install-mysql')" icon="pi pi-database" class="w-12"
-                        @click="installMySQL"></Button>
+                        @click="{installMySQL(); fetchMySQLData()}" :loading="databases.mysql.processRunning"></Button>
                     </div>
                   </div>
                 </div>
-                <div class="w-full flex flex-column justify-content-center gap-2 mt-4">
+                <div class="w-full flex flex-column justify-content-center gap-2 mt-4" v-if="databases.mysql.installed">
                   <div class="flex align-items-center justify-content-between">
                     <div class="w-full" v-if="databases.mysql.installed &&
                       !databases.mysql.superuser.created

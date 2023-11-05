@@ -11,6 +11,9 @@
         "logout": "Logout"
     },
     "main-page": {
+        "analytics": "Analytics",
+        "show-graph": "Show analytics graph",
+        "graph-description": "This graph shows the traffic on your defined redirects.",
         "system": "System",
         "cpu": "CPU",
         "ram": "RAM",
@@ -67,7 +70,10 @@
             "stats": "Statistics",
             "logs": "Logs",
             "selectTag": "Select Tag",
-            "connections": "Connections"
+            "connections": "Connections",
+            "requestsPerDay": "Requests per Day",
+            "uniqueRequestsPerDay": "Unique Requests per Day",
+            "requestsPerWeek": "Requests per Week"
         },
         "redirects-comp": {
             "name": "Name",

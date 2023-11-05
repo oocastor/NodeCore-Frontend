@@ -1,15 +1,15 @@
 <template>
-    <p class="text-200">Analytics</p>
+    <p class="text-200">{{ $t('main-page.analytics') }}</p>
     <div class="surface-card border-round-md p-3 pt-2" v-if="expanded">
         <div class="flex justify-content-between align-items-center mb-2">
-            <p class="text-sm text-400 pr-2">This graph shows the traffic on your defined redirects.
+            <p class="text-sm text-400 pr-2">{{ $t('main-page.graph-description') }}
             </p>
             <Button class="p-button-sm p-button-text" icon="pi pi-times" @click="expanded = !expanded" v-if="toggleVisibility"></Button>
         </div>
         <Chart type="line" :data="chartData" :options="chartOptions" class="h-25rem" />
     </div>
     <div class="surface-card border-round-md px-3 py-2 flex justify-content-between align-items-center" v-if="!expanded">
-        <p class="text-sm text-400">Show analytics graph</p>
+        <p class="text-sm text-400">{{ $t('main-page.show-graph') }}</p>
         <Button class="p-button-sm p-button-text" icon="pi pi-angle-down" @click="expanded = !expanded"></Button>
     </div>
 </template>
@@ -115,6 +115,7 @@ export default {
             const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
             return {
+                animation: false,
                 maintainAspectRatio: false,
                 aspectRatio: 0.6,
                 plugins: {

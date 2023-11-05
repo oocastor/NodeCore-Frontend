@@ -49,16 +49,6 @@
                     <Button class="w-full mt-3" icon="pi pi-check" :label="$t('main-page.instances-comp.save')"
                         @click="saveInstanceTags"></Button>
                 </OverlayPanel>
-                <!-- <div class="flex gap-2 align-item-center" v-if="selectedInstance.network.isAccessable">
-                    <i class="pi pi-link text-300"></i>
-                    <a class="no-underline text-gray-400 font-mono"
-                        :href="`https://${selectedInstance.network.redirect.sub}.${selectedInstance.network.redirect.domain}`"
-                        v-if="selectedInstance.network.redirect.sub != '@'">{{
-                            selectedInstance.network.redirect.sub }}.{{ selectedInstance.network.redirect.domain }}</a>
-                    <a class="no-underline text-gray-400 font-mono"
-                        :href="`https://${selectedInstance.network.redirect.domain}`" v-else>{{
-                            selectedInstance.network.redirect.domain }}</a>
-                </div> -->
             </div>
             <div class="p-buttonset w-full flex">
                 <Button :loading="selectedInstance.status == 2"
@@ -76,7 +66,8 @@
                 <div class="flex flex-column gap-1">
                     <template v-for="i in getMatchingRedirects" :key="i._id">
                         <div class="surface-section w-full flex p-3 align-items-center border-round flex-wrap">
-                            <i :class="`pi ${i.type != 'instance' ? 'pi-directions' : 'pi-desktop'} ${i.type == 'instance' ? 'text-400' : i.status == 1 ? 'text-green-600' : 'text-red-600'} text-xl`"></i>
+                            <i
+                                :class="`pi ${i.type != 'instance' ? 'pi-directions' : 'pi-desktop'} ${i.type == 'instance' ? 'text-400' : i.status == 1 ? 'text-green-600' : 'text-red-600'} text-xl`"></i>
                             <p class="m-0 text-sm ml-3">{{ i.name.length > 15 ? i.name.slice(0, 15) + "..." : i.name }}
                                 <span class="text-gray-400 ml-1 text-xs" style="text-transform: capitalize;">({{ i.type
                                 }})</span>
@@ -112,6 +103,18 @@
                 <countItem :str="$t('main-page.cpu')" :num="selectedInstance.pm2?.monit.cpu || 0" color="var(--white)">
                 </countItem>
             </div>
+            <p class="m-0 text-sm font-mono">{{ $t('main-page.analytics') }}</p>
+            <div class="flex gap-1">
+                <countItem :str="$t('main-page.instances-comp.uniqueRequestsPerDay')"
+                    :num="tracking.uniqueRequestsPerDay || 0" color="var(--white)">
+                </countItem>
+                <countItem :str="$t('main-page.instances-comp.requestsPerDay')" :num="tracking.requestsPerDay || 0"
+                    color="var(--white)">
+                </countItem>
+                <countItem :str="$t('main-page.instances-comp.requestsPerWeek')" :num="tracking.requestsPerWeek || 0"
+                    color="var(--white)">
+                </countItem>
+            </div>
             <p class="m-0 text-sm font-mono">{{ $t('main-page.instances-comp.logs') }}</p>
             <Textarea class="w-full h-10rem bg-white-a05 border-none overflow-y-scroll font-mono" autoResize="false"
                 readonly :value="selectedInstance.pm2?.log || ''"></Textarea>
@@ -137,7 +140,12 @@ export default {
             selectedInstance: null,
             newTagInput: "",
             selectedTags: [],
-            tags: []
+            tags: [],
+            tracking: {
+                requestsPerDay: 0,
+                uniqueRequestsPerDay: 0,
+                requestsPerWeek: 0
+            }
         }
     },
     components: {
@@ -190,7 +198,7 @@ export default {
         update() {
             this.$STORAGE.socket.emit("instance:get", { _id: this.selectedInstanceId }, (data) => {
                 let { error, payload } = data;
-                if (!error) this.selectedInstance = payload;
+                if (!error) (this.selectedInstance = payload, this.getTrackingData());
             });
         },
         getAllTags() {
@@ -226,10 +234,33 @@ export default {
         removeInstanceTag(tag) {
             this.selectedTags = this.selectedInstance.tags.filter(t => t != tag);
             this.saveInstanceTags();
+        },
+        getTrackingData() {
+            let allUrls = this.getMatchingRedirects.map(r => {
+                if (r.network.sub != "@") return `${r.network.sub}.${r.network.domain}`;
+                else return r.network.domain;
+            });
+
+            let tracking = {
+                requestsPerDay: 0,
+                uniqueRequestsPerDay: 0,
+                requestsPerWeek: 0
+            }
+
+            this.$STORAGE.socket.emit("tracking:data:byUrl", { url: allUrls }, (data) => {
+                if (data.error) return;
+                tracking.requestsPerDay += data.payload.requestsPerDay;
+                tracking.uniqueRequestsPerDay += data.payload.uniqueRequestsPerDay;
+                tracking.requestsPerWeek += data.payload.requestsPerWeek;
+
+                this.tracking = tracking;
+            });
         }
     },
     created() {
         this.$EVENT.on("update", this.update);
+
+        this.$STORAGE.socket.emit("tracking:data:byUrl", { url: "gaming-hour.com" }, (data) => { console.log(data) });
     },
     unmounted() {
         this.$EVENT.off("update", this.update);
@@ -291,4 +322,5 @@ export default {
         transform: scale(2.5);
         opacity: 0;
     }
-}</style>
+}
+</style>
