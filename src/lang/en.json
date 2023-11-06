@@ -71,9 +71,9 @@
             "logs": "Logs",
             "selectTag": "Select Tag",
             "connections": "Connections",
-            "requestsPerDay": "Requests per Day",
-            "uniqueRequestsPerDay": "Unique Requests per Day",
-            "requestsPerWeek": "Requests per Week"
+            "requestsPerDay": "Total requests per day",
+            "uniqueRequestsPerDay": "Unique requests per day",
+            "requestsPerWeek": "Total requests per week"
         },
         "redirects-comp": {
             "name": "Name",

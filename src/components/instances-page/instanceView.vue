@@ -2,7 +2,7 @@
     <div v-if="selectedInstance">
         <p class="m-0 text-200 mb-3 text-overflow">{{ $t('main-page.instances-comp.instance') }} ({{ selectedInstance.name
         }})</p>
-        <div class="w-full flex flex-column gap-3 surface-card border-round p-3">
+        <div class="w-full flex flex-column gap-3 surface-card border-round-md p-3">
             <div class="flex justify-content-between">
                 <div class="status_indicator" :style="{ '--ind-color': statusColor }">
                     <div class="dot"></div>
@@ -96,23 +96,21 @@
                     </template>
                 </div>
             </div>
-            <p class="m-0 text-sm font-mono">{{ $t('main-page.instances-comp.stats') }}</p>
-            <div class="flex gap-1">
-                <countItem :str="$t('main-page.ram')" :num="selectedInstance.pm2?.monit.memory || 0" color="var(--white)">
-                </countItem>
-                <countItem :str="$t('main-page.cpu')" :num="selectedInstance.pm2?.monit.cpu || 0" color="var(--white)">
-                </countItem>
-            </div>
             <p class="m-0 text-sm font-mono">{{ $t('main-page.analytics') }}</p>
             <div class="flex gap-1">
                 <countItem :str="$t('main-page.instances-comp.uniqueRequestsPerDay')"
-                    :num="tracking.uniqueRequestsPerDay || 0" color="var(--white)">
+                    :num="tracking.uniqueRequestsPerDay || 0" :passStyleToNum="'font-size: 2rem !important;'">
                 </countItem>
-                <countItem :str="$t('main-page.instances-comp.requestsPerDay')" :num="tracking.requestsPerDay || 0"
-                    color="var(--white)">
+                <countItem :str="$t('main-page.instances-comp.requestsPerDay')" :num="tracking.requestsPerDay || 0" :passStyleToNum="'font-size: 2rem !important;'">
                 </countItem>
-                <countItem :str="$t('main-page.instances-comp.requestsPerWeek')" :num="tracking.requestsPerWeek || 0"
-                    color="var(--white)">
+                <countItem :str="$t('main-page.instances-comp.requestsPerWeek')" :num="tracking.requestsPerWeek || 0" :passStyleToNum="'font-size: 2rem !important;'">
+                </countItem>
+            </div>
+            <p class="m-0 text-sm font-mono">{{ $t('main-page.instances-comp.stats') }}</p>
+            <div class="flex gap-1">
+                <countItem :str="$t('main-page.ram')" :num="selectedInstance.pm2?.monit.memory || 0">
+                </countItem>
+                <countItem :str="$t('main-page.cpu')" :num="selectedInstance.pm2?.monit.cpu || 0">
                 </countItem>
             </div>
             <p class="m-0 text-sm font-mono">{{ $t('main-page.instances-comp.logs') }}</p>
@@ -249,9 +247,9 @@ export default {
 
             this.$STORAGE.socket.emit("tracking:data:byUrl", { url: allUrls }, (data) => {
                 if (data.error) return;
-                tracking.requestsPerDay += data.payload.requestsPerDay;
-                tracking.uniqueRequestsPerDay += data.payload.uniqueRequestsPerDay;
-                tracking.requestsPerWeek += data.payload.requestsPerWeek;
+                tracking.requestsPerDay = data.payload.requestsPerDay;
+                tracking.uniqueRequestsPerDay = data.payload.uniqueRequestsPerDay;
+                tracking.requestsPerWeek = data.payload.requestsPerWeek;
 
                 this.tracking = tracking;
             });
@@ -259,8 +257,6 @@ export default {
     },
     created() {
         this.$EVENT.on("update", this.update);
-
-        this.$STORAGE.socket.emit("tracking:data:byUrl", { url: "gaming-hour.com" }, (data) => { console.log(data) });
     },
     unmounted() {
         this.$EVENT.off("update", this.update);
