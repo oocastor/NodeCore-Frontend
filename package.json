@@ -1,13 +1,14 @@
 {
   "name": "nodecore-frontend",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "scripts": {
     "serve": "vue-cli-service serve",
+    "serveSecure": "vue-cli-service serve --https true",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "chart.js": "^4.3.0",
+    "chart.js": "^4.4.0",
     "core-js": "^3.8.3",
     "primeflex": "^3.3.0",
     "primeicons": "^6.0.1",
@@ -15,6 +16,7 @@
     "socket.io-client": "^4.6.1",
     "vue": "^3.2.13",
     "vue-cookies": "^1.8.3",
+    "vue-dragscroll": "^4.0.5",
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.0.13"
   },
@@ -39,7 +41,10 @@
       "eslint:recommended"
     ],
     "parserOptions": {
-      "parser": "@babel/eslint-parser"
+      "parser": "@babel/eslint-parser",
+      "requireConfigFile": false,
+      "ecmaVersion": 2018,
+      "sourceType": "module"
     },
     "rules": {
       "vue/multi-word-component-names": 0

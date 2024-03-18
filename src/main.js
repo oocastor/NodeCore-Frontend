@@ -9,6 +9,7 @@ import VueCookies from 'vue-cookies';
 import PrimeVue from 'primevue/config';
 import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
+import VueDragscroll from "vue-dragscroll";
 
 import {socket} from "@/bin/socket.js";
 import {checkForAuthToken} from "@/bin/auth.js";
@@ -33,6 +34,7 @@ app.use(PrimeVue);
 app.use(ConfirmationService);
 app.use(ToastService);
 app.use(i18n);
+app.use(VueDragscroll);
 
 //TODO: rework storage method
 app.config.globalProperties.$STORAGE = {authed: false, socket};

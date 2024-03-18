@@ -18,6 +18,7 @@
 
       <div class="md:hidden fadein animation-duration-100">
         <overview :redirects="redirects" :instances="instances"></overview>
+        <chart :toggleVisibility="true" v-if="trackingEnabled"></chart>
       </div>
 
       <div class="flex-auto relativ gap-3 flex flex-row fadein animation-duration-100">
@@ -83,6 +84,7 @@
         <div class="w-full md:w-8 flex-column h-min border-round-md flex fadein animation-duration-100 overflow-hidden"
           v-if="screen.width >= 770 || view != 0">
           <overview v-if="view == 0" :redirects="redirects" :instances="instances"></overview>
+          <chart v-if="view == 0 && trackingEnabled"></chart>
           <instanceView v-if="view == 1" :selectedInstanceId="selectedInstanceId"
             :openInstanceUpdateView="openInstanceUpdateView" :openRedirectView="openRedirectView" :redirects="redirects"
             ref="instanceView"></instanceView>
@@ -93,15 +95,29 @@
 
       <div class="w-full flex flex-column align-items-center">
         <div class="flex justify-content-center align-items-center gap-1">
-          <i class="pi pi-link text-300"></i>
-          <a href="https://github.com/oocastor" class="no-underline text-300">oocastor</a>
+          <i class="pi pi-github text-300 mr-1"></i>
+          <a href="https://github.com/oocastor" class="no-underline text-300">oocastor |</a>
+          <a href="https://github.com/DerSchoepfer" class="no-underline text-300">DerSchoepfer</a>
         </div>
         <p class="text-xs text-300">Build Version {{ projectData.version }}</p>
       </div>
     </div>
   </div>
   <Toast style="width: 70%; max-width: 400px" />
+  <Toast group="sticky" style="width: 90%; max-width: 400px; opacity: 1;">
+    <template #message="{ message }">
+      <div class="bg-gray-600 w-full border-round-md">
+        <div class="p-3">
+          <p class="m-0 mb-2">{{ message.summary }}</p>
+          <p class="text-sm m-0 font-light">{{ message.detail }}</p>
+        </div>
+        <ProgressBar mode="indeterminate"
+          style="height: 8px; width: 100%; border-top-right-radius: 0; border-top-left-radius: 0px;"></ProgressBar>
+      </div>
+    </template>
+  </Toast>
   <settings ref="settings"></settings>
+  <tracking ref="tracking"></tracking>
 </template>
 
 <script>
@@ -114,6 +130,7 @@ import Listbox from "primevue/listbox";
 import OverlayPanel from "primevue/overlaypanel";
 import Checkbox from 'primevue/checkbox';
 import Chip from 'primevue/chip';
+import ProgressBar from 'primevue/progressbar';
 
 import projectData from "../../package.json";
 import serverInfo from "@/components/instances-page/serverInfo.vue";
@@ -124,6 +141,8 @@ import instanceUpdateView from "@/components/instances-page/instanceUpdateView.v
 import redirectUpdateView from "@/components/instances-page/redirectUpdateView.vue";
 import overview from "@/components/instances-page/overview.vue";
 import settings from "@/components/instances-page/settings.vue";
+import tracking from "@/components/instances-page/tracking.vue";
+import chart from "@/components/instances-page/chart.vue";
 
 import * as Vue from "vue";
 import VueCookies from 'vue-cookies';
@@ -134,6 +153,7 @@ export default {
   name: "instances",
 
   components: {
+    ProgressBar,
     Button,
     Menu,
     Avatar,
@@ -150,6 +170,8 @@ export default {
     instanceUpdateView,
     overview,
     settings,
+    tracking,
+    chart,
   },
 
   data() {
@@ -171,7 +193,9 @@ export default {
         height: 0,
       },
       networkReady: false,
-      selectedGroups: []
+      trackingEnabled: false,
+      selectedGroups: [],
+      stickyNotifications: []
     };
   },
   watch: {
@@ -224,6 +248,11 @@ export default {
           icon: "pi pi-cog",
           label: this.$t('menu.settings'),
           command: () => this.$refs.settings.toggleSettingsDialog(),
+        },
+        {
+          icon: "pi pi-arrow-right-arrow-left",
+          label: this.$t('main-page.tracking-comp.tracking'),
+          command: () => this.$refs.tracking.toggleTrackingDialog(),
         },
         {
           icon: "pi pi-refresh",
@@ -300,6 +329,8 @@ export default {
       this.fetchRedirectEnitites();
       this.fetchInstanceEnitites();
       this.checkNetworkStatus();
+      this.checkTrackingStatus();
+      this.getStickyNotifications();
     },
     getScreenSize() {
       this.screen = {
@@ -315,6 +346,30 @@ export default {
     },
     storeFilter() {
       VueCookies.set("filter", this.selectedGroups);
+    },
+    checkTrackingStatus() {
+      this.$STORAGE.socket.emit(
+        "tracking:get",
+        (data) => (this.trackingEnabled = data.payload.enabled)
+      );
+    },
+    getStickyNotifications() {
+      this.$STORAGE.socket.emit("notifications:get", (data) => {
+        let { payload } = data;
+
+        if(JSON.stringify(this.stickyNotifications) != JSON.stringify(payload)) {
+          this.$toast.removeGroup("sticky");
+          payload.forEach(e => {
+            this.$toast.add({
+              summary: e.title,
+              detail: e.message,
+              closable: false,
+              group: "sticky"
+            });
+          });
+          this.stickyNotifications = payload;
+        }
+      });
     }
   },
   created() {
